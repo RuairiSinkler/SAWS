@@ -27,8 +27,10 @@ class LEDMotorController(MotorController) :
 
     def turn_on_motor(self, motor_number) :
         print("Turning on LED")
+        print(self.pin_numbers[motor_number])
         GPIO.output(self.pin_numbers[motor_number], True)
 
     def turn_off_motor(self, motor_number) :
         print("Turning off LED")
+        print(self.pin_numbers[motor_number])
         GPIO.output(self.pin_numbers[motor_number], False)
