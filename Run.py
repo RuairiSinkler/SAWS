@@ -10,7 +10,7 @@ def main() :
     wii_board = WiiBoard()
     controller = Controller(motor_controller, wii_board)
 
-    for i in range(100) :
+    while True :
         if wii_board.get_weight() < 20 :
             motor_controller.turn_on_motor(0)
         else :
