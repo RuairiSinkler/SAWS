@@ -11,6 +11,7 @@ def main() :
     controller.motor_controller.turn_on_motor(0)
     time.sleep(1)
     controller.motor_controller.turn_off_motor(0)
+    GPIO.cleanup()
 
 if __name__ == "__main__":
     main()
