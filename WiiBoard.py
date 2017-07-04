@@ -125,13 +125,13 @@ class WiiBoard:
     def receive(self):
         if self.status == "Connected" and not self.processor.done:
             data = self.receivesocket.recv(25)
-            intype = int(data[2:4])#.encode("hex")
+            intype = int(data.encode("hex")[2:4])
             if intype == INPUT_STATUS:
                 # TODO: Status input received. It just tells us battery life really
                 self.setReportingType()
             elif intype == INPUT_READ_DATA:
                 if self.calibrationRequested:
-                    packetLength = (int(str(data[4]), 16) / 16 + 1)#.encode("hex")
+                    packetLength = (int(str(data[4]), 16) / 16 + 1)
                     self.parseCalibrationResponse(data[7:(7 + packetLength)])
 
                     if packetLength < 16:
@@ -175,7 +175,7 @@ class WiiBoard:
         buttonPressed = False
         buttonReleased = False
 
-        state = (int(buttonBytes[0], 16) << 8) | int(buttonBytes[1], 16)#.encode("hex").encode("hex")
+        state = (int(buttonBytes[0].encode("hex"), 16) << 8) | int(buttonBytes[1].encode("hex"), 16)
         if state == BUTTON_DOWN_MASK:
             buttonPressed = True
             if not self.buttonDown:
@@ -188,10 +188,10 @@ class WiiBoard:
                 self.buttonDown = False
                 print("Button released")
 
-        rawTR = (int(bytes[0], 16) << 8) + int(bytes[1], 16)#.encode("hex").encode("hex")
-        rawBR = (int(bytes[2], 16) << 8) + int(bytes[3], 16)#.encode("hex").encode("hex")
-        rawTL = (int(bytes[4], 16) << 8) + int(bytes[5], 16)#.encode("hex").encode("hex")
-        rawBL = (int(bytes[6], 16) << 8) + int(bytes[7], 16)#.encode("hex").encode("hex")
+        rawTR = (int(bytes[0].encode("hex"), 16) << 8) + int(bytes[1].encode("hex"), 16)
+        rawBR = (int(bytes[2].encode("hex"), 16) << 8) + int(bytes[3].encode("hex"), 16)
+        rawTL = (int(bytes[4].encode("hex"), 16) << 8) + int(bytes[5].encode("hex"), 16)
+        rawBL = (int(bytes[6].encode("hex"), 16) << 8) + int(bytes[7].encode("hex"), 16)
 
         topLeft = self.calcMass(rawTL, TOP_LEFT)
         topRight = self.calcMass(rawTR, TOP_RIGHT)
@@ -226,13 +226,13 @@ class WiiBoard:
         if len(bytes) == 16:
             for i in range(2):
                 for j in range(4):
-                    self.calibration[i][j] = (int(bytes[index], 16) << 8) + int(
-                        bytes[index + 1], 16) #.encode("hex").encode("hex")
+                    self.calibration[i][j] = (int(bytes[index].encode("hex"), 16) << 8) + int(
+                        bytes[index + 1].encode("hex"), 16)
                     index += 2
         elif len(bytes) < 16:
             for i in range(4):
-                self.calibration[2][i] = (int(bytes[index], 16) << 8) + int(
-                    bytes[index + 1], 16)#.encode("hex").encode("hex")
+                self.calibration[2][i] = (int(bytes[index].encode("hex"), 16) << 8) + int(
+                    bytes[index + 1].encode("hex"), 16)
                 index += 2
 
     # Send <data> to the Wiiboard
