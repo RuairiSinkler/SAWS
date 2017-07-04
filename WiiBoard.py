@@ -50,6 +50,7 @@ class EventProcessor:
                 self._measureCnt = 0
                 #print
                 #str(self._weight) + " kgs"
+                self.done
                 return self._weight
             if not self._measured:
                 self._measured = True
@@ -124,7 +125,7 @@ class WiiBoard:
             print("Could not connect to Wiiboard at address " + address)
 
     def receive(self):
-        if self.status == "Connected" and not self.processor.done:
+        while self.status == "Connected" and not self.processor.done:
             data = self.receivesocket.recv(25)
             intype = int(binascii.hexlify(data[2:4]))
             if intype == INPUT_STATUS:
