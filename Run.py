@@ -18,6 +18,7 @@ def main() :
             motor_controller.turn_on_motor(0)
         else :
             motor_controller.turn_off_motor(0)
+        time.sleep(0.02)
 
 if __name__ == "__main__":
     main()
