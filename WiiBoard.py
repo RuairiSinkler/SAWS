@@ -40,7 +40,7 @@ class EventProcessor:
             "Measuring ..."
 
         if (event.totalWeight > 2):
-            self._events[self._measureCnt] = event.totalWeight * 2.20462
+            self._events[self._measureCnt] = event.totalWeight
             self._measureCnt += 1
             if self._measureCnt == WEIGHT_SAMPLES:
                 self._sum = 0
@@ -48,8 +48,9 @@ class EventProcessor:
                     self._sum += self._events[x]
                 self._weight = self._sum / WEIGHT_SAMPLES
                 self._measureCnt = 0
-                print
-                str(self._weight) + " lbs"
+                #print
+                #str(self._weight) + " kgs"
+                return self._weight
             if not self._measured:
                 self._measured = True
 
@@ -126,7 +127,7 @@ class WiiBoard:
             "Could not connect to Wiiboard at address " + address
 
     def receive(self):
-        while self.status == "Connected" and not self.processor.done:
+        if self.status == "Connected" and not self.processor.done:
             data = self.receivesocket.recv(25)
             intype = int(data.encode("hex")[2:4])
             if intype == INPUT_STATUS:
@@ -140,7 +141,7 @@ class WiiBoard:
                     if packetLength < 16:
                         self.calibrationRequested = False
             elif intype == EXTENSION_8BYTES:
-                self.processor.mass(self.createBoardEvent(data[2:12]))
+                return self.processor.mass(self.createBoardEvent(data[2:12]))
             else:
                 print
                 "ACK to data write received"
