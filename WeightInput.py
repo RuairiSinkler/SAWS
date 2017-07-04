@@ -51,7 +51,7 @@ class WiiBoard(WeightInput) :
 class PulseInput(WeightInput) :
 
     def __init__(self, weigher_pin, weight = 0) :
-        super().__init__(self, weight)
+        self.weight = weight
         GPIO.setup(weigher_pin, GPIO.IN)
 
         self.old_button_status = GPIO.input(5)
