@@ -129,9 +129,11 @@ class WiiBoard:
             data = self.receivesocket.recv(25)
             intype = int(binascii.hexlify(data[2:4]))
             if intype == INPUT_STATUS:
+                print("1")
                 # TODO: Status input received. It just tells us battery life really
                 self.setReportingType()
             elif intype == INPUT_READ_DATA:
+                print("2")
                 if self.calibrationRequested:
                     packetLength = (int(str(data[4]), 16) / 16 + 1)
                     self.parseCalibrationResponse(data[7:(7 + packetLength)])
@@ -139,6 +141,7 @@ class WiiBoard:
                     if packetLength < 16:
                         self.calibrationRequested = False
             elif intype == EXTENSION_8BYTES:
+                print("3")
                 return self.processor.mass(self.createBoardEvent(data[2:12]))
             else:
                 print("ACK to data write received")
