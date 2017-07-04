@@ -4,6 +4,7 @@ import time
 import bluetooth
 import sys
 import subprocess
+import binascii
 
 # --------- User Settings ---------
 WEIGHT_SAMPLES = 250
@@ -125,7 +126,7 @@ class WiiBoard:
     def receive(self):
         if self.status == "Connected" and not self.processor.done:
             data = self.receivesocket.recv(25)
-            intype = int(data.encode("hex")[2:4])
+            intype = int(binascii.hexlify(data[2:4]))
             if intype == INPUT_STATUS:
                 # TODO: Status input received. It just tells us battery life really
                 self.setReportingType()
