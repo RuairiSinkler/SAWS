@@ -1,4 +1,5 @@
 
+import RPi.GPIO as GPIO
 from abc import ABCMeta, abstractmethod
 from WiiBoard import *
 
@@ -15,7 +16,8 @@ class WeightInput(metaclass = ABCMeta) :
 
 class WiiBoard(WeightInput) :
 
-    def __init__(self) :
+    def __init__(self, weight = 0) :
+        super().__init__(self, weight)
         processor = EventProcessor()
 
         self.board = WiiBoard(processor)
@@ -48,6 +50,19 @@ class WiiBoard(WeightInput) :
 
 class PulseInput(WeightInput) :
 
+    def __init__(self, weigher_pin, weight = 0) :
+        super().__init__(self, weight)
+        GPIO.setup(weigher_pin, GPIO.IN)
+
+        self.old_button_status = GPIO.input(5)
+
+
+
     def get_weight(self):
-        pass
-        # TODO: Get weight here
+        button_status = GPIO.input(5)
+        if self.old_button_status != button_status:
+            if button_status == False:
+                self.weight += 10
+            self.old_button_status = button_status
+
+        return self.weight
