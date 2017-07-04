@@ -1,8 +1,8 @@
 
 import RPi.GPIO as GPIO
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
-class MotorController(metaclass = ABCMeta) :
+class MotorController(ABC) :
 
     def __init__(self, pin_numbers) :
         self.pin_numbers = pin_numbers

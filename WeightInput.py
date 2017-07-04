@@ -19,7 +19,7 @@ class WiiBoard(WeightInput) :
         #TODO: Get weight here
 
 class PulseInput(WeightInput) :
-    
+
     def get_weight(self):
         pass
         # TODO: Get weight here
