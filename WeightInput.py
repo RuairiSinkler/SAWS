@@ -9,7 +9,7 @@ class WeightInput(metaclass = ABCMeta) :
         self.weight = weight
 
     @abstractmethod
-    def get_weight(self) :
+    def get_weights(self) :
         pass
         #TODO: Get weight here
 
@@ -45,7 +45,7 @@ class WiiBoard(WeightInput) :
         self.board.wait(500)
         self.board.setLight(True)
 
-    def get_weight(self) :
+    def get_weights(self) :
         return self.board.recieve
 
 class PulseInput(WeightInput) :

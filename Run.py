@@ -16,7 +16,10 @@ def main() :
     wheat = True
     soya = True
 
-    wheat_weight, barley_weight, soya_weight, limestone_weight = 0
+    wheat_weight = 0
+    barley_weight = 0
+    soya_weight = 0
+    limestone_weight = 0
 
     while not(complete) :
         wb_weight, sl_weight  = weight_input.get_weights()
