@@ -52,14 +52,15 @@ class PulseInput(WeightInput) :
 
     def __init__(self, weigher_pin, weight = 0) :
         self.weight = weight
+        self.pin = weigher_pin
         GPIO.setup(weigher_pin, GPIO.IN)
 
-        self.old_button_status = GPIO.input(5)
+        self.old_button_status = GPIO.input(self.pin)
 
 
 
     def get_weight(self):
-        button_status = GPIO.input(5)
+        button_status = GPIO.input(self.pin)
         if self.old_button_status != button_status:
             if button_status == False:
                 self.weight += 10
