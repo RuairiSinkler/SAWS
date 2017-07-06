@@ -18,9 +18,9 @@ class Controller :
         weight_pins = {"wheat": 20, "barley": 20, "soya": 21, "limestone": 21}
 
         for key in motor_pins:
-            GPIO.setup(motor_pins[key])
+            GPIO.setup(motor_pins[key], GPIO.OUT)
         for key in weight_pins:
-            GPIO.setup(weight_pins[key])
+            GPIO.setup(weight_pins[key], GPIO.IN)
 
         self.motor_controller = LEDMotorController(motor_pins)
         self.wheat_input = PulseInput(weight_pins["wheat"])
