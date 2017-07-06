@@ -38,6 +38,9 @@ class Controller :
         soya_weight = 0
         limestone_weight = 0
 
+        wb_done = False
+        sl_done = False
+
         while not (complete):
 
             if wheat:
