@@ -87,5 +87,5 @@ class Controller :
                         self.motor_controller.turn_off_motor(3)
                         sl_done = True
                         
-            complete = wb_done + sl_done
+            complete = wb_done and sl_done
             time.sleep(0.02)

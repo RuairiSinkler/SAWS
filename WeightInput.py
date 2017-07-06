@@ -61,6 +61,7 @@ class PulseInput(WeightInput) :
         status = GPIO.input(self.pin)
         if self.old_status != status:
             if status == False:
+                print("up")
                 self.weight += 10
             self.old_status = status
 
