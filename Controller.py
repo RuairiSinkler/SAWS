@@ -5,12 +5,12 @@ from WeightInput import *
 class Controller :
 
     def __init__(self) :
-        self.motor_controller
+        self.motor_controller = None
 
-        self.wheat_input
-        self.barley_input
-        self.soya_input
-        self.limestone_input
+        self.wheat_input = None
+        self.barley_input = None
+        self.soya_input = None
+        self.limestone_input = None
 
     def setup(self) :
         GPIO.setmode(GPIO.BCM)
