@@ -10,12 +10,14 @@ class DatabaseManager :
     def insert(self, table, values) :
         cursor = self.get_cursor()
 
-        values_string = values[0]
-        for i in range(1, values.length) :
-            values_string += ", " + values[i]
+        values_string = "\"" + values[0] + "\""
+        for i in range(1, len(values)) :
+            values_string += ", \"" + values[i] + "\""
         print(table)
         print(values_string)
-        execution = "INSERT INTO %s values(%s)" % (table, values_string)
+        execution = "INSERT INTO %s VALUES (%s);" % (table, values_string)
+        print(execution)
+        cursor.execute(execution)
 
         self.close_connection()
 
