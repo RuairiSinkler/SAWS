@@ -2,8 +2,8 @@
 from DatabaseManagement import *
 
 def main() :
-    manager = DatabaseManager("test.db")
-    manager.insert("test_table", ["test1", "test2", "test3"])
+    ration_manager = DatabaseManager("rations.db")
+    ration_manager.insert_rations("rations", ["Peak lay", 560, 400, 220, 100, 10, 20, 30, 40])
 
 if __name__ == "__main__":
     main()
