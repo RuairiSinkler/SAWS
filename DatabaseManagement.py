@@ -11,14 +11,18 @@ class DatabaseManager :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        values_string = "\"" + values[0] + "\""
+        values_string = str(values[0])
         for i in range(1, len(values)) :
-            values_string += ", \"" + values[i] + "\""
+            if isinstance(values[i], int) :
+                values_string += ", " + str(values[i])
+            else :
+                values_string += ", \"" + values[i] + "\""
         print(table)
         print(values_string)
         execution = "INSERT INTO %s VALUES (%s)" % (table, values_string)
         print(execution)
         cursor.execute(execution)
+        connect.commit()
 
         connect.close()
 
@@ -26,7 +30,11 @@ class DatabaseManager :
     def insert_ration(self, values):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
-        ration_id = cursor.execute("SELECT MAX(ration_id)+1 FROM rations")
+        cursor.execute("SELECT MAX(ration_id)+1 FROM rations")
+        ration_id = cursor.fetchone()[0]
+        if ration_id is None :
+            ration_id = 0
+        print(ration_id)
         connect.close()
         values.insert(0, ration_id)
 
@@ -37,7 +45,7 @@ class DatabaseManager :
 
         # If all is ok then insert otherwise raise an exception
         if all_ok:
-            self.insert("ration.db", values)
+            self.insert("rations", values)
         else:
             raise (IOError)
 
