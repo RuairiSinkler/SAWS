@@ -57,6 +57,20 @@ class DatabaseManager :
         execution = "DELETE FROM rations WHERE ration_id = %s" % (value_id)
         print(execution)
         cursor.execute(execution)
+        connect.commit()
+
+        connect.close()
+
+    def assign_ration(self, house_id, ration_id) :
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        print(house_id)
+        print(ration_id)
+        execution = "INSERT INTO house_rations VALUES(%s, %s)" % (str(house_id), str(ration_id))
+        print(execution)
+        cursor.execute(execution)
+        connect.commit()
 
         connect.close()
 
