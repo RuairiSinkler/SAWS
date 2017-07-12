@@ -1,16 +1,9 @@
 
-from Controller import *
-from MotorController import *
+from DatabaseManagement import *
 
 def main() :
-    pins = { 0 : 22 }
-    motor_controller = LEDMotorController(pins)
-    controller = Controller(motor_controller)
-
-    controller.motor_controller.turn_on_motor(0)
-    time.sleep(1)
-    controller.motor_controller.turn_off_motor(0)
-    GPIO.cleanup()
+    manager = DatabaseManager("test.db")
+    manager.insert("test_table", {"test1", "test2", "test3"})
 
 if __name__ == "__main__":
     main()
