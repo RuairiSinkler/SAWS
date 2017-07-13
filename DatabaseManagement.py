@@ -73,7 +73,7 @@ class DatabaseManager :
         # print(execution)
         cursor.execute(execution)
 
-        result = cursor.fetchall()[0]
+        result = cursor.fetchall()
 
         connect.close()
 
