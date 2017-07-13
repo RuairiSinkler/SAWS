@@ -10,7 +10,8 @@ def main() :
         display = ConsoleDisplay(ration_database)
         controller = Controller(display, ration_database)
 
-        display.menu()
+        command = display.menu()
+        controller.run(command)
 
         #controller.run("Test")
     except :

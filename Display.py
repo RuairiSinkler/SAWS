@@ -35,7 +35,8 @@ class ConsoleDisplay(Display) :
         command = input("Please type in a command from the above menu: ").lower()
         if(command == "run") :
             print("Please select a ration:")
-            self.display_rations()
+            command = self.display_rations()
+            return command
 
     def print_row(self, values) :
         print(("{v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " + 
@@ -51,6 +52,8 @@ class ConsoleDisplay(Display) :
         print("{:-^97}".format(""))
         for ration in rations :
             self.print_row(ration)
+        command = input("> ")
+        return command
 
 
     def update_weights(self, weights, weight_limits) :
