@@ -38,16 +38,16 @@ class ConsoleDisplay(Display) :
             self.display_rations()
 
     def print_row(self, values) :
-        print("{:^15{v[1]}} | {:^5d{v[2]}} | {:^6d{v[3]}} | {:^5d{v[4]}} | {:^9d{v[5]}} | " +
-              "{:^8d{v[6]}} | {:^8d{v[7]}} | {:^10d{v[8]}} | {:^7d{v[9]}}".format(v=values)
+        print(("{:^15{v[1]}} | {:^5d{v[2]}} | {:^6d{v[3]}} | {:^5d{v[4]}} | {:^9d{v[5]}} | " +
+              "{:^8d{v[6]}} | {:^8d{v[7]}} | {:^10d{v[8]}} | {:^7d{v[9]}}").format(v=values)
         )
         print("{:-^97}".format())
 
     def display_rations(self) :
         rations = self.ration_database.get_all_rations()
-        print("{:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
+        print(("{:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
             "Name", "Wheat", "Barley", "Soya", "Limestone", "Soya Oil", "Arbocell", "Methionine", "Premix"
-        )
+        ))
         for ration in rations :
             self.print_row(ration)
 
