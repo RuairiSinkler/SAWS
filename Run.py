@@ -6,13 +6,16 @@ from DatabaseManagement import *
 def main() :
 
     try :
-        display = ConsoleDisplay()
         ration_database = DatabaseManager("rations.db")
+        display = ConsoleDisplay(ration_database)
         controller = Controller(display, ration_database)
 
-        controller.run("Test")
+        display.menu()
+
+        #controller.run("Test")
     except :
         print("Error")
+        raise
     finally :
         GPIO.cleanup()
 
