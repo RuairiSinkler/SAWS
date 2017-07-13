@@ -54,13 +54,15 @@ class DatabaseManager :
         cursor = connect.cursor()
 
         print(ration)
-        execution = "SELECT FROM rations WHERE ration_name = \"%s\"" % (ration)
+        execution = "SELECT *  FROM rations WHERE ration_name = \"%s\"" % (ration)
         print(execution)
         cursor.execute(execution)
 
+        result = cursor.fetchall()[0]
+
         connect.close()
 
-        return cursor.fetchall()
+        return result
 
     def delete_ration(self, value_id) :
         connect = sqlite3.connect(self.database_name)
