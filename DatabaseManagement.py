@@ -49,6 +49,19 @@ class DatabaseManager :
         else:
             raise (IOError)
 
+    def get_ration(self, ration) :
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        print(ration)
+        execution = "SELECT FROM rations WHERE ration_name = \"%s\"" % (ration)
+        print(execution)
+        cursor.execute(execution)
+
+        connect.close()
+
+        return cursor.fetchall()
+
     def delete_ration(self, value_id) :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()

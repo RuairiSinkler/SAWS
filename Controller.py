@@ -1,34 +1,40 @@
 
 from MotorController import *
 from WeightInput import *
+from DatabaseManagement import *
 
 class Controller :
 
     def __init__(self) :
-        self.motor_controller = None
+        self.motor_pins = {0: 16, 1: 13, 2: 19, 3: 26}
+        self.weight_pins = {"wheat": 20, "barley": 20, "soya": 21, "limestone": 21}
 
-        self.weight_pins = None
+        self.motor_controller = LEDMotorController(self.motor_pins)
+        self.ration_database = DatabaseManager("rations.db")
 
-        self.wheat_input = None
+        self.wheat_input = PulseInput(self.weight_pins["wheat"])
+        self.soya_input = PulseInput(self.weight_pins["soya"])
         self.barley_input = None
-        self.soya_input = None
         self.limestone_input = None
 
     def setup(self) :
         GPIO.setmode(GPIO.BCM)
-        motor_pins = {0: 16, 1: 13, 2: 19, 3: 26}
-        self.weight_pins = {"wheat": 20, "barley": 20, "soya": 21, "limestone": 21}
 
-        for key in motor_pins:
-            GPIO.setup(motor_pins[key], GPIO.OUT)
-        for key in self.weight_pins:
+        for key in self.motor_pins :
+            GPIO.setup(self.motor_pins[key], GPIO.OUT)
+        for key in self.weight_pins :
             GPIO.setup(self.weight_pins[key], GPIO.IN)
 
-        self.motor_controller = LEDMotorController(motor_pins)
-        self.wheat_input = PulseInput(self.weight_pins["wheat"])
-        self.soya_input = PulseInput(self.weight_pins["soya"])
+    def setup_ration(self, ration) :
+        self.ration_database.get_ration(ration)
 
     def run(self) :
+
+        self.wheat_input = PulseInput(self.weight_pins["wheat"])
+        self.soya_input = PulseInput(self.weight_pins["soya"])
+        self.barley_input = None
+        self.limestone_input = None
+
         complete = False
         wheat = True
         soya = True
