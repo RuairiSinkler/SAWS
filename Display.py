@@ -39,7 +39,7 @@ class ConsoleDisplay(Display) :
 
     def print_row(self, values) :
         print(("{:^15{v[1]}} | {:^5d{v[2]}} | {:^6d{v[3]}} | {:^5d{v[4]}} | {:^9d{v[5]}} | " +
-              "{:^8d{v[6]}} | {:^8d{v[7]}} | {:^10d{v[8]}} | {:^7d{v[9]}}").format(v=values)
+              "{:^8d{v[6]}} | {:^8d{v[7]}} | {:^10d{v[8]}} | ").format(v=values)#{:^7d{v[9]}}"
         )
         print("{:-^97}".format())
 
