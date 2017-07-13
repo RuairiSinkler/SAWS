@@ -1,13 +1,14 @@
 import RPi.GPIO as GPIO
 from Controller import *
 from Display import *
+from DatabaseManagement import *
 
 def main() :
 
     try :
         display = ConsoleDisplay()
-
-        controller = Controller(display)
+        ration_database = DatabaseManager("rations.db")
+        controller = Controller(display, ration_database)
 
         controller.run("Test")
     except :

@@ -1,17 +1,16 @@
 
 from MotorController import *
 from WeightInput import *
-from DatabaseManagement import *
 
 class Controller :
 
-    def __init__(self, display) :
+    def __init__(self, display, ration_database) :
         self.display = display
         self.motor_pins = {0: 16, 1: 13, 2: 19, 3: 26}
         self.weight_pins = {"wheat": 20, "barley": 20, "soya": 21, "limestone": 21}
 
         self.motor_controller = LEDMotorController(self.motor_pins)
-        self.ration_database = DatabaseManager("rations.db")
+        self.ration_database = ration_database
 
         self.setup()
 

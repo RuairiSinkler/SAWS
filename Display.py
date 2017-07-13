@@ -3,13 +3,14 @@ from abc import ABC, abstractmethod
 
 class Display(ABC) :
 
-    def __init__(self) :
+    def __init__(self, ration_database) :
         self.weights = None
+        self.ration_database = ration_database
 
     def setup_weights(self) :
         self.weights = [None, None, None, None]
 
-#    @abstractmethod
+    @abstractmethod
     def menu(self) :
         pass
 
@@ -18,10 +19,28 @@ class Display(ABC) :
         pass
 
     @abstractmethod
+    def display_rations(self) :
+        pass
+
+    @abstractmethod
     def update_weights(self, weights) :
         pass
 
 class ConsoleDisplay(Display) :
+
+    def menu(self) :
+        print("Welcome to ASWA (Automatic Sinkler Weighing System)")
+        print("Main Menu:")
+        print("Run")
+        command = input("Please type in a command from the above menu: ").lower()
+        if(command == "run") :
+            print("Please select a ration:")
+            self.display_rations()
+
+    def display_rations(self) :
+        rations = self.ration_database.get_all_rations()
+        print(rations)
+
 
     def update_weights(self, weights, weight_limits) :
         update = (self.weights != weights)

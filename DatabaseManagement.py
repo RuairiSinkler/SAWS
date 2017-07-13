@@ -17,10 +17,10 @@ class DatabaseManager :
                 values_string += ", " + str(values[i])
             else :
                 values_string += ", \"" + values[i] + "\""
-        print(table)
-        print(values_string)
-        execution = "INSERT INTO %s VALUES (%s)" % (table, values_string)
-        print(execution)
+        #print(table)
+        #print(values_string)
+        execution = "INSERT INTO {} VALUES ({})".format(table, values_string)
+        #print(execution)
         cursor.execute(execution)
         connect.commit()
 
@@ -34,7 +34,7 @@ class DatabaseManager :
         ration_id = cursor.fetchone()[0]
         if ration_id is None :
             ration_id = 0
-        print(ration_id)
+        #print(ration_id)
         connect.close()
         values.insert(0, ration_id)
 
@@ -53,9 +53,9 @@ class DatabaseManager :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        print(ration)
-        execution = "SELECT *  FROM rations WHERE ration_name = \"%s\"" % (ration)
-        print(execution)
+        # print(ration)
+        execution = "SELECT *  FROM rations WHERE ration_name = \"{}\"".format(ration)
+        # print(execution)
         cursor.execute(execution)
 
         result = cursor.fetchall()[0]
@@ -64,13 +64,28 @@ class DatabaseManager :
 
         return result
 
+    def get_all_rations(self) :
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        # print(ration)
+        execution = "SELECT *  FROM rations"
+        # print(execution)
+        cursor.execute(execution)
+
+        result = cursor.fetchall()
+        
+        connect.close()
+
+        return result
+
     def delete_ration(self, value_id) :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        print(value_id)
-        execution = "DELETE FROM rations WHERE ration_id = %s" % (value_id)
-        print(execution)
+        #print(value_id)
+        execution = "DELETE FROM rations WHERE ration_id = {}".format(value_id)
+        #print(execution)
         cursor.execute(execution)
         connect.commit()
 
@@ -80,10 +95,10 @@ class DatabaseManager :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        print(house_id)
-        print(ration_id)
-        execution = "INSERT INTO house_rations VALUES(%s, %s)" % (str(house_id), str(ration_id))
-        print(execution)
+        #print(house_id)
+        #print(ration_id)
+        execution = "INSERT INTO house_rations VALUES({}, {})".format(str(house_id), str(ration_id))
+        #print(execution)
         cursor.execute(execution)
         connect.commit()
 
