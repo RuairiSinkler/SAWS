@@ -11,7 +11,11 @@ def main() :
         controller = Controller(display, ration_database)
 
         command = display.menu()
-        controller.run(command)
+        try :
+            controller.run(command)
+        except IndexError :
+            print("Sorry, that's not an option, try again")
+            display.display_rations()
 
         #controller.run("Test")
     except :
