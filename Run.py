@@ -6,7 +6,7 @@ def main() :
     controller = Controller()
     controller.setup()
 
-    controller.run()
+    controller.run("Test")
 
 if __name__ == "__main__":
     main()

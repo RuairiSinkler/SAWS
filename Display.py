@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 
 class Display(ABC) :
 
-    @abstractmethod
     def __init__(self) :
+        self.weights = [0, 0, 0, 0]
         pass
 
     @abstractmethod
@@ -21,5 +21,19 @@ class Display(ABC) :
 
 class ConsoleDisplay(Display) :
 
-    def __init__(self) :
-        pass
+    def update_weights(self, weights, weight_limits) :
+        update = (self.weights == weights)
+        if update :
+            self.weights = weights
+            print(
+                "Wheat weight: " + str(self.weights[0]) +
+                "/" + str(weight_limits[0]) +
+                " Barley weight: " + str(self.weights[1]) +
+                "/" + str(weight_limits[1])
+            )
+            print(
+                "Soya weight: " + str(self.weights[2]) +
+                "/" + str(weight_limits[2]) +
+                " Limestone weight: " + str(self.weights[3]) +
+                "/" + str(weight_limits[3])
+            )

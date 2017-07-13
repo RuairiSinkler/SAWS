@@ -5,7 +5,8 @@ from DatabaseManagement import *
 
 class Controller :
 
-    def __init__(self) :
+    def __init__(self, display) :
+        self.display = display
         self.motor_pins = {0: 16, 1: 13, 2: 19, 3: 26}
         self.weight_pins = {"wheat": 20, "barley": 20, "soya": 21, "limestone": 21}
 
@@ -26,9 +27,13 @@ class Controller :
             GPIO.setup(self.weight_pins[key], GPIO.IN)
 
     def setup_ration(self, ration) :
-        self.ration_database.get_ration(ration)
+        result = self.ration_database.get_ration(ration)
+        return result[2], result[3], result[4], result[5]
 
-    def run(self) :
+    def run(self, ration) :
+
+        wheat_limit, barley_limit, soya_limit, limestone_limit = self.setup_ration(ration)
+        weight_limits = [wheat_limit, barley_limit, soya_limit, limestone_limit]
 
         self.wheat_input = PulseInput(self.weight_pins["wheat"])
         self.soya_input = PulseInput(self.weight_pins["soya"])
@@ -58,23 +63,18 @@ class Controller :
             else:
                 limestone_weight = self.limestone_input.get_weight()
 
-            print(
-                "Wheat weight: " + str(wheat_weight) +
-                " Barley weight: " + str(barley_weight) +
-                " Soya weight: " + str(soya_weight) +
-                " Limestone weight: " + str(limestone_weight)
-            )
+            self.display.update_weights([wheat_weight, barley_weight, soya_weight, limestone_weight], weight_limits)
 
             if not(wb_done) :
                 if wheat :
-                    if wheat_weight < 50:
+                    if wheat_weight < wheat_limit:
                         self.motor_controller.turn_on_motor(0)
                     else:
                         self.motor_controller.turn_off_motor(0)
                         self.barley_input = PulseInput(self.weight_pins["barley"])
                         wheat = False
                 else:
-                    if barley_weight < 50:
+                    if barley_weight < barley_limit:
                         self.motor_controller.turn_on_motor(1)
                     else:
                         self.motor_controller.turn_off_motor(1)
@@ -82,14 +82,14 @@ class Controller :
 
             if not(sl_done) :
                 if soya:
-                    if soya_weight < 50:
+                    if soya_weight < soya_limit:
                         self.motor_controller.turn_on_motor(2)
                     else:
                         self.motor_controller.turn_off_motor(2)
                         self.limestone_input = PulseInput(self.weight_pins["limestone"])
                         soya = False
                 else:
-                    if limestone_weight < 50:
+                    if limestone_weight < limestone_limit:
                         self.motor_controller.turn_on_motor(3)
                     else:
                         self.motor_controller.turn_off_motor(3)
