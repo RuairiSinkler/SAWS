@@ -53,9 +53,9 @@ class DatabaseManager :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        # print(ration)
+        print(ration)
         execution = "SELECT *  FROM rations WHERE ration_name = \"{}\"".format(ration)
-        # print(execution)
+        print(execution)
         cursor.execute(execution)
 
         result = cursor.fetchall()[0]
@@ -74,7 +74,7 @@ class DatabaseManager :
         cursor.execute(execution)
 
         result = cursor.fetchall()
-        
+
         connect.close()
 
         return result
