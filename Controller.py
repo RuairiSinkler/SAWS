@@ -13,10 +13,7 @@ class Controller :
         self.motor_controller = LEDMotorController(self.motor_pins)
         self.ration_database = DatabaseManager("rations.db")
 
-        self.wheat_input = PulseInput(self.weight_pins["wheat"])
-        self.soya_input = PulseInput(self.weight_pins["soya"])
-        self.barley_input = None
-        self.limestone_input = None
+        self.setup()
 
     def setup(self) :
         GPIO.setmode(GPIO.BCM)
@@ -51,6 +48,8 @@ class Controller :
 
         wb_done = False
         sl_done = False
+
+        self.display.setup_weights();
 
         while not (complete):
 

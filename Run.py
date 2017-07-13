@@ -1,12 +1,19 @@
-
+import RPi.GPIO as GPIO
 from Controller import *
+from Display import *
 
 def main() :
 
-    controller = Controller()
-    controller.setup()
+    try :
+        display = ConsoleDisplay()
 
-    controller.run("Test")
+        controller = Controller(display)
+
+        controller.run("Test")
+    except :
+        print("Error")
+    finally :
+        GPIO.cleanup()
 
 if __name__ == "__main__":
     main()

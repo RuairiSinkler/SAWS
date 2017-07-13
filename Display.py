@@ -4,14 +4,16 @@ from abc import ABC, abstractmethod
 class Display(ABC) :
 
     def __init__(self) :
-        self.weights = [0, 0, 0, 0]
-        pass
+        self.weights = None
 
-    @abstractmethod
+    def setup_weights(self) :
+        self.weights = [None, None, None, None]
+
+#    @abstractmethod
     def menu(self) :
         pass
 
-    @abstractmethod
+#    @abstractmethod
     def run(self) :
         pass
 
@@ -22,7 +24,7 @@ class Display(ABC) :
 class ConsoleDisplay(Display) :
 
     def update_weights(self, weights, weight_limits) :
-        update = (self.weights == weights)
+        update = (self.weights != weights)
         if update :
             self.weights = weights
             print(
