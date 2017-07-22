@@ -49,7 +49,7 @@ class ConsoleDisplay(Display) :
 
     def end(self, end_weights, weight_limits) :
         print("Run complete, end result:")
-        self.display_weights(end_weights, weight_limits)
+        self.weights(end_weights, weight_limits)
 
 
     def rations(self) :
@@ -80,4 +80,4 @@ class ConsoleDisplay(Display) :
         update = (self.weights != weights)
         if update :
             self.weights = weights
-            self.display_weights(weights, weight_limits)
+            self.weights(weights, weight_limits)
