@@ -27,7 +27,7 @@ class Display(ABC) :
         pass
 
     @abstractmethod
-    def weights(self, weights, weight_limits) :
+    def display_weights(self, weights, weight_limits) :
         pass
 
     @abstractmethod
