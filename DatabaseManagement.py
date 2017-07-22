@@ -149,7 +149,7 @@ class DatabaseManager :
         cursor.execute(execution)
         connect.commit()
 
-        for id in range (value_id + 1, self.get_max_ration_id() + 1) :
+        for id in range (int(value_id) + 1, self.get_max_ration_id() + 1) :
             self.update_id(id, id - 1)
 
         connect.close()
