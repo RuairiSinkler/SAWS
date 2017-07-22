@@ -22,13 +22,13 @@ class Controller :
         for key in self.weight_pins :
             GPIO.setup(self.weight_pins[key], GPIO.IN)
 
-    def setup_ration(self, ration) :
-        result = self.ration_database.get_ration(ration)
+    def setup_ration(self, ration_id) :
+        result = self.ration_database.get_ration(ration_id)
         return result[2], result[3], result[4], result[5]
 
-    def run(self, ration) :
+    def run(self, ration_id) :
 
-        wheat_limit, barley_limit, soya_limit, limestone_limit = self.setup_ration(ration)
+        wheat_limit, barley_limit, soya_limit, limestone_limit = self.setup_ration(ration_id)
         weight_limits = [wheat_limit, barley_limit, soya_limit, limestone_limit]
 
         self.wheat_input = PulseInput(self.weight_pins["wheat"])
@@ -100,7 +100,38 @@ class Controller :
         return end_weights, weight_limits
 
     def assign_rations(self) :
-        self.display.assignments()
+
+        success = False
+        cancel = False
+        while not (success or cancel):
+            house = self.display.assignments()
+            if (house == "cancel"):
+                cancel = True
+                break
+            if (house.isdigit()) :
+                if (int(house) > self.ration_database.get_max_house_id()) :
+                    self.display.message("Sorry, that's not an option, try again")
+                else :
+                    success = True
+            else :
+                self.display.message("Sorry, that's not an option, try again")
+
+        success = False
+        while not (success or cancel):
+            ration = self.display.rations()
+            if (ration == "cancel"):
+                cancel = True
+                break
+            if (ration.isdigit()):
+                if (int(ration) > self.ration_database.get_max_ration_id()):
+                    self.display.message("Sorry, that's not an option, try again")
+                else:
+                    success = True
+            else:
+                self.display.message("Sorry, that's not an option, try again")
+
+        if not (cancel) :
+            self.ration_database.assign_ration(house, ration)
 
     def add_ration(self) :
         pass

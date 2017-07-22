@@ -49,12 +49,12 @@ class DatabaseManager :
         else:
             raise (IOError)
 
-    def get_ration(self, ration) :
+    def get_ration(self, ration_id) :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
         # print(ration)
-        execution = "SELECT *  FROM rations WHERE ration_name = \"{}\"".format(ration)
+        execution = "SELECT *  FROM rations WHERE ration_id = {}".format(ration_id)
         # print(execution)
         cursor.execute(execution)
 
@@ -83,7 +83,7 @@ class DatabaseManager :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT house_name, ration_name FROM house_rations " \
+        execution = "SELECT house_id, house_name, ration_id, ration_name FROM house_rations " \
                     "JOIN houses ON house_rations.house_id = houses.house_id " \
                     "JOIN rations ON house_rations.ration_id = rations.ration_id"
         # print(execution)
@@ -113,11 +113,35 @@ class DatabaseManager :
 
         #print(house_id)
         #print(ration_id)
-        execution = "INSERT INTO house_rations VALUES({}, {})".format(str(house_id), str(ration_id))
+        execution = "UPDATE house_rations SET ration_id = {} WHERE house_id = {}".format(str(ration_id), str(house_id))
         #print(execution)
         cursor.execute(execution)
         connect.commit()
 
         connect.close()
 
+    def get_max_ration_id(self) :
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
 
+        execution = "SELECT max(ration_id) FROM rations"
+        cursor.execute(execution)
+
+        result = cursor.fetchall()[0]
+
+        connect.close()
+
+        return result
+
+    def get_max_house_id(self):
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        execution = "SELECT max(house_id) FROM houses"
+        cursor.execute(execution)
+
+        result = cursor.fetchall()[0]
+
+        connect.close()
+
+        return result

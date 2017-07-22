@@ -14,29 +14,29 @@ def main() :
 
     while(on) :
 
-        display.menu()
-        command = input("Please type in a command from the above menu: ").lower()
+        command = display.menu()
 
         if (command == "run") :
 
             success = False
-
             while not(success) :
-                try :
-                    display.rations()
-                    ration = input("> ")
-                    if (ration == "back" or ration == "Back") :
-                        break
-                    end_weights, weight_limits = controller.run(ration)
-                    display.end(end_weights, weight_limits)
-                    success = True
-                except IndexError :
-                    print("Sorry, that's not an option, try again")
+                ration = display.rations()
+                if (ration == "back" or ration == "Back") :
+                    break
+                if (ration.isdigit()) :
+                    if (int(ration) > ration_database.get_max_ration_id()):
+                        display.message("Sorry, that's not an option, try again")
+                    else :
+                        end_weights, weight_limits = controller.run(int(ration))
+                        display.end(end_weights, weight_limits)
+                        success = True
+                else :
+                    display.message("Sorry, that's not an option, try again")
+
         elif (command == "settings") :
-            display.settings()
             invalid_input = True
             while(invalid_input) :
-                choice = input("> ")
+                choice = display.settings()
                 invalid_input = False
                 if (choice == "assign rations") :
                     controller.assign_rations()
