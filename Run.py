@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import os
 from Controller import *
 from Display import *
 from DatabaseManagement import *
@@ -31,6 +32,8 @@ def main() :
                     print("Sorry, that's not an option, try again")
                     display.rations()
                     ration = input("> ")
+        elif (command == "shutdown") :
+            os.system('shutdown now -h')
 
         #controller.run("Test")
 

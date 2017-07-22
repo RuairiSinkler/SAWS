@@ -40,6 +40,7 @@ class ConsoleDisplay(Display) :
         print("Welcome to ASWA (Automatic Sinkler Weighing System)")
         print("Main Menu:")
         print("Run")
+        print("Shutdown")
 
     def print_row(self, values) :
         print(("{v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " +
