@@ -39,7 +39,7 @@ class DatabaseManager :
         values.insert(0, ration_id)
 
         # Perform Validation on the values inserted to go into the rations database
-        all_ok = isinstance(values[1], str)
+        all_ok = isinstance(values[1], str) and values[1]
         for i in range(2, 10):
             all_ok = all_ok and isinstance(values[i], int)
 

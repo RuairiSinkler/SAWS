@@ -138,4 +138,6 @@ class ConsoleDisplay(Display) :
                 if not (result.isdigit()) :
                     success = False
                     print("Sorry I need a positive number as an input")
+                else :
+                    result = int(result)
         return result
