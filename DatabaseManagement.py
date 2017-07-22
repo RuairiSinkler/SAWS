@@ -83,7 +83,7 @@ class DatabaseManager :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT house_id, house_name, ration_id, ration_name FROM house_rations " \
+        execution = "SELECT houses.house_id, house_name, rations.ration_id, ration_name FROM house_rations " \
                     "JOIN houses ON house_rations.house_id = houses.house_id " \
                     "JOIN rations ON house_rations.ration_id = rations.ration_id"
         # print(execution)
