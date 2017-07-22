@@ -18,20 +18,20 @@ def main() :
         command = input("Please type in a command from the above menu: ").lower()
 
         if (command == "run") :
-            display.rations()
-            ration = input("> ")
 
             success = False
 
             while not(success) :
                 try :
+                    display.rations()
+                    ration = input("> ")
+                    if (ration == "back" or ration == "Back") :
+                        break
                     end_weights, weight_limits = controller.run(ration)
                     display.end(end_weights, weight_limits)
                     success = True
                 except IndexError :
                     print("Sorry, that's not an option, try again")
-                    display.rations()
-                    ration = input("> ")
         elif (command == "settings") :
             display.settings()
             invalid_input = True

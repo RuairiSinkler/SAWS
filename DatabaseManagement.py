@@ -85,7 +85,7 @@ class DatabaseManager :
 
         execution = "SELECT house_name, ration_name FROM house_rations " \
                     "JOIN houses ON house_rations.house_id = houses.house_id " \
-                    "JOIN rations ON house_rations.ration_id = rations_ration_id"
+                    "JOIN rations ON house_rations.ration_id = rations.ration_id"
         # print(execution)
         cursor.execute(execution)
 

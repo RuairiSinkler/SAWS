@@ -44,6 +44,7 @@ class ConsoleDisplay(Display) :
         print("Welcome to ASWA (Automatic Sinkler Weighing System)")
         print("Main Menu:")
         print("-Run")
+        print("-Settings")
         print("-Shutdown")
 
     def print_row(self, values) :
@@ -60,7 +61,7 @@ class ConsoleDisplay(Display) :
         assignments = self.ration_database.get_assignments()
 
     def rations(self) :
-        print("Please select a ration: ")
+        print("Please select a ration (or type back to go back): ")
         rations = self.ration_database.get_all_rations()
         print(("{:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
             "Name", "Wheat", "Barley", "Soya", "Limestone", "Soya Oil", "Arbocell", "Methionine", "Premix"
