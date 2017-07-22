@@ -24,12 +24,13 @@ class Controller :
 
     def setup_ration(self, ration_id) :
         result = self.ration_database.get_ration(ration_id)
-        return result[2], result[3], result[4], result[5]
+        return result[1], result[2], result[3], result[4], result[5]
 
     def run(self, ration_id) :
 
-        wheat_limit, barley_limit, soya_limit, limestone_limit = self.setup_ration(ration_id)
+        ration_name, wheat_limit, barley_limit, soya_limit, limestone_limit = self.setup_ration(ration_id)
         weight_limits = [wheat_limit, barley_limit, soya_limit, limestone_limit]
+        self.display.message("Ration {} running".format(ration_name))
 
         self.wheat_input = PulseInput(self.weight_pins["wheat"])
         self.soya_input = PulseInput(self.weight_pins["soya"])
