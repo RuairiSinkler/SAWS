@@ -19,6 +19,10 @@ class Display(ABC) :
         pass
 
     @abstractmethod
+    def end(self, end_weights) :
+        pass
+
+    @abstractmethod
     def display_rations(self) :
         pass
 
@@ -32,42 +36,44 @@ class ConsoleDisplay(Display) :
         print("Welcome to ASWA (Automatic Sinkler Weighing System)")
         print("Main Menu:")
         print("Run")
-        command = input("Please type in a command from the above menu: ").lower()
-        print()
-        return command
 
     def print_row(self, values) :
-        print(("{v[0]:^3} | {v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " +
+        print(("{v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " +
             "{v[6]:^8d} | {v[7]:^8d} | {v[8]:^10d} | {v[9]:^7d}").format(v=values)
         )
         print("{:-^97}".format(""))
 
+    def display_end(self, end_weights, weight_limits) :
+        print("Run complete, end result:")
+        self.display_weights(end_weights, weight_limits)
+
+
     def display_rations(self) :
         print("Please select a ration: ")
         rations = self.ration_database.get_all_rations()
-        print(("{:^3} | {:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
-            "No.", "Name", "Wheat", "Barley", "Soya", "Limestone", "Soya Oil", "Arbocell", "Methionine", "Premix"
+        print(("{:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
+            "Name", "Wheat", "Barley", "Soya", "Limestone", "Soya Oil", "Arbocell", "Methionine", "Premix"
         ))
         print("{:-^97}".format(""))
         for ration in rations :
             self.print_row(ration)
-        command = input("> ")
-        return command
 
+    def display_weights(self, weights, weight_limits):
+        print(
+            "Wheat weight: " + str(weights[0]) +
+            "/" + str(weight_limits[0]) +
+            " Barley weight: " + str(weights[1]) +
+            "/" + str(weight_limits[1])
+        )
+        print(
+            "Soya weight: " + str(weights[2]) +
+            "/" + str(weight_limits[2]) +
+            " Limestone weight: " + str(weights[3]) +
+            "/" + str(weight_limits[3])
+        )
 
     def update_weights(self, weights, weight_limits) :
         update = (self.weights != weights)
         if update :
             self.weights = weights
-            print(
-                "Wheat weight: " + str(self.weights[0]) +
-                "/" + str(weight_limits[0]) +
-                " Barley weight: " + str(self.weights[1]) +
-                "/" + str(weight_limits[1])
-            )
-            print(
-                "Soya weight: " + str(self.weights[2]) +
-                "/" + str(weight_limits[2]) +
-                " Limestone weight: " + str(self.weights[3]) +
-                "/" + str(weight_limits[3])
-            )
+            self.display_weights(weights, weight_limits)

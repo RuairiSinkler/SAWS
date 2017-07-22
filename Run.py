@@ -9,22 +9,30 @@ def main() :
     display = ConsoleDisplay(ration_database)
     controller = Controller(display, ration_database)
 
-    command = display.menu()
+    on = True
 
-    if (command == "run") :
-        ration = display.display_rations()
+    while(on) :
 
-        success = False
+        display.menu()
+        command = input("Please type in a command from the above menu: ").lower()
 
-        while not(success) :
-            try :
-                controller.run(ration)
-                success = True
-            except IndexError :
-                print("Sorry, that's not an option, try again")
-                ration = display.display_rations()
+        if (command == "run") :
+            display.display_rations()
+            ration = input("> ")
 
-    #controller.run("Test")
+            success = False
+
+            while not(success) :
+                try :
+                    end_weights, weight_limits = controller.run(ration)
+                    display.display_end(end_weights, weight_limits)
+                    success = True
+                except IndexError :
+                    print("Sorry, that's not an option, try again")
+                    display.display_rations()
+                    ration = input("> ")
+
+        #controller.run("Test")
 
 if __name__ == "__main__":
     try :
