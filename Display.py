@@ -40,7 +40,7 @@ class Display(ABC) :
 
     @abstractmethod
     def message(self, message) :
-        print(message)
+        pass
 
 class ConsoleDisplay(Display) :
 
@@ -120,3 +120,6 @@ class ConsoleDisplay(Display) :
         if update :
             self.weights = weights
             self.display_weights(weights, weight_limits)
+
+    def message(self, message) :
+        print(message)
