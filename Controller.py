@@ -135,7 +135,16 @@ class Controller :
             self.ration_database.assign_ration(house, ration)
 
     def add_ration(self) :
-        pass
+        name = self.display.enter("name")
+        wheat = self.display.enter("wheat")
+        barley = self.display.enter("barley")
+        soya = self.display.enter("soya")
+        limestone = self.display.enter("limestone")
+        soya_oil = self.display.enter("soya oil")
+        arbocell = self.display.enter("arbocell")
+        premix = self.display.enter("premix")
+        ration = [name, wheat, barley, soya, limestone, soya_oil, arbocell, premix]
+        self.ration_database.insert_ration(ration)
 
     def edit_ration(self) :
         pass

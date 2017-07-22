@@ -42,6 +42,10 @@ class Display(ABC) :
     def message(self, message) :
         pass
 
+    @abstractmethod
+    def enter(self, value) :
+        pass
+
 class ConsoleDisplay(Display) :
 
     def menu(self) :
@@ -123,3 +127,15 @@ class ConsoleDisplay(Display) :
 
     def message(self, message) :
         print(message)
+
+    def enter(self, value) :
+        print("Please enter the value for {}".format(value))
+        success = False
+        while not (success) :
+            result = input("> ").lower()
+            success = True
+            if not (value == "name") :
+                if not (result.isdigit()) :
+                    success = False
+                    print("Sorry I need a positive number as an input")
+        return result
