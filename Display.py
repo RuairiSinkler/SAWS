@@ -71,7 +71,7 @@ class ConsoleDisplay(Display) :
 
     def assignments(self) :
         assignments = self.ration_database.get_assignments()
-        print(("{:^8} | {:^11} | {:^9} | {:^15}").format("House ID", "House", "Ration ID" "Ration"))
+        print(("{:^8} | {:^11} | {:^9} | {:^15}").format("House ID", "House", "Ration ID", "Ration"))
         print("{:-^52}".format(""))
         for assignment in assignments :
             self.print_assignment(assignment)
