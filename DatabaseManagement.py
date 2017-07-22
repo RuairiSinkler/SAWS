@@ -79,6 +79,23 @@ class DatabaseManager :
 
         return result
 
+    def get_assignment(self, house_id) :
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        execution = ("SELECT rations.ration_id FROM house_rations " \
+                    "JOIN houses ON house_rations.house_id = houses.house_id " \
+                    "JOIN rations ON house_rations.ration_id = rations.ration_id " \
+                    "WHERE houses.house_id = {}").format(str(house_id))
+        # print(execution)
+        cursor.execute(execution)
+
+        result = cursor.fetchall()[0][0]
+
+        connect.close()
+        # print(result)
+        return result
+
     def get_assignments(self) :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()

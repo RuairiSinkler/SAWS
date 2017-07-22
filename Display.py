@@ -75,7 +75,7 @@ class ConsoleDisplay(Display) :
         print("{:-^52}".format(""))
         for assignment in assignments :
             self.print_assignment(assignment)
-        print("Select a house to assign a ration to using its ID")
+        print("Select a house using its ID")
         command = input("> ").lower()
         return command
 
