@@ -51,7 +51,7 @@ class ConsoleDisplay(Display) :
         print("-Settings")
         print("-Shutdown")
         print("Please type in a command from the above menu")
-        command = input("> )").lower()
+        command = input("> ").lower()
         return command
 
     def print_row(self, values) :

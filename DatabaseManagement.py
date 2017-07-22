@@ -127,7 +127,7 @@ class DatabaseManager :
         execution = "SELECT max(ration_id) FROM rations"
         cursor.execute(execution)
 
-        result = cursor.fetchall()[0]
+        result = cursor.fetchall()[0][0]
 
         connect.close()
 
@@ -140,7 +140,7 @@ class DatabaseManager :
         execution = "SELECT max(house_id) FROM houses"
         cursor.execute(execution)
 
-        result = cursor.fetchall()[0]
+        result = cursor.fetchall()[0][0]
 
         connect.close()
 
