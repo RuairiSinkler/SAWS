@@ -5,29 +5,31 @@ from DatabaseManagement import *
 
 def main() :
 
-    try :
-        ration_database = DatabaseManager("rations.db")
-        display = ConsoleDisplay(ration_database)
-        controller = Controller(display, ration_database)
+    ration_database = DatabaseManager("rations.db")
+    display = ConsoleDisplay(ration_database)
+    controller = Controller(display, ration_database)
 
-        command = display.menu()
+    command = display.menu()
+
+    if (command == "run") :
+        ration = display.display_rations()
 
         success = False
 
         while not(success) :
             try :
-                controller.run(command)
+                controller.run(ration)
                 success = True
             except IndexError :
                 print("Sorry, that's not an option, try again")
-                command = display.display_rations()
+                ration = display.display_rations()
 
-        #controller.run("Test")
+    #controller.run("Test")
+
+if __name__ == "__main__":
+    try :
+        main()
     except :
-        print("Error")
         raise
     finally :
         GPIO.cleanup()
-
-if __name__ == "__main__":
-    main()

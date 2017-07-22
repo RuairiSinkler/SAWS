@@ -33,10 +33,8 @@ class ConsoleDisplay(Display) :
         print("Main Menu:")
         print("Run")
         command = input("Please type in a command from the above menu: ").lower()
-        if(command == "run") :
-            print("Please select a ration:")
-            command = self.display_rations()
-            return command
+        print()
+        return command
 
     def print_row(self, values) :
         print(("{v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " + 
@@ -45,6 +43,7 @@ class ConsoleDisplay(Display) :
         print("{:-^97}".format(""))
 
     def display_rations(self) :
+        print("Please select a ration: ")
         rations = self.ration_database.get_all_rations()
         print(("{:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
             "Name", "Wheat", "Barley", "Soya", "Limestone", "Soya Oil", "Arbocell", "Methionine", "Premix"
