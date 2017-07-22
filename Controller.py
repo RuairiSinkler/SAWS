@@ -142,8 +142,9 @@ class Controller :
         limestone = self.display.enter("limestone")
         soya_oil = self.display.enter("soya oil")
         arbocell = self.display.enter("arbocell")
+        methionine = self.display.enter("methionine")
         premix = self.display.enter("premix")
-        ration = [name, wheat, barley, soya, limestone, soya_oil, arbocell, premix]
+        ration = [name, wheat, barley, soya, limestone, soya_oil, arbocell, methionine, premix]
         self.ration_database.insert_ration(ration)
 
     def edit_ration(self) :
