@@ -100,7 +100,7 @@ class Controller :
         return end_weights, weight_limits
 
     def assign_rations(self) :
-        pass
+        self.display.assignments()
 
     def add_ration(self) :
         pass

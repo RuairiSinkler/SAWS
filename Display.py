@@ -56,6 +56,8 @@ class ConsoleDisplay(Display) :
         print("Run complete, end result:")
         self.display_weights(end_weights, weight_limits)
 
+    def assignments(self) :
+        assignments = self.ration_database.get_assignments()
 
     def rations(self) :
         print("Please select a ration: ")
