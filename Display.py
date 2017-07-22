@@ -27,6 +27,10 @@ class Display(ABC) :
         pass
 
     @abstractmethod
+    def settings(self) :
+        pass
+
+    @abstractmethod
     def display_weights(self, weights, weight_limits) :
         pass
 
@@ -39,8 +43,8 @@ class ConsoleDisplay(Display) :
     def menu(self) :
         print("Welcome to ASWA (Automatic Sinkler Weighing System)")
         print("Main Menu:")
-        print("Run")
-        print("Shutdown")
+        print("-Run")
+        print("-Shutdown")
 
     def print_row(self, values) :
         print(("{v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " +
@@ -62,6 +66,14 @@ class ConsoleDisplay(Display) :
         print("{:-^97}".format(""))
         for ration in rations :
             self.print_row(ration)
+
+    def settings(self) :
+        print("Settings:")
+        print("-Assign rations")
+        print("-Add ration")
+        print("-Edit ration")
+        print("-Delete ration")
+        print("-Back")
 
     def display_weights(self, weights, weight_limits):
         print(

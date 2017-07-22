@@ -30,3 +30,13 @@ INSERT INTO houses VALUES (0, "House 1");
 INSERT INTO houses VALUES (1, "House 2");
 INSERT INTO houses VALUES (2, "House 3");
 INSERT INTO houses VALUES (3, "Manor Wood");
+
+INSERT INTO rations VALUES (0, "Test", 50, 60, 70, 80, 100, 200, 300, 400);
+
+INSERT INTO house_rations(0, 0);
+INSERT INTO house_rations(1, 0);
+INSERT INTO house_rations(2, 0);
+INSERT INTO house_rations(3, 0);
+
+
+

@@ -32,6 +32,24 @@ def main() :
                     print("Sorry, that's not an option, try again")
                     display.rations()
                     ration = input("> ")
+        elif (command == "settings") :
+            display.settings()
+            invalid_input = True
+            while(invalid_input) :
+                choice = input("> ")
+                invalid_input = False
+                if (choice == "assign rations") :
+                    controller.assign_rations()
+                elif (choice == "add ration") :
+                    controller.add_ration()
+                elif (choice == "edit ration") :
+                    controller.edit_ration()
+                elif (choice == "delete ration") :
+                    controller.delete_ration()
+                elif (choice == "back") :
+                    pass
+                else :
+                    invalid_input = True
         elif (command == "shutdown") :
             os.system('shutdown now -h')
 

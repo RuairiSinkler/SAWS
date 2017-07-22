@@ -98,3 +98,15 @@ class Controller :
         end_weights = [wheat_weight, barley_weight, soya_weight, limestone_weight]
         weight_limits = [wheat_limit, barley_limit, soya_limit, limestone_limit]
         return end_weights, weight_limits
+
+    def assign_rations(self) :
+        pass
+
+    def add_ration(self) :
+        pass
+
+    def edit_ration(self) :
+        pass
+
+    def delete_ration(self) :
+        pass
