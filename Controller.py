@@ -151,4 +151,18 @@ class Controller :
         pass
 
     def delete_ration(self) :
-        pass
+        success = False
+        cancel = False
+        while not (success or cancel):
+            ration = self.display.rations()
+            if (ration == "cancel"):
+                cancel = True
+                break
+            if (ration.isdigit()):
+                if (int(ration) > self.ration_database.get_max_ration_id()):
+                    self.display.message("Sorry, that's not an option, try again")
+                else:
+                    success = True
+            else:
+                self.display.message("Sorry, that's not an option, try again")
+        self.ration_database.delete_ration(ration)

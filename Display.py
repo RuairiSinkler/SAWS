@@ -132,7 +132,7 @@ class ConsoleDisplay(Display) :
         print("Please enter the value for {}".format(value))
         success = False
         while not (success) :
-            result = input("> ").lower()
+            result = input("> ")
             success = True
             if not (value == "name") :
                 if not (result.isdigit()) :
