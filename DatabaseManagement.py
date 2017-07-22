@@ -40,8 +40,10 @@ class DatabaseManager :
 
         # Perform Validation on the values inserted to go into the rations database
         all_ok = isinstance(values[1], str) and values[1]
+        print(all_ok)
         for i in range(2, 10):
             all_ok = all_ok and isinstance(values[i], int)
+            print(all_ok)
 
         # If all is ok then insert otherwise raise an exception
         if all_ok:
