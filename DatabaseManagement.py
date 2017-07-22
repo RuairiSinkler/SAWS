@@ -135,6 +135,10 @@ class DatabaseManager :
         # print(execution)
         cursor.execute(execution)
         connect.commit()
+        execution = "UPDATE house_rations SET ration_id = {} WHERE ration_id = {}".format(str(new_id), str(old_id))
+        # print(execution)
+        cursor.execute(execution)
+        connect.commit()
 
         connect.close()
 
