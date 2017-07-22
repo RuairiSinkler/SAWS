@@ -17,7 +17,7 @@ def main() :
         command = input("Please type in a command from the above menu: ").lower()
 
         if (command == "run") :
-            display.display_rations()
+            display.rations()
             ration = input("> ")
 
             success = False
@@ -25,11 +25,11 @@ def main() :
             while not(success) :
                 try :
                     end_weights, weight_limits = controller.run(ration)
-                    display.display_end(end_weights, weight_limits)
+                    display.end(end_weights, weight_limits)
                     success = True
                 except IndexError :
                     print("Sorry, that's not an option, try again")
-                    display.display_rations()
+                    display.rations()
                     ration = input("> ")
 
         #controller.run("Test")

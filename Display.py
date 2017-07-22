@@ -23,7 +23,11 @@ class Display(ABC) :
         pass
 
     @abstractmethod
-    def display_rations(self) :
+    def rations(self) :
+        pass
+
+    @abstractmethod
+    def weights(self, weights, weight_limits) :
         pass
 
     @abstractmethod
@@ -43,12 +47,12 @@ class ConsoleDisplay(Display) :
         )
         print("{:-^97}".format(""))
 
-    def display_end(self, end_weights, weight_limits) :
+    def end(self, end_weights, weight_limits) :
         print("Run complete, end result:")
         self.display_weights(end_weights, weight_limits)
 
 
-    def display_rations(self) :
+    def rations(self) :
         print("Please select a ration: ")
         rations = self.ration_database.get_all_rations()
         print(("{:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
@@ -58,7 +62,7 @@ class ConsoleDisplay(Display) :
         for ration in rations :
             self.print_row(ration)
 
-    def display_weights(self, weights, weight_limits):
+    def weights(self, weights, weight_limits):
         print(
             "Wheat weight: " + str(weights[0]) +
             "/" + str(weight_limits[0]) +
