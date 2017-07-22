@@ -92,7 +92,7 @@ class DatabaseManager :
         result = cursor.fetchall()
 
         connect.close()
-        print(result)
+        #print(result)
         return result
 
     def delete_ration(self, value_id) :

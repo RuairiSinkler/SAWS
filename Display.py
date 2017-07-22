@@ -57,8 +57,17 @@ class ConsoleDisplay(Display) :
         print("Run complete, end result:")
         self.display_weights(end_weights, weight_limits)
 
+    def print_assignment(self, assignment) :
+        print(("{a[0]:^9} | {a[1]:^15}").format(a=assignment)
+              )
+        print("{:-^27}".format(""))
+
     def assignments(self) :
         assignments = self.ration_database.get_assignments()
+        print(("{:^9} | {:^15}").format("House", "Ration"))
+        print("{:-^27}".format(""))
+        for assignment in assignments :
+            self.print_assignment(assignment)
 
     def rations(self) :
         print("Please select a ration (or type back to go back): ")
