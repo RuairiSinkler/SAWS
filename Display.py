@@ -37,7 +37,7 @@ class ConsoleDisplay(Display) :
         return command
 
     def print_row(self, values) :
-        print(("{v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " + 
+        print(("{v[0]:^3} | {v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " +
             "{v[6]:^8d} | {v[7]:^8d} | {v[8]:^10d} | {v[9]:^7d}").format(v=values)
         )
         print("{:-^97}".format(""))
@@ -45,8 +45,8 @@ class ConsoleDisplay(Display) :
     def display_rations(self) :
         print("Please select a ration: ")
         rations = self.ration_database.get_all_rations()
-        print(("{:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
-            "Name", "Wheat", "Barley", "Soya", "Limestone", "Soya Oil", "Arbocell", "Methionine", "Premix"
+        print(("{:^3} | {:^15} | {:^5} | {:^6} | {:^5} | {:^9} | {:^8} | {:^8} | {:^10} | {:^7}").format(
+            "No.", "Name", "Wheat", "Barley", "Soya", "Limestone", "Soya Oil", "Arbocell", "Methionine", "Premix"
         ))
         print("{:-^97}".format(""))
         for ration in rations :
