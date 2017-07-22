@@ -162,7 +162,7 @@ class Controller :
                 if (int(ration) > self.ration_database.get_max_ration_id()):
                     self.display.message("Sorry, that's not an option, try again")
                 else:
+                    self.ration_database.delete_ration(ration)
                     success = True
             else:
                 self.display.message("Sorry, that's not an option, try again")
-        self.ration_database.delete_ration(ration)

@@ -112,7 +112,34 @@ class DatabaseManager :
         #print(result)
         return result
 
+    def check_ration_assignment(self, ration_id) :
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        # print(value_id)
+        execution = "SELECT house_id FROM house_rations WHERE ration_id = {}".format(ration_id)
+        # print(execution)
+        cursor.execute(execution)
+        for house in cursor.fetchall() :
+            self.assign_ration(house[0], 0)
+
+        connect.close()
+
+    def update_id(self, old_id, new_id) :
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        # print(house_id)
+        # print(ration_id)
+        execution = "UPDATE rations SET ration_id = {} WHERE ration_id = {}".format(str(new_id), str(old_id))
+        # print(execution)
+        cursor.execute(execution)
+        connect.commit()
+
+        connect.close()
+
     def delete_ration(self, value_id) :
+        self.check_ration_assignment(value_id)
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
@@ -121,6 +148,9 @@ class DatabaseManager :
         #print(execution)
         cursor.execute(execution)
         connect.commit()
+
+        for id in range (value_id + 1, self.get_max_ration_id() + 1) :
+            self.update_id(id, id - 1)
 
         connect.close()
 

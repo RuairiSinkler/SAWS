@@ -31,8 +31,9 @@ INSERT INTO houses VALUES (1, "House 2");
 INSERT INTO houses VALUES (2, "House 3");
 INSERT INTO houses VALUES (3, "Manor Wood");
 
-INSERT INTO rations VALUES (0, "Test", 50, 60, 70, 80, 100, 200, 300, 400);
-INSERT INTO rations VALUES (1, "Peak Lay", 360, 260, 170,340, 400, 700, 300, 120);
+INSERT INTO rations VALUES (0, "None", 0, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO rations VALUES (1, "Test", 50, 60, 70, 80, 100, 200, 300, 400);
+INSERT INTO rations VALUES (2, "Peak Lay", 360, 260, 170,340, 400, 700, 300, 120);
 
 INSERT INTO house_rations VALUES (0, 0);
 INSERT INTO house_rations VALUES (1, 0);
