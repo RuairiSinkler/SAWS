@@ -147,7 +147,7 @@ class ConsoleDisplay(Display) :
         return result
 
     def change(self, value, old_value):
-        print("Please enter the value for {}".format(value))
+        print("Please enter the value for {}, it is currently {}".format(value, str(old_value)))
         success = False
         while not (success):
             result = input("> ")
