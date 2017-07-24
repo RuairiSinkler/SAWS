@@ -58,7 +58,8 @@ class DatabaseManager :
         # If all is ok then insert otherwise raise an exception
         if all_ok:
             ration_id = values.pop(0)
-            
+            values.append(ration_id)
+
             connect = sqlite3.connect(self.database_name)
             cursor = connect.cursor()
 
@@ -68,7 +69,7 @@ class DatabaseManager :
                         "methionine = ?, premix = ? " \
                         "WHERE ration_id = ?"
 
-            cursor.execute(execution, (values, ration_id, ))
+            cursor.execute(execution, values)
             connect.commit()
 
             connect.close()
