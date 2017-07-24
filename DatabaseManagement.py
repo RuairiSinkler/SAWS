@@ -19,9 +19,9 @@ class DatabaseManager :
                 values_string += ", \"" + values[i] + "\""
         #print(table)
         #print(values_string)
-        execution = "INSERT INTO {} VALUES ({})".format(table, values_string)
+        execution = "INSERT INTO ? VALUES (?)"
         #print(execution)
-        cursor.execute(execution)
+        cursor.execute(execution, (table, values_string, ))
         connect.commit()
 
         connect.close()
@@ -54,9 +54,9 @@ class DatabaseManager :
         cursor = connect.cursor()
 
         # print(ration)
-        execution = "SELECT *  FROM rations WHERE ration_id = {}".format(ration_id)
+        execution = "SELECT * FROM rations WHERE ration_id = ?"
         # print(execution)
-        cursor.execute(execution)
+        cursor.execute(execution, (ration_id, ))
 
         result = cursor.fetchall()[0]
 
@@ -83,12 +83,12 @@ class DatabaseManager :
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = ("SELECT rations.ration_id FROM house_rations " \
+        execution = "SELECT rations.ration_id FROM house_rations " \
                     "JOIN houses ON house_rations.house_id = houses.house_id " \
                     "JOIN rations ON house_rations.ration_id = rations.ration_id " \
-                    "WHERE houses.house_id = {}").format(str(house_id))
+                    "WHERE houses.house_id = ?"
         # print(execution)
-        cursor.execute(execution)
+        cursor.execute(execution, (str(house_id), ))
 
         result = cursor.fetchall()[0][0]
 
@@ -117,9 +117,9 @@ class DatabaseManager :
         cursor = connect.cursor()
 
         # print(value_id)
-        execution = "SELECT house_id FROM house_rations WHERE ration_id = {}".format(ration_id)
+        execution = "SELECT house_id FROM house_rations WHERE ration_id = ?"
         # print(execution)
-        cursor.execute(execution)
+        cursor.execute(execution, (ration_id, ))
         for house in cursor.fetchall() :
             self.assign_ration(house[0], 0)
 
@@ -131,13 +131,13 @@ class DatabaseManager :
 
         # print(house_id)
         # print(ration_id)
-        execution = "UPDATE rations SET ration_id = {} WHERE ration_id = {}".format(str(new_id), str(old_id))
+        execution = "UPDATE rations SET ration_id = ? WHERE ration_id = ?"
         # print(execution)
-        cursor.execute(execution)
+        cursor.execute(execution, (str(new_id), str(old_id), ))
         connect.commit()
-        execution = "UPDATE house_rations SET ration_id = {} WHERE ration_id = {}".format(str(new_id), str(old_id))
+        execution = "UPDATE house_rations SET ration_id = ? WHERE ration_id = ?"
         # print(execution)
-        cursor.execute(execution)
+        cursor.execute(execution, (str(new_id), str(old_id), ))
         connect.commit()
 
         connect.close()
@@ -148,9 +148,9 @@ class DatabaseManager :
         cursor = connect.cursor()
 
         #print(value_id)
-        execution = "DELETE FROM rations WHERE ration_id = {}".format(value_id)
+        execution = "DELETE FROM rations WHERE ration_id = ?"
         #print(execution)
-        cursor.execute(execution)
+        cursor.execute(execution, (value_id, ))
         connect.commit()
 
         for id in range (int(value_id) + 1, self.get_max_ration_id() + 1) :
@@ -164,9 +164,9 @@ class DatabaseManager :
 
         #print(house_id)
         #print(ration_id)
-        execution = "UPDATE house_rations SET ration_id = {} WHERE house_id = {}".format(str(ration_id), str(house_id))
+        execution = "UPDATE house_rations SET ration_id = ? WHERE house_id = ?"
         #print(execution)
-        cursor.execute(execution)
+        cursor.execute(execution, (str(ration_id), str(house_id), ))
         connect.commit()
 
         connect.close()
