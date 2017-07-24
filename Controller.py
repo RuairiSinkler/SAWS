@@ -170,8 +170,8 @@ class Controller :
                     arbocell = self.display.change("arbocell", ration[7])
                     methionine = self.display.change("methionine", ration[8])
                     premix = self.display.change("premix", ration[9])
-                    ration = [name, wheat, barley, soya, limestone, soya_oil, arbocell, methionine, premix]
-                    self.ration_database.insert_ration(ration)
+                    ration = [ration_id, name, wheat, barley, soya, limestone, soya_oil, arbocell, methionine, premix]
+                    self.ration_database.update_ration(ration)
                     success = True
             else:
                 self.display.message("Sorry, that's not an option, try again")
