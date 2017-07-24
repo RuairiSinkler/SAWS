@@ -46,6 +46,10 @@ class Display(ABC) :
     def enter(self, value) :
         pass
 
+    @abstractmethod
+    def change(self, value, old_value) :
+        pass
+
 class ConsoleDisplay(Display) :
 
     def menu(self) :
@@ -125,19 +129,35 @@ class ConsoleDisplay(Display) :
             self.weights = weights
             self.display_weights(weights, weight_limits)
 
-    def message(self, message) :
+    def message(self, message):
         print(message)
 
-    def enter(self, value) :
+    def enter(self, value):
         print("Please enter the value for {}".format(value))
         success = False
-        while not (success) :
+        while not (success):
             result = input("> ")
             success = True
-            if not (value == "name") :
-                if not (result.isdigit()) :
+            if not (value == "name"):
+                if not (result.isdigit()):
                     success = False
                     print("Sorry I need a positive number as an input")
                 else :
+                    result = int(result)
+        return result
+
+    def change(self, value, old_value):
+        print("Please enter the value for {}".format(value))
+        success = False
+        while not (success):
+            result = input("> ")
+            success = True
+            if (result == ""):
+                result = old_value
+            elif not (value == "name"):
+                if not (result.isdigit()):
+                    success = False
+                    print("Sorry I need a positive number as an input")
+                else:
                     result = int(result)
         return result

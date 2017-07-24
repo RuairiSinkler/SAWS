@@ -148,7 +148,20 @@ class Controller :
         self.ration_database.insert_ration(ration)
 
     def edit_ration(self) :
-        pass
+        ration_id = self.display.rations()
+        ration = self.ration_database.get_ration(ration_id)
+        self.display.message("Leave any entries blank that you don't want to change: ")
+        name = self.display.change("name", ration[1])
+        wheat = self.display.change("wheat", ration[2])
+        barley = self.display.change("barley", ration[3])
+        soya = self.display.change("soya", ration[4])
+        limestone = self.display.change("limestone", ration[5])
+        soya_oil = self.display.change("soya oil", ration[6])
+        arbocell = self.display.change("arbocell", ration[7])
+        methionine = self.display.change("methionine", ration[8])
+        premix = self.display.change("premix", ration[9])
+        ration = [name, wheat, barley, soya, limestone, soya_oil, arbocell, methionine, premix]
+        self.ration_database.insert_ration(ration)
 
     def delete_ration(self) :
         success = False
