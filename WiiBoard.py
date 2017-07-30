@@ -1,4 +1,3 @@
-
 import collections
 import time
 import bluetooth
@@ -48,8 +47,8 @@ class EventProcessor:
                     self._sum += self._events[x]
                 self._weight = self._sum / WEIGHT_SAMPLES
                 self._measureCnt = 0
-                #print
-                #str(self._weight) + " kgs"
+                # print
+                # str(self._weight) + " kgs"
                 self.done
                 return self._weight
             if not self._measured:
@@ -216,7 +215,7 @@ class WiiBoard:
             val = 17 * ((raw - self.calibration[0][pos]) / float((self.calibration[1][pos] - self.calibration[0][pos])))
         elif raw > self.calibration[1][pos]:
             val = 17 + 17 * (
-            (raw - self.calibration[1][pos]) / float((self.calibration[2][pos] - self.calibration[1][pos])))
+                (raw - self.calibration[1][pos]) / float((self.calibration[2][pos] - self.calibration[1][pos])))
 
         return val
 
@@ -250,7 +249,7 @@ class WiiBoard:
         senddata = ""
         for byte in data:
             byte = str(byte)
-            senddata += byte#.decode("hex")
+            senddata += byte  # .decode("hex")
 
         self.controlsocket.send(senddata)
 

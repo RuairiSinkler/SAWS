@@ -1,27 +1,26 @@
-
 import sqlite3
 
-class DatabaseManager :
 
-    def __init__(self, database_name) :
+class DatabaseManager:
+    def __init__(self, database_name):
         self.database_name = database_name
 
     # Inserts given values into a given table
-    def insert(self, table, values) :
+    def insert(self, table, values):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
         values_string = str(values[0])
-        for i in range(1, len(values)) :
-            if isinstance(values[i], int) :
+        for i in range(1, len(values)):
+            if isinstance(values[i], int):
                 values_string += ", " + str(values[i])
-            else :
+            else:
                 values_string += ", \"" + values[i] + "\""
-        #print(table)
-        #print(values_string)
+        # print(table)
+        # print(values_string)
         execution = "INSERT INTO ? VALUES (?)"
-        #print(execution)
-        cursor.execute(execution, (table, values_string, ))
+        # print(execution)
+        cursor.execute(execution, (table, values_string,))
         connect.commit()
 
         connect.close()
@@ -32,9 +31,9 @@ class DatabaseManager :
         cursor = connect.cursor()
         cursor.execute("SELECT MAX(ration_id)+1 FROM rations")
         ration_id = cursor.fetchone()[0]
-        if ration_id is None :
+        if ration_id is None:
             ration_id = 0
-        #print(ration_id)
+        # print(ration_id)
         connect.close()
         values.insert(0, ration_id)
 
@@ -76,14 +75,14 @@ class DatabaseManager :
         else:
             raise (IOError)
 
-    def get_ration(self, ration_id) :
+    def get_ration(self, ration_id):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
         # print(ration)
         execution = "SELECT * FROM rations WHERE ration_id = ?"
         # print(execution)
-        cursor.execute(execution, (ration_id, ))
+        cursor.execute(execution, (ration_id,))
 
         result = cursor.fetchall()[0]
 
@@ -91,7 +90,7 @@ class DatabaseManager :
 
         return result
 
-    def get_all_rations(self) :
+    def get_all_rations(self):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
@@ -106,7 +105,7 @@ class DatabaseManager :
 
         return result
 
-    def get_assignment(self, house_id) :
+    def get_assignment(self, house_id):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
@@ -115,7 +114,7 @@ class DatabaseManager :
                     "JOIN rations ON house_rations.ration_id = rations.ration_id " \
                     "WHERE houses.house_id = ?"
         # print(execution)
-        cursor.execute(execution, (str(house_id), ))
+        cursor.execute(execution, (str(house_id),))
 
         result = cursor.fetchall()[0][0]
 
@@ -123,7 +122,7 @@ class DatabaseManager :
         # print(result)
         return result
 
-    def get_assignments(self) :
+    def get_assignments(self):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
@@ -136,23 +135,23 @@ class DatabaseManager :
         result = cursor.fetchall()
 
         connect.close()
-        #print(result)
+        # print(result)
         return result
 
-    def check_ration_assignment(self, ration_id) :
+    def check_ration_assignment(self, ration_id):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
         # print(value_id)
         execution = "SELECT house_id FROM house_rations WHERE ration_id = ?"
         # print(execution)
-        cursor.execute(execution, (ration_id, ))
-        for house in cursor.fetchall() :
+        cursor.execute(execution, (ration_id,))
+        for house in cursor.fetchall():
             self.assign_ration(house[0], 0)
 
         connect.close()
 
-    def update_id(self, old_id, new_id) :
+    def update_id(self, old_id, new_id):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
@@ -160,45 +159,45 @@ class DatabaseManager :
         # print(ration_id)
         execution = "UPDATE rations SET ration_id = ? WHERE ration_id = ?"
         # print(execution)
-        cursor.execute(execution, (str(new_id), str(old_id), ))
+        cursor.execute(execution, (str(new_id), str(old_id),))
         connect.commit()
         execution = "UPDATE house_rations SET ration_id = ? WHERE ration_id = ?"
         # print(execution)
-        cursor.execute(execution, (str(new_id), str(old_id), ))
+        cursor.execute(execution, (str(new_id), str(old_id),))
         connect.commit()
 
         connect.close()
 
-    def delete_ration(self, value_id) :
+    def delete_ration(self, value_id):
         self.check_ration_assignment(value_id)
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        #print(value_id)
+        # print(value_id)
         execution = "DELETE FROM rations WHERE ration_id = ?"
-        #print(execution)
-        cursor.execute(execution, (value_id, ))
+        # print(execution)
+        cursor.execute(execution, (value_id,))
         connect.commit()
 
-        for id in range (int(value_id) + 1, self.get_max_ration_id() + 1) :
+        for id in range(int(value_id) + 1, self.get_max_ration_id() + 1):
             self.update_id(id, id - 1)
 
         connect.close()
 
-    def assign_ration(self, house_id, ration_id) :
+    def assign_ration(self, house_id, ration_id):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        #print(house_id)
-        #print(ration_id)
+        # print(house_id)
+        # print(ration_id)
         execution = "UPDATE house_rations SET ration_id = ? WHERE house_id = ?"
-        #print(execution)
-        cursor.execute(execution, (str(ration_id), str(house_id), ))
+        # print(execution)
+        cursor.execute(execution, (str(ration_id), str(house_id),))
         connect.commit()
 
         connect.close()
 
-    def get_max_ration_id(self) :
+    def get_max_ration_id(self):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 

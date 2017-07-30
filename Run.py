@@ -4,64 +4,65 @@ from Controller import *
 from Display import *
 from DatabaseManagement import *
 
-def main() :
 
+def main():
     ration_database = DatabaseManager("rations.db")
     display = ConsoleDisplay(ration_database)
     controller = Controller(display, ration_database)
 
     on = True
 
-    while(on) :
+    while (on):
 
         command = display.menu()
 
-        if (command == "run") :
+        if (command == "run"):
 
             success = False
-            while not(success) :
+            while not (success):
                 house_id = display.assignments()
-                if (house_id == "back" or house_id == "Back") :
+                if (house_id == "back" or house_id == "Back"):
                     break
-                if (house_id.isdigit()) :
+                if (house_id.isdigit()):
                     if (int(house_id) > ration_database.get_max_house_id()):
                         display.message("Sorry, that's not an option, try again")
-                    else :
+                    else:
                         ration_id = ration_database.get_assignment(house_id)
                         end_weights, weight_limits = controller.run(ration_id)
                         display.end(end_weights, weight_limits)
                         success = True
-                else :
+                else:
                     display.message("Sorry, that's not an option, try again")
 
-        elif (command == "settings") :
+        elif (command == "settings"):
             settings = True
-            while (settings) :
+            while (settings):
                 invalid_input = True
-                while(invalid_input) :
+                while (invalid_input):
                     choice = display.settings()
                     invalid_input = False
-                    if (choice == "assign rations") :
+                    if (choice == "assign rations"):
                         controller.assign_rations()
-                    elif (choice == "add ration") :
+                    elif (choice == "add ration"):
                         controller.add_ration()
-                    elif (choice == "edit ration") :
+                    elif (choice == "edit ration"):
                         controller.edit_ration()
-                    elif (choice == "delete ration") :
+                    elif (choice == "delete ration"):
                         controller.delete_ration()
-                    elif (choice == "back") :
+                    elif (choice == "back"):
                         settings = False
-                    else :
+                    else:
                         invalid_input = True
-        elif (command == "shutdown") :
+        elif (command == "shutdown"):
             os.system('shutdown now -h')
 
-        #controller.run("Test")
+            # controller.run("Test")
+
 
 if __name__ == "__main__":
-    try :
+    try:
         main()
-    except :
+    except:
         raise
-    finally :
+    finally:
         GPIO.cleanup()
