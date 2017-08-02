@@ -109,7 +109,10 @@ class Controller:
             time.sleep(0.02)
 
         all_done = False
-        soya_oil_done, arbocell_done, methionine_done, premix_done = False
+        soya_oil_done = False
+        arbocell_done = False
+        methionine_done = False
+        premix_done = False
         while not (all_done):
             if not soya_oil_done:
                 soya_oil_done = self.display.ask("Is the Soya Oil done?")
