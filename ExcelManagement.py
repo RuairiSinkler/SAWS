@@ -7,12 +7,12 @@ class WorksheetManager:
         self.path = "{}/{}.xlsx".format(directory, name)
         workbook = Path(self.path)
         if workbook.is_file():
-            self.workbook = openpyxl.load_workbook(name)
+            self.workbook = openpyxl.load_workbook(self.path)
         else:
             self.workbook = openpyxl.Workbook()
             self.sheet = self.workbook.active
             self.setup_sheet()
-            self.workbook.save(self.name)
+            self.workbook.save(self.path)
         self.sheet = self.workbook.active
 
     # Saves any work done
