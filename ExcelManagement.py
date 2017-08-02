@@ -12,12 +12,12 @@ class WorksheetManager:
             self.workbook = openpyxl.Workbook()
             self.sheet = self.workbook.active
             self.setup_sheet()
-            self.workbook.save(self.path)
+            self.save()
         self.sheet = self.workbook.active
 
     # Saves any work done
     def save(self):
-        self.workbook.save()
+        self.workbook.save(self.path)
 
     # Returns a list of the sheets in the workbook
     def get_sheets(self):
