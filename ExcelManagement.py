@@ -48,7 +48,7 @@ class WorksheetManager:
     # Writes the given value into the given cell object
     def write_cell(self, value, cell):
         print(cell)
-        cell = value
+        cell.value = value
 
     # Setups sheet i.e. creates layout of file
     def setup_sheet(self):
