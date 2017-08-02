@@ -4,15 +4,15 @@ from pathlib import Path
 
 class WorksheetManager:
     def __init__(self, directory, name):
-        self.name = name
-        workbook = Path("{}/{}.xlsx".format(directory, name))
+        self.path = "{}/{}.xlsx".format(directory, name)
+        workbook = Path(self.path)
         if workbook.is_file():
             self.workbook = openpyxl.load_workbook(name)
         else:
             self.workbook = openpyxl.Workbook()
             self.sheet = self.workbook.active
             self.setup_sheet()
-            self.workbook.save(name)
+            self.workbook.save(self.name)
         self.sheet = self.workbook.active
 
     # Saves any work done
