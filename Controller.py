@@ -232,7 +232,7 @@ class Controller:
 
     def log_run(self, ration_name, end_weights, weight_limits, house_id):
         self.display.message("Logging run...")
-        now = datetime.utcnow().astimezone(pytz.timezone("Europe/London"))
+        now = pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone("Europe/London"))
         now_string = now.strftime("%H:%M, %d/%m/%Y")
         ration_id = self.ration_database.get_assignment(house_id)
         ration = self.ration_database.get_ration(ration_id)
