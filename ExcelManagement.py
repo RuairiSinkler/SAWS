@@ -35,9 +35,9 @@ class WorksheetManager:
     def rename_sheet(self, title):
         self.sheet.title = title
 
-    # Returns a cell variable given its column and row
+    # Returns a cell variable given its column and row as numbers
     def get_cell(self, column, row):
-        cell_name = "{}{}".format(column, row)
+        cell_name = "{}{}".format(openpyxl.utils.get_column_letter(column), str(row))
         return self.sheet[cell_name]
 
     # Returns the value in a given cell object
@@ -59,9 +59,9 @@ class WorksheetManager:
     # Fills a row appropriately with a runs information
     def fill_row(self, ration_name, end_weights, weight_limits, now):
         row = self.sheet.max_row + 1
-        self.write_cell(now, self.get_cell("B", str(row)))
-        self.write_cell(ration_name, self.get_cell("C", str(row)))
+        self.write_cell(now, self.get_cell(2, row))
+        self.write_cell(ration_name, self.get_cell(3, row))
         for i in range(8):
             string = "{}/{}".format(end_weights[i], weight_limits[i])
-            self.write_cell(string, self.get_cell(str(openpyxl.cell.get_column_letter(i+4)), str(row)))
+            self.write_cell(string, self.get_cell(i+4, row))
         self.save()
