@@ -1,6 +1,9 @@
 from MotorController import *
 from WeightInput import *
-
+from ExcelManagement import *
+from datetime import datetime, timedelta
+import os
+import pytz
 
 class Controller:
     def __init__(self, display, ration_database):
@@ -23,12 +26,17 @@ class Controller:
 
     def setup_ration(self, ration_id):
         result = self.ration_database.get_ration(ration_id)
-        return result[1], result[2], result[3], result[4], result[5]
+        return result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8], result[9]
 
-    def run(self, ration_id):
+    def run(self, house_id):
 
-        ration_name, wheat_limit, barley_limit, soya_limit, limestone_limit = self.setup_ration(ration_id)
-        weight_limits = [wheat_limit, barley_limit, soya_limit, limestone_limit]
+        ration_id = self.ration_database.get_assignment(house_id)
+
+        ration_name, wheat_limit, barley_limit, soya_limit, limestone_limit, \
+        soya_oil_limit, arbocell_limit, methionine_limit, premix_limit = self.setup_ration(ration_id)
+
+        weight_limits = [wheat_limit, barley_limit, soya_limit, limestone_limit,
+                         soya_oil_limit, arbocell_limit, methionine_limit, premix_limit]
         self.display.message("Ration {} running".format(ration_name))
 
         self.wheat_input = PulseInput(self.weight_pins["wheat"])
@@ -44,6 +52,10 @@ class Controller:
         barley_weight = 0
         soya_weight = 0
         limestone_weight = 0
+        soya_oil_weight = 0
+        arbocell_weight = 0
+        methionine_weight = 0
+        premix_weight = 0
 
         wb_done = False
         sl_done = False
@@ -95,8 +107,31 @@ class Controller:
 
             complete = wb_done and sl_done
             time.sleep(0.02)
-        end_weights = [wheat_weight, barley_weight, soya_weight, limestone_weight]
-        weight_limits = [wheat_limit, barley_limit, soya_limit, limestone_limit]
+
+        all_done = False
+        soya_oil_done, arbocell_done, methionine_done, premix_done = False
+        while not (all_done):
+            if not soya_oil_done:
+                soya_oil_done = self.display.ask("Is the Soya Oil done?")
+                if soya_oil_done:
+                    soya_oil_weight = soya_oil_limit
+            if not arbocell_done:
+                arbocell_done = self.display.ask("Is the Arbocell done?")
+                if arbocell_done:
+                    arbocell_weight = arbocell_limit
+            if not methionine_done:
+                methionine_done = self.display.ask("Is the Methinonine done?")
+                if methionine_done:
+                    methionine_weight = methionine_limit
+            if not premix_done:
+                premix_done = self.display.ask("Is the Premix done?")
+                if premix_done:
+                    premix_weight = premix_limit
+            all_done = soya_oil_done and arbocell_done and methionine_done and premix_done
+
+        end_weights = [wheat_weight, barley_weight, soya_weight, limestone_weight,
+                       soya_oil_weight, arbocell_weight, methionine_weight, premix_weight]
+        self.log_run(ration_name, end_weights, weight_limits, house_id)
         return end_weights, weight_limits
 
     def assign_rations(self):
@@ -191,3 +226,17 @@ class Controller:
                     success = True
             else:
                 self.display.message("Sorry, that's not an option, try again")
+
+    def log_run(self, ration_name, end_weights, weight_limits, house_id):
+        self.display.message("Logging run...")
+        now = datetime.datetime.utcnow().astimezone(pytz.timezone("Europe/London"))
+        now_string = now.strftime("%H:%M, %d/%m/%Y")
+        ration_id = self.ration_database.get_assignment(house_id)
+        ration = self.ration_database.get_ration(ration_id)
+        batch_number = self.ration_database.get_house_batch_number(house_id)
+        directory = self.ration_database.get_house_name(house_id)
+        if not(os.path.exists(directory)):
+            os.makedirs(directory)
+        filename = "Batch {}".format(str(batch_number))
+        log = WorksheetManager(directory, filename)
+        log.fill_row(ration_name, end_weights, weight_limits, now_string)

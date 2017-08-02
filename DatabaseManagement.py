@@ -210,6 +210,32 @@ class DatabaseManager:
 
         return result
 
+    def get_house_name(self, house_id):
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        execution = "SELECT house_name FROM houses WHERE house_id = ?"
+        cursor.execute(execution, (house_id, ))
+
+        result = cursor.fetchall()[0][0]
+
+        connect.close()
+
+        return result
+
+    def get_house_batch_number(self, house_id):
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        execution = "SELECT batch_number FROM houses WHERE house_id = ?"
+        cursor.execute(execution, (house_id,))
+
+        result = cursor.fetchall()[0][0]
+
+        connect.close()
+
+        return result
+
     def get_max_house_id(self):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()

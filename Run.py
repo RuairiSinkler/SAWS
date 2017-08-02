@@ -27,8 +27,7 @@ def main():
                     if (int(house_id) > ration_database.get_max_house_id()):
                         display.message("Sorry, that's not an option, try again")
                     else:
-                        ration_id = ration_database.get_assignment(house_id)
-                        end_weights, weight_limits = controller.run(ration_id)
+                        end_weights, weight_limits = controller.run(house_id)
                         display.end(end_weights, weight_limits)
                         success = True
                 else:

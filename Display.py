@@ -13,10 +13,6 @@ class Display(ABC):
     def menu(self):
         pass
 
-    #    @abstractmethod
-    def run(self):
-        pass
-
     @abstractmethod
     def end(self, end_weights):
         pass
@@ -39,6 +35,10 @@ class Display(ABC):
 
     @abstractmethod
     def message(self, message):
+        pass
+
+    @abstractmethod
+    def ask(self, question):
         pass
 
     @abstractmethod
@@ -130,6 +130,20 @@ class ConsoleDisplay(Display):
 
     def message(self, message):
         print(message)
+
+    def ask(self, question):
+        print(question)
+        success = False
+        while not(success):
+            result = input("Y/N> ").upper()
+            if result == "Y":
+                success = True
+                return True
+            elif result == "N":
+                success = True
+                return False
+            else:
+                pass
 
     def enter(self, value):
         print("Please enter the value for {}".format(value))
