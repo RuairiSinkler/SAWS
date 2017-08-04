@@ -243,12 +243,9 @@ class DatabaseManager:
 
         execution = "UPDATE houses SET batch_number = ? WHERE house_id = ?"
         cursor.execute(execution, (str(batch_number), str(house_id),))
-
-        result = cursor.fetchall()[0][0]
+        connect.commit()
 
         connect.close()
-
-        return result
 
     def get_max_house_id(self):
         connect = sqlite3.connect(self.database_name)
