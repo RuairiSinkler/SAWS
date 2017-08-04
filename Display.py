@@ -42,13 +42,16 @@ class Display(ABC):
         pass
 
     @abstractmethod
+    def get_input(self, prompt):
+        pass
+
+    @abstractmethod
     def enter(self, value):
         pass
 
     @abstractmethod
     def change(self, value, old_value):
         pass
-
 
 class ConsoleDisplay(Display):
     def menu(self):
@@ -72,14 +75,14 @@ class ConsoleDisplay(Display):
         self.display_weights(end_weights, weight_limits)
 
     def print_assignment(self, assignment):
-        print(("{a[0]:^8} | {a[1]:^11} | {a[2]:^9} | {a[3]:^15}").format(a=assignment)
+        print(("{a[0]:^8} | {a[1]:^11} | {a[2]:^9} | {a[3]:^15} | {a[4]:^9").format(a=assignment)
               )
-        print("{:-^52}".format(""))
+        print("{:-^64}".format(""))
 
     def assignments(self):
         assignments = self.ration_database.get_assignments()
-        print(("{:^8} | {:^11} | {:^9} | {:^15}").format("House ID", "House", "Ration ID", "Ration"))
-        print("{:-^52}".format(""))
+        print(("{:^8} | {:^11} | {:^9} | {:^15} | {:^9}").format("House ID", "House", "Ration ID", "Ration", "Batch No."))
+        print("{:-^64}".format(""))
         for assignment in assignments:
             self.print_assignment(assignment)
         print("Select a house using its ID")
@@ -104,6 +107,7 @@ class ConsoleDisplay(Display):
         print("-Add ration")
         print("-Edit ration")
         print("-Delete ration")
+        print("-Change batch")
         print("-Back")
         command = input("> ").lower()
         return command
@@ -144,6 +148,10 @@ class ConsoleDisplay(Display):
                 return False
             else:
                 pass
+
+    def get_input(self, prompt):
+        input = input(prompt)
+        return input
 
     def enter(self, value):
         print("Please enter the value for {}".format(value))

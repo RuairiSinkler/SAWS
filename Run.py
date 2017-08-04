@@ -48,6 +48,8 @@ def main():
                         controller.edit_ration()
                     elif (choice == "delete ration"):
                         controller.delete_ration()
+                    elif (choice == "change batch"):
+                        controller.change_batch()
                     elif (choice == "back"):
                         settings = False
                     else:

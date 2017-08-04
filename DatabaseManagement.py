@@ -126,7 +126,8 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT houses.house_id, house_name, rations.ration_id, ration_name FROM house_rations " \
+        execution = "SELECT houses.house_id, house_name, rations.ration_id, ration_name, batch_number " \
+                    "FROM house_rations " \
                     "JOIN houses ON house_rations.house_id = houses.house_id " \
                     "JOIN rations ON house_rations.ration_id = rations.ration_id"
         # print(execution)
@@ -229,6 +230,19 @@ class DatabaseManager:
 
         execution = "SELECT batch_number FROM houses WHERE house_id = ?"
         cursor.execute(execution, (house_id,))
+
+        result = cursor.fetchall()[0][0]
+
+        connect.close()
+
+        return result
+
+    def change_batch(self, house_id, batch_number):
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        execution = "UPDATE houses SET batchnumber = ? WHERE house_id = ?"
+        cursor.execute(execution, (str(batch_number), str(house_id),))
 
         result = cursor.fetchall()[0][0]
 

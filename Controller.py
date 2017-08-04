@@ -230,6 +230,36 @@ class Controller:
             else:
                 self.display.message("Sorry, that's not an option, try again")
 
+    def change_batch(self):
+        success = False
+        cancel = False
+        while not (success or cancel):
+            house = self.display.assignments()
+            if (house == "cancel"):
+                cancel = True
+                break
+            if (house.isdigit()):
+                if (int(house) > self.ration_database.get_max_house_id()):
+                    self.display.message("Sorry, that's not an option, try again")
+                else:
+                    success = True
+            else:
+                self.display.message("Sorry, that's not an option, try again")
+
+        success = False
+        while not (success or cancel):
+            batch_number = self.display.get_input("New batch number: ")
+            if (batch_number == "cancel"):
+                cancel = True
+                break
+            if (batch_number.isdigit()):
+                success = True
+            else:
+                self.display.message("Sorry, that's not an option, try again")
+
+        if not (cancel):
+            self.ration_database.change_batch(house, batch_number)
+
     def log_run(self, ration_name, end_weights, weight_limits, house_id):
         self.display.message("Logging run...")
         now = pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone("Europe/London"))
