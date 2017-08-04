@@ -150,8 +150,8 @@ class ConsoleDisplay(Display):
                 pass
 
     def get_input(self, prompt):
-        input = input(prompt)
-        return input
+        result = input(prompt)
+        return result
 
     def enter(self, value):
         print("Please enter the value for {}".format(value))
