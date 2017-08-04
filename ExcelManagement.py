@@ -4,7 +4,7 @@ from pathlib import Path
 
 class WorksheetManager:
     def __init__(self, directory, name):
-        self.path = "{}/{}.xlsx".format(directory, name)
+        self.path = "Records/{}/{}.xlsx".format(directory, name)
         workbook = Path(self.path)
         if workbook.is_file():
             self.workbook = openpyxl.load_workbook(self.path)
