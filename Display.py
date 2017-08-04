@@ -75,7 +75,7 @@ class ConsoleDisplay(Display):
         self.display_weights(end_weights, weight_limits)
 
     def print_assignment(self, assignment):
-        print(("{a[0]:^8} | {a[1]:^11} | {a[2]:^9} | {a[3]:^15} | {a[4]:^9").format(a=assignment)
+        print(("{a[0]:^8} | {a[1]:^11} | {a[2]:^9} | {a[3]:^15} | {a[4]:^9}").format(a=assignment)
               )
         print("{:-^64}".format(""))
 
