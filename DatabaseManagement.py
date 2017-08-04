@@ -241,7 +241,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "UPDATE houses SET batchnumber = ? WHERE house_id = ?"
+        execution = "UPDATE houses SET batch_number = ? WHERE house_id = ?"
         cursor.execute(execution, (str(batch_number), str(house_id),))
 
         result = cursor.fetchall()[0][0]
