@@ -1,10 +1,16 @@
+import os
 import openpyxl
 from pathlib import Path
 
 
 class WorksheetManager:
     def __init__(self, directory, name):
-        self.path = "Records/{}/{}.xlsx".format(directory, name)
+        if not(os.path.exists("Records")):
+            os.makedirs(directory)
+        directory = "Records/{}".format(directory)
+        if not(os.path.exists(directory)):
+            os.makedirs(directory)
+        self.path = "{}/{}.xlsx".format(directory, name)
         workbook = Path(self.path)
         if workbook.is_file():
             self.workbook = openpyxl.load_workbook(self.path)

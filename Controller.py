@@ -268,8 +268,6 @@ class Controller:
         ration = self.ration_database.get_ration(ration_id)
         batch_number = self.ration_database.get_house_batch_number(house_id)
         directory = self.ration_database.get_house_name(house_id)
-        if not(os.path.exists(directory)):
-            os.makedirs(directory)
         filename = "Batch {}".format(str(batch_number))
         log = WorksheetManager(directory, filename)
         log.fill_row(ration_name, end_weights, weight_limits, now_string)
