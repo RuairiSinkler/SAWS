@@ -16,7 +16,7 @@ CREATE TABLE rations (
   limestone INTEGER NOT NULL,
   soya_oil INTEGER NOT NULL,
   arbocell INTEGER NOT NULL,
-  methionine INTEGER NOT NULL,
+  methionine DECIMAL(2,2) NOT NULL,
   premix INTEGER NOT NULL,
   UNIQUE(ration_name)
 );
@@ -33,8 +33,8 @@ INSERT INTO houses VALUES (2, "House 3", 0);
 INSERT INTO houses VALUES (3, "Manor Wood", 0);
 
 INSERT INTO rations VALUES (0, "None", 0, 0, 0, 0, 0, 0, 0, 0);
-INSERT INTO rations VALUES (1, "Test", 50, 60, 70, 80, 100, 200, 300, 400);
-INSERT INTO rations VALUES (2, "Peak Lay", 360, 260, 170,340, 400, 700, 300, 120);
+INSERT INTO rations VALUES (1, "Test", 50, 60, 70, 80, 100, 200, 50.12, 400);
+INSERT INTO rations VALUES (2, "Peak Lay", 360, 260, 170,340, 400, 700, 6.22, 120);
 
 INSERT INTO house_rations VALUES (0, 0);
 INSERT INTO house_rations VALUES (1, 0);

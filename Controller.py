@@ -2,7 +2,7 @@ from MotorController import *
 from WeightInput import *
 from ExcelManagement import *
 from datetime import datetime, timedelta
-import os
+from decimal import Decimal
 import pytz
 
 class Controller:
@@ -172,15 +172,15 @@ class Controller:
             self.ration_database.assign_ration(house, ration)
 
     def add_ration(self):
-        name = self.display.enter("name")
-        wheat = self.display.enter("wheat")
-        barley = self.display.enter("barley")
-        soya = self.display.enter("soya")
-        limestone = self.display.enter("limestone")
-        soya_oil = self.display.enter("soya oil")
-        arbocell = self.display.enter("arbocell")
-        methionine = self.display.enter("methionine")
-        premix = self.display.enter("premix")
+        name = self.get_input("name", "String")
+        wheat = self.get_input("wheat", 1)
+        barley = self.get_input("barley", 1)
+        soya = self.get_input("soya", 1)
+        limestone = self.get_input("limestone", 1)
+        soya_oil = self.get_input("soya oil", 1)
+        arbocell = self.get_input("arbocell", 1)
+        methionine = self.get_input("methionine", 11.11)
+        premix = self.get_input("premix", 1)
         ration = [name, wheat, barley, soya, limestone, soya_oil, arbocell, methionine, premix]
         self.ration_database.insert_ration(ration)
 
@@ -198,20 +198,50 @@ class Controller:
                 else:
                     ration = self.ration_database.get_ration(ration_id)
                     self.display.message("Leave any entries blank that you don't want to change: ")
-                    name = self.display.change("name", ration[1])
-                    wheat = self.display.change("wheat", ration[2])
-                    barley = self.display.change("barley", ration[3])
-                    soya = self.display.change("soya", ration[4])
-                    limestone = self.display.change("limestone", ration[5])
-                    soya_oil = self.display.change("soya oil", ration[6])
-                    arbocell = self.display.change("arbocell", ration[7])
-                    methionine = self.display.change("methionine", ration[8])
-                    premix = self.display.change("premix", ration[9])
+                    name = self.display.change("name", "String", ration[1])
+                    wheat = self.display.change("wheat", 1, ration[2])
+                    barley = self.display.change("barley", 1, ration[3])
+                    soya = self.display.change("soya", 1, ration[4])
+                    limestone = self.display.change("limestone", 1, ration[5])
+                    soya_oil = self.display.change("soya oil", 1, ration[6])
+                    arbocell = self.display.change("arbocell", 1, ration[7])
+                    methionine = self.display.change("methionine", 11.11, ration[8])
+                    premix = self.display.change("premix", 1, ration[9])
                     ration = [ration_id, name, wheat, barley, soya, limestone, soya_oil, arbocell, methionine, premix]
                     self.ration_database.update_ration(ration)
                     success = True
             else:
                 self.display.message("Sorry, that's not an option, try again")
+
+    def get_input(self, value, type_eg, old_value=None):
+        success = False
+        while not (success):
+            if (old_value is None):
+                result = self.display.get_input("Please enter the value for {}".format(value))
+            else:
+                result = self.display.get_input("Please enter the value for {}, it is currently {}".format(value, str(old_value)))
+            success = True
+            if (type(type_eg) is int):
+                if not (result.isdigit()):
+                    success = False
+                    self.display.message("Sorry I need a positive number as an input")
+                else:
+                    result = int(result)
+            elif (type(type_eg) is float):
+                if not (self.is_float(result)):
+                    success = False
+                    self.display.message("Sorry I need a positive number (2 decimal places max) as an input")
+                else:
+                    result = float(round(Decimal(result), 2))
+
+        return result
+
+    def is_float(self, value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
 
     def delete_ration(self):
         success = False
