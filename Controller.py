@@ -172,15 +172,15 @@ class Controller:
             self.ration_database.assign_ration(house, ration)
 
     def add_ration(self):
-        name = self.get_input("name", "String")
-        wheat = self.get_input("wheat", 1)
-        barley = self.get_input("barley", 1)
-        soya = self.get_input("soya", 1)
-        limestone = self.get_input("limestone", 1)
-        soya_oil = self.get_input("soya oil", 1)
-        arbocell = self.get_input("arbocell", 1)
-        methionine = self.get_input("methionine", 11.11)
-        premix = self.get_input("premix", 1)
+        name = self.get_input("name", str)
+        wheat = self.get_input("wheat", int)
+        barley = self.get_input("barley", int)
+        soya = self.get_input("soya", int)
+        limestone = self.get_input("limestone", int)
+        soya_oil = self.get_input("soya oil", int)
+        arbocell = self.get_input("arbocell", int)
+        methionine = self.get_input("methionine", float)
+        premix = self.get_input("premix", int)
         ration = [name, wheat, barley, soya, limestone, soya_oil, arbocell, methionine, premix]
         self.ration_database.insert_ration(ration)
 
@@ -198,22 +198,22 @@ class Controller:
                 else:
                     ration = self.ration_database.get_ration(ration_id)
                     self.display.message("Leave any entries blank that you don't want to change: ")
-                    name = self.display.change("name", "String", ration[1])
-                    wheat = self.display.change("wheat", 1, ration[2])
-                    barley = self.display.change("barley", 1, ration[3])
-                    soya = self.display.change("soya", 1, ration[4])
-                    limestone = self.display.change("limestone", 1, ration[5])
-                    soya_oil = self.display.change("soya oil", 1, ration[6])
-                    arbocell = self.display.change("arbocell", 1, ration[7])
-                    methionine = self.display.change("methionine", 11.11, ration[8])
-                    premix = self.display.change("premix", 1, ration[9])
+                    name = self.display.change("name", str, ration[1])
+                    wheat = self.display.change("wheat", int, ration[2])
+                    barley = self.display.change("barley", int, ration[3])
+                    soya = self.display.change("soya", int, ration[4])
+                    limestone = self.display.change("limestone", int, ration[5])
+                    soya_oil = self.display.change("soya oil", int, ration[6])
+                    arbocell = self.display.change("arbocell", int, ration[7])
+                    methionine = self.display.change("methionine", float, ration[8])
+                    premix = self.display.change("premix", int, ration[9])
                     ration = [ration_id, name, wheat, barley, soya, limestone, soya_oil, arbocell, methionine, premix]
                     self.ration_database.update_ration(ration)
                     success = True
             else:
                 self.display.message("Sorry, that's not an option, try again")
 
-    def get_input(self, value, type_eg, old_value=None):
+    def get_input(self, value, type, old_value=None):
         success = False
         while not (success):
             if (old_value is None):
@@ -221,13 +221,13 @@ class Controller:
             else:
                 result = self.display.get_input("Please enter the value for {}, it is currently {}".format(value, str(old_value)))
             success = True
-            if (type(type_eg) is int):
+            if (type is int):
                 if not (result.isdigit()):
                     success = False
                     self.display.message("Sorry I need a positive number as an input")
                 else:
                     result = int(result)
-            elif (type(type_eg) is float):
+            elif (type is float):
                 if not (self.is_float(result)):
                     success = False
                     self.display.message("Sorry I need a positive number (2 decimal places max) as an input")
