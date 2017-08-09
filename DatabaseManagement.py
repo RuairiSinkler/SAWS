@@ -12,10 +12,7 @@ class DatabaseManager:
 
         values_string = str(values[0])
         for i in range(1, len(values)):
-            if isinstance(values[i], int):
-                values_string += ", " + str(values[i])
-            else:
-                values_string += ", \"" + values[i] + "\""
+            values_string += ", " + str(values[i])
         # print(table)
         # print(values_string)
         execution = "INSERT INTO ? VALUES (?)"
