@@ -220,6 +220,8 @@ class Controller:
                 result = self.display.get_input("Please enter the value for {}: ".format(value))
             else:
                 result = self.display.get_input("Please enter the value for {}, it is currently {}: ".format(value, str(old_value)))
+                if (result == ""):
+                    return old_value
             success = True
             if (type is int):
                 if not (result.isdigit()):
