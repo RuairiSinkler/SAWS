@@ -16,7 +16,7 @@ CREATE TABLE rations (
   limestone INTEGER NOT NULL,
   soya_oil INTEGER NOT NULL,
   arbocell INTEGER NOT NULL,
-  methionine DECIMAL(2,2) NOT NULL,
+  methionine DECIMAL(4,2) NOT NULL,
   premix INTEGER NOT NULL,
   UNIQUE(ration_name)
 );
