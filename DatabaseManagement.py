@@ -13,10 +13,10 @@ class DatabaseManager:
         values_string = str(values[0])
         for i in range(1, len(values)):
             values_string += ", " + str(values[i])
-        # print(table)
-        # print(values_string)
+        print(table)
+        print(values_string)
         execution = "INSERT INTO ? VALUES (?)"
-        # print(execution)
+        print(execution)
         cursor.execute(execution, (table, values_string,))
         connect.commit()
 
