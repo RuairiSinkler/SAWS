@@ -217,9 +217,9 @@ class Controller:
         success = False
         while not (success):
             if (old_value is None):
-                result = self.display.get_input("Please enter the value for {}".format(value))
+                result = self.display.get_input("Please enter the value for {}: ".format(value))
             else:
-                result = self.display.get_input("Please enter the value for {}, it is currently {}".format(value, str(old_value)))
+                result = self.display.get_input("Please enter the value for {}, it is currently {}: ".format(value, str(old_value)))
             success = True
             if (type is int):
                 if not (result.isdigit()):

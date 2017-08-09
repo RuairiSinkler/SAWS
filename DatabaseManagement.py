@@ -40,7 +40,7 @@ class DatabaseManager:
         # Perform Validation on the values inserted to go into the rations database
         all_ok = isinstance(values[1], str) and values[1]
         for i in range(2, 10):
-            if (i == 9):
+            if (i == 8):
                 all_ok = all_ok and isinstance(values[i], float)
             else:
                 all_ok = all_ok and isinstance(values[i], int)
@@ -55,7 +55,7 @@ class DatabaseManager:
         # Perform Validation on the values inserted to go into the rations database
         all_ok = isinstance(values[1], str) and values[1]
         for i in range(2, 10):
-            if (i == 9):
+            if (i == 8):
                 all_ok = all_ok and isinstance(values[i], float)
             else:
                 all_ok = all_ok and isinstance(values[i], int)
