@@ -15,9 +15,9 @@ class DatabaseManager:
             values_string += ", " + str(values[i])
         print(table)
         print(values_string)
-        execution = "INSERT INTO ? VALUES (?)"
+        execution = "INSERT INTO {} VALUES (?)".format(table)
         print(execution)
-        cursor.execute(execution, (table, values_string,))
+        cursor.execute(execution, (values_string,))
         connect.commit()
 
         connect.close()
