@@ -66,7 +66,7 @@ class ConsoleDisplay(Display):
 
     def print_row(self, values):
         print(("{v[0]:^3d} | {v[1]:^15} | {v[2]:^5d} | {v[3]:^6d} | {v[4]:^5d} | {v[5]:^9d} | " +
-               "{v[6]:^8d} | {v[7]:^8d} | {v[8]:^10d} | {v[9]:^7d}").format(v=values)
+               "{v[6]:^8d} | {v[7]:^8d} | {v[8]:^10f} | {v[9]:^7d}").format(v=values)
               )
         print("{:-^103}".format(""))
 
