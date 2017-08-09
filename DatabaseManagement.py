@@ -10,14 +10,11 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        values_string = str(values[0])
-        for i in range(1, len(values)):
-            values_string += ", " + str(values[i])
         print(table)
-        print(values_string)
-        execution = "INSERT INTO {} VALUES (?)".format(table)
+        print(values)
+        execution = "INSERT INTO {} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)".format(table)
         print(execution)
-        cursor.execute(execution, (values_string,))
+        cursor.execute(execution, values)
         connect.commit()
 
         connect.close()
