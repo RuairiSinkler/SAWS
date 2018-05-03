@@ -1,42 +1,60 @@
 PRAGMA foreign_keys = 1;
 
-CREATE TABLE houses (
-  house_id INTEGER NOT NULL PRIMARY KEY,
-  house_name TEXT NOT NULL,
-  batch_number INT NOT NULL,
-  UNIQUE(house_name)
+CREATE TABLE ingredients (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name STRING NOT NULL,
+  weigher INT,
+  ordering INT,
+  UNIQUE(name)
 );
 
 CREATE TABLE rations (
-  ration_id INTEGER NOT NULL PRIMARY KEY,
-  ration_name TEXT NOT NULL,
-  wheat INTEGER NOT NULL,
-  barley INTEGER NOT NULL,
-  soya INTEGER NOT NULL,
-  limestone INTEGER NOT NULL,
-  soya_oil INTEGER NOT NULL,
-  arbocell INTEGER NOT NULL,
-  methionine DECIMAL(4,2) NOT NULL,
-  premix INTEGER NOT NULL,
-  UNIQUE(ration_name)
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  UNIQUE(name)
 );
 
-CREATE TABLE house_rations (
-  house_id INTEGER NOT NULL REFERENCES houses(house_id),
-  ration_id INTEGER NOT NULL REFERENCES rations(ration_id),
-  PRIMARY KEY(house_id, ration_id)
+CREATE TABLE ration_ingredients (
+  ration_id INTEGER NOT NULL REFERENCES rations(id),
+  ingredient_id INTEGER NOT NULL REFERENCES ingredients(id),
+  amount DECIMAL(6, 2) NOT NULL
 );
 
-INSERT INTO houses VALUES (0, "House 1", 0);
-INSERT INTO houses VALUES (1, "House 2", 0);
-INSERT INTO houses VALUES (2, "House 3", 0);
-INSERT INTO houses VALUES (3, "Manor Wood", 0);
+CREATE TABLE houses (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name STRING NOT NULL,
+  UNIQUE(name)
+);
 
-INSERT INTO rations VALUES (0, "None", 0, 0, 0, 0, 0, 0, 0, 0);
-INSERT INTO rations VALUES (1, "Test", 50, 60, 70, 80, 100, 200, 50.12, 400);
-INSERT INTO rations VALUES (2, "Peak Lay", 360, 260, 170,340, 400, 700, 6.22, 120);
+--INSERT INTO ingredients VALUES (0, "Wheat", 1, 0);
+--INSERT INTO ingredients VALUES (1, "Barley", 1, 1);
+--INSERT INTO ingredients VALUES (2, "Soya", 2, 0);
+--INSERT INTO ingredients VALUES (3, "Limestone", 2, 1);
+--INSERT INTO ingredients VALUES (4, "Soya Oil", NULL, NULL);
+--INSERT INTO ingredients VALUES (5, "Methionine", NULL, NULL);
+--INSERT INTO ingredients VALUES (6, "Arbocell", NULL, NULL);
+--INSERT INTO ingredients VALUES (7, "Premix", NULL, NULL);
+--
+--INSERT INTO rations VALUES (0, "None");
+--
+--INSERT INTO ration_ingredients VALUES (0, 0, 0);
+--INSERT INTO ration_ingredients VALUES (0, 1, 0);
+--INSERT INTO ration_ingredients VALUES (0, 2, 0);
+--INSERT INTO ration_ingredients VALUES (0, 3, 0);
+--INSERT INTO ration_ingredients VALUES (0, 4, 0);
+--INSERT INTO ration_ingredients VALUES (0, 5, 0);
+--INSERT INTO ration_ingredients VALUES (0, 6, 0);
+--INSERT INTO ration_ingredients VALUES (0, 7, 0);
+--
+--INSERT INTO rations VALUES (1, "Peak Lay");
+--
+--INSERT INTO ration_ingredients VALUES (1, 0, 560);
+--INSERT INTO ration_ingredients VALUES (1, 1, 300);
+--INSERT INTO ration_ingredients VALUES (1, 2, 210);
+--INSERT INTO ration_ingredients VALUES (1, 3, 320);
+--INSERT INTO ration_ingredients VALUES (1, 4, 100);
+--INSERT INTO ration_ingredients VALUES (1, 5, 20);
+--INSERT INTO ration_ingredients VALUES (1, 6, 6.7);
+--INSERT INTO ration_ingredients VALUES (1, 7, 40);
 
-INSERT INTO house_rations VALUES (0, 0);
-INSERT INTO house_rations VALUES (1, 0);
-INSERT INTO house_rations VALUES (2, 0);
-INSERT INTO house_rations VALUES (3, 0);
+
