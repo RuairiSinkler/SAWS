@@ -271,8 +271,7 @@ class RunPage(tk.Frame):
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
         button = tk.Button(
-            self, textvariable=self.start_pause_text, font=self.controller.myFont,
-            command=self.start_pause
+            self, textvariable=self.start_pause_text, font=self.controller.myFont, command=self.start_pause
         )
         button.grid(column=0, row=2)
 
@@ -314,6 +313,11 @@ class RunPage(tk.Frame):
             new_value = self.current_weighed[current_name].get() + increment
         self.current_weighed[current_name].set(new_value)
         self.label_texts[current_name].set("{}, {}/{}kg".format(current_name, str(self.current_weighed[current_name].get()), str(current_amount)))
+        percentage = (self.current_weighed[current_name].get() / self.desired_amounts.get(current_name)) * 100
+        self.weigher_canvases[selected_weigher].fill_hopper(percentage)
+        if self.current_weighed[current_name].get() >= current_amount:
+            if next is not None:
+                self.weigher_canvases[selected_weigher].draw_hopper()
         if self.running:
             if self.current_weighed[current_name].get() >= current_amount:
                 self.turn_off_motor(current_name)
@@ -409,12 +413,13 @@ class RunPage(tk.Frame):
         self.desired_amounts = {name: amount for (name, amount, _, _) in self.ingredients}
         weigher_counters = np.ones(10, dtype=int)
         weigher_frames = [None] * 10
+        self.weigher_canvases = [None] * 10
         unmeasured_counter = 0
         self.current_weighed = {}
         self.label_texts = {}
         self.motors = {}
         self.max_weigher = 0
-        self.canvas_size = int(self.controller.screen_height / 20)
+        self.canvas_size = int(self.controller.screen_height / 2)
         for ingredient in self.ingredients:
             # print(ingredient)
             name = ingredient[0]
@@ -444,7 +449,7 @@ class RunPage(tk.Frame):
                 )
                 label.grid(column=weigher_counters[weigher - 1], row=0)
                 self.motors[name] = tk.Canvas(
-                    frame, width=self.canvas_size, height=self.canvas_size
+                    frame, width=self.canvas_size / 10, height=self.canvas_size / 10
                 )
                 self.motors[name].grid(column=weigher_counters[weigher - 1] + 1, row=0)
                 self.turn_off_motor(name)
@@ -454,7 +459,11 @@ class RunPage(tk.Frame):
                 weigher_frames[weigher], text="More",
                 command=lambda weigher=weigher: self.increment_value(weigher)
             )
-            button.grid(column=0, row=2)
+            button.grid(column=0, row=3 )
+            self.weigher_canvases[weigher] = Hopper(
+                weigher_frames[weigher], self.controller, self.canvas_size, self.canvas_size
+            )
+            self.weigher_canvases[weigher].grid(column=0, row=2, columnspan=4)
 
         self.check_done()
         self.controller.show_frame("RunPage")
@@ -477,7 +486,42 @@ class AreYouSure(tk.Frame):
         )
         button.pack()
 
+class Hopper(tk.Canvas):
+
+    def __init__(self, parent, controller, width, height):
+        tk.Canvas.__init__(self, parent, width=width, height=height)
+        self.controller = controller
+        self.width = width
+        self.height = height
+        self.triangle_y = 4 * height / 10
+        self.triangle_height = self.height - self.triangle_y
+        self.draw_hopper()
+
+    def draw_hopper(self):
+        points = [0, 0, self.width, 0, self.width, self.triangle_y, self.width / 2, self.height, 0, self.triangle_y]
+        self.hopper = self.create_polygon(points, fill='yellow', outline='black', width=3)
+        self.update()
+
+    def fill_hopper(self, percentage):
+        fill_height = int(self.height * (percentage / 100.0))
+        fill_y = self.height - fill_height
+        if fill_height >= self.triangle_height:
+            points = [0, fill_y, self.width, fill_y, self.width, self.triangle_y, self.width / 2, self.height, 0,
+                      self.triangle_y]
+            self.fill = self.create_polygon(points, fill='red')
+        else:
+            triangle_proportion = fill_height / (self.triangle_height)
+            fill_width = self.width * triangle_proportion
+            gap = (self.width - fill_width) / 2
+            points = [gap, fill_y, self.width - gap, fill_y, self.width / 2, self.height]
+            self.fill = self.create_polygon(points, fill='red')
+        self.update()
+
 def main():
+    # root = tk.Tk()
+    # hopper = Hopper(root, root, 1000, 600)
+    # hopper.pack()
+    # root.mainloop()
     saws = SAWS()
     saws.mainloop()
 
