@@ -42,7 +42,7 @@ class SAWS(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure):
+        for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure, BatchPage):
             self.create_frame(F, container)
 
         self.show_frame("SplashPage")
@@ -122,12 +122,29 @@ class PinPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        pinpad = NumPad(self, controller)
+        pinpad = NumPad(self, controller, lambda: self.check_pin(pinpad))
         pinpad.pack()
+
+    def check_pin(self, pinpad):
+        pin = pinpad.entry.get()
+        pin_cell = self.controller.ration_ex.find("PIN")
+        column = column_index_from_string(pin_cell.column)
+        row = pin_cell.row
+        set_pin = self.controller.ration_ex.read_cell(self.controller.ration_ex.get_cell(column + 1, row))
+        if pin == str(set_pin):
+            pinpad.entry.delete(0, tk.INSERT)
+            self.controller.show_frame("MainMenu")
+
+class BatchPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        num_pad = NumPad(self, controller, lambda: self.controller.frames["RunPage"].log_run(num_pad.entry.get()))
+        num_pad.pack()
 
 class NumPad(tk.Frame):
 
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, enter_function):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.entry = tk.Entry(self, font=self.controller.myFont)
@@ -146,18 +163,9 @@ class NumPad(tk.Frame):
         )
         zero.grid(column=1, row=4)
         enter = tk.Button(
-            self, text="ENTER", font=controller.myFont, command=lambda: self.check_pin(self.entry.get())
+            self, text="ENTER", font=controller.myFont, command=enter_function
         )
         enter.grid(column=2, row=4)
-
-    def check_pin(self, pin):
-        pin_cell = self.controller.ration_ex.find("PIN")
-        column = column_index_from_string(pin_cell.column)
-        row = pin_cell.row
-        set_pin = self.controller.ration_ex.read_cell(self.controller.ration_ex.get_cell(column + 1, row))
-        if pin == str(set_pin):
-            self.entry.delete(0, tk.INSERT)
-            self.controller.show_frame("MainMenu")
 
 class MainMenu(tk.Frame):
 
@@ -358,7 +366,7 @@ class RunPage(tk.Frame):
             if not self.done:
                 self.quit_button.grid_remove()
 
-    def log_run(self):
+    def log_run(self, batch_number):
         # result = messagebox.askyesno("End run early", "Are you sure you want to end the run before completing the ration?", icon='warning')
         # if result:
         house = self.house.get()
@@ -368,13 +376,13 @@ class RunPage(tk.Frame):
             self.controller.ration_logs_ex.create_sheet(house)
             sheet = self.controller.ration_logs_ex.get_sheet(house)
             self.controller.ration_logs_ex.change_sheet(sheet)
-            headings = ["Time Run", "Ration", "Complete"] + [name for (name, _, _, _) in self.ingredients] + ["Total"]
+            headings = ["Time Run", "Ration", "Complete"] + [name for (name, _, _, _) in self.ingredients] + ["Total", "Batch Number"]
             self.controller.ration_logs_ex.setup_sheet(house, headings)
             sheet = self.controller.ration_logs_ex.get_sheet(house)
         self.controller.ration_logs_ex.change_sheet(sheet)
         time_run = time.strftime("%H:%M:%S, %d/%m/%y")
         ration = self.controller.ration_db.get_ration(self.ration_id)[1]
-        self.controller.ration_logs_ex.log_run(time_run, ration, self.done, self.current_weighed)
+        self.controller.ration_logs_ex.log_run(time_run, ration, self.done, self.current_weighed, batch_number)
         self.controller.ration_logs_ex.save()
 
         self.controller.show_frame("MainMenu")
@@ -460,7 +468,7 @@ class AreYouSure(tk.Frame):
         w.pack()
 
         button = tk.Button(
-            self, text="Yes", font=controller.myFont, command=self.controller.frames["RunPage"].log_run
+            self, text="Yes", font=controller.myFont, command=lambda: controller.show_frame("BatchPage")
         )
         button.pack()
 

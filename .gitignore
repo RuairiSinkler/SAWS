@@ -52,3 +52,7 @@ docs/_build/
 
 # Databases
 *.db
+
+# My additions
+.idea/
+ration_logs.xlsx
