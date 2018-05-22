@@ -441,7 +441,7 @@ class RunPage(tk.Frame):
             self.label_texts[name].set("{}\n{}/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
             if weigher is None:
                 button = tk.Button(
-                    self.footer, textvariable=self.label_texts[name], font=self.controller.mainFont,
+                    self.footer, textvariable=self.label_texts[name], font=self.controller.textFont,
                     command=lambda name=name, amount=amount: self.ingredient_done(name, amount)
                 )
                 button.grid(column=unmeasured_counter, row=0)
@@ -479,9 +479,10 @@ class RunPage(tk.Frame):
             # weigher_frames[weigher].grid_columnconfigure(weigher_counters[weigher - 1], weight=1)
         for weigher in range(1, self.max_weigher + 1):
             new_width = weigher_frames[weigher].winfo_width()
-            self.weigher_canvases[weigher].configure(width=new_width)
-            self.weigher_canvases[weigher].width = new_width
-            self.weigher_canvases[weigher].draw_hopper()
+            if new_width > self.canvas_size:
+                self.weigher_canvases[weigher].configure(width=new_width)
+                self.weigher_canvases[weigher].width = new_width
+                self.weigher_canvases[weigher].draw_hopper()
 
         self.check_done()
         self.controller.show_frame("RunPage")
