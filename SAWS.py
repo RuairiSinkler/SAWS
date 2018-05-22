@@ -33,8 +33,9 @@ class SAWS(tk.Tk):
         self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
         self.resizable(False, False)
         self.overrideredirect(True)
-        self.myFont = Font(size=20)
-        self.option_add('*Dialog.msg.font', self.myFont)
+        self.mainFont = Font(size=20)
+        self.textFont = Font(size=10)
+        self.option_add('*Dialog.msg.font', self.mainFont)
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
@@ -116,7 +117,7 @@ class SplashPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         button = tk.Button(
-            self, text="Start", font=controller.myFont, command=lambda: self.controller.show_frame("PinPage")
+            self, text="Start", font=controller.mainFont, command=lambda: self.controller.show_frame("PinPage")
         )
         button.pack(fill="none", expand="True")
 
@@ -150,23 +151,23 @@ class NumPad(tk.Frame):
     def __init__(self, parent, controller, enter_function):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.entry = tk.Entry(self, font=self.controller.myFont)
+        self.entry = tk.Entry(self, font=self.controller.mainFont)
         self.entry.grid(column=0, row=0, columnspan=3)
         for number in range(1, 10):
             button = tk.Button(
-                self, text=str(number), font=controller.myFont, command=lambda n=number: self.entry.insert(tk.INSERT, str(n))
+                self, text=str(number), font=controller.mainFont, command=lambda n=number: self.entry.insert(tk.INSERT, str(n))
             )
             button.grid(column=(number - 1) % 3, row=int((number - 1) / 3) + 1, sticky="ew")
         delete = tk.Button(
-            self, text="  DEL  ", font=controller.myFont, command=lambda: self.entry.delete(self.entry.index(tk.INSERT) - 1)
+            self, text="  DEL  ", font=controller.mainFont, command=lambda: self.entry.delete(self.entry.index(tk.INSERT) - 1)
         )
         delete.grid(column=0, row=4, sticky="ew")
         zero = tk.Button(
-            self, text="   0   ", font=controller.myFont, command=lambda: self.entry.insert(tk.INSERT, "0")
+            self, text="   0   ", font=controller.mainFont, command=lambda: self.entry.insert(tk.INSERT, "0")
         )
         zero.grid(column=1, row=4, sticky="ew")
         enter = tk.Button(
-            self, text="ENTER", font=controller.myFont, command=enter_function
+            self, text="ENTER", font=controller.mainFont, command=enter_function
         )
         enter.grid(column=2, row=4, sticky="ew")
 
@@ -175,26 +176,24 @@ class MainMenu(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        w = tk.Label(self, text="Hello, world!", font=self.controller.myFont)
-
         rations = self.controller.ration_db.get_all_rations()
 
         for ration in rations:
             id = ration[0]
             name = ration[1]
             button = tk.Button(
-                self, text=name, font=self.controller.myFont,
+                self, text=name, font=self.controller.mainFont,
                 command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
             )
             button.pack(fill="x")
 
         button = tk.Button(
-            self, text="Quit", font=controller.myFont, command=lambda: self.controller.show_frame("SplashPage")
+            self, text="Quit", font=controller.mainFont, command=lambda: self.controller.show_frame("SplashPage")
         )
         button.pack(fill="x")
 
         button = tk.Button(
-            self, text="QUIT", font=controller.myFont, fg="red", command=controller.quit
+            self, text="QUIT", font=controller.mainFont, fg="red", command=controller.quit
         )
         button.pack(fill="x")
 
@@ -218,14 +217,14 @@ class RationPage(tk.Frame):
         #     tk.Grid.columnconfigure(self, y, weight=1)
 
         button = tk.Button(
-            self.footer, text="Back", font=self.controller.myFont,
+            self.footer, text="Back", font=self.controller.mainFont,
             command=lambda: self.controller.show_frame("MainMenu")
         )
 
         button.pack(side=tk.LEFT)
 
         button = tk.Button(
-            self.footer, text="Run", font=self.controller.myFont,
+            self.footer, text="Run", font=self.controller.mainFont,
             command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id)
         )
 
@@ -243,12 +242,12 @@ class RationPage(tk.Frame):
         self.name = self.controller.ration_db.get_ration(self.ration_id)[1]
         ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
         label = tk.Label(
-            self.master, text=self.name, font=self.controller.myFont
+            self.master, text=self.name, font=self.controller.mainFont
         )
         label.pack()
         for ingredient in ingredients:
             label = tk.Label(
-                self.master, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.myFont
+                self.master, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
             )
             label.pack()
 
@@ -279,7 +278,7 @@ class RunPage(tk.Frame):
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
         button = tk.Button(
-            self, textvariable=self.start_pause_text, font=self.controller.myFont, command=self.start_pause
+            self, textvariable=self.start_pause_text, font=self.controller.mainFont, command=self.start_pause
         )
         button.grid(column=1, row=3)
 
@@ -288,14 +287,14 @@ class RunPage(tk.Frame):
         self.house = tk.StringVar()
         self.house.set(house_names[0])
         self.house_dropdown = tk.OptionMenu(self, self.house, *house_names)
-        self.house_dropdown.config(font=self.controller.myFont)
-        self.house_dropdown["menu"].config(font=self.controller.myFont)
+        self.house_dropdown.config(font=self.controller.mainFont)
+        self.house_dropdown["menu"].config(font=self.controller.mainFont)
         self.house_dropdown.grid(column=4, row=2)
 
         self.end_text = tk.StringVar()
         self.end_text.set("End\nRun\nEarly")
         self.quit_button = tk.Button(
-            self, textvariable=self.end_text, font=self.controller.myFont,
+            self, textvariable=self.end_text, font=self.controller.mainFont,
             command=lambda: self.controller.show_frame("AreYouSure")
         )
         self.quit_button.grid(column=4, row=3)
@@ -442,7 +441,7 @@ class RunPage(tk.Frame):
             self.label_texts[name].set("{}\n{}/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
             if weigher is None:
                 button = tk.Button(
-                    self.footer, textvariable=self.label_texts[name], font=self.controller.myFont,
+                    self.footer, textvariable=self.label_texts[name], font=self.controller.mainFont,
                     command=lambda name=name, amount=amount: self.ingredient_done(name, amount)
                 )
                 button.grid(column=unmeasured_counter, row=0)
@@ -453,7 +452,7 @@ class RunPage(tk.Frame):
                     weigher_frames[weigher].pack(side=tk.LEFT, expand=True)
                 frame = weigher_frames[weigher]
                 label = tk.Label(
-                    frame, textvariable=self.label_texts[name], font=self.controller.myFont
+                    frame, textvariable=self.label_texts[name], font=self.controller.textFont
                 )
                 label.grid(column=weigher_counters[weigher - 1], row=0)
                 self.motors[name] = tk.Canvas(
@@ -496,16 +495,16 @@ class AreYouSure(tk.Frame):
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(3, weight=1)
-        w = tk.Label(self, text="Are you sure you want to end the run? The ration is not yet complete.", font=self.controller.myFont)
+        w = tk.Label(self, text="Are you sure you want to end the run?\nThe ration is not yet complete.", font=self.controller.mainFont)
         w.grid(row=1, column=1, columnspan=2)
 
         button = tk.Button(
-            self, text="Yes", font=controller.myFont, command=lambda: controller.show_frame("BatchPage")
+            self, text="Yes", font=controller.mainFont, command=lambda: controller.show_frame("BatchPage")
         )
         button.grid(row=2, column=1, sticky="ew")
 
         button = tk.Button(
-            self, text="No", font=controller.myFont, command=lambda: controller.show_frame("RunPage")
+            self, text="No", font=controller.mainFont, command=lambda: controller.show_frame("RunPage")
         )
         button.grid(row=2, column=2, sticky="ew")
 
