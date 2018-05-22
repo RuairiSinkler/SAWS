@@ -568,8 +568,8 @@ class WeightInput():
     def __init__(self, weigher, weight_pin):
         self.weigher = weigher
         self.pin = weight_pin
-        self.state = GPIO.input(self.pin)
         GPIO.setup(self.pin, GPIO.IN)
+        self.state = GPIO.input(self.pin)
         self.check_input()
 
     def check_input(self):
