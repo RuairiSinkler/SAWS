@@ -260,12 +260,12 @@ class RunPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.master = tk.Frame(self)
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(6, weight=1)
+        self.grid_rowconfigure(7, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(5, weight=1)
-        self.master.grid(column=2, row=1, rowspan=4, sticky="nsew")
+        self.master.grid(column=2, row=2, rowspan=4, sticky="nsew")
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=2, row=5, sticky="nsew")
+        self.footer.grid(column=2, row=6, sticky="nsew")
         self.grid_rowconfigure(0, weight=1)
 
         self.controller = controller
@@ -289,7 +289,7 @@ class RunPage(tk.Frame):
         self.house_dropdown = tk.OptionMenu(self, self.house, *house_names)
         self.house_dropdown.config(font=self.controller.mainFont)
         self.house_dropdown["menu"].config(font=self.controller.mainFont)
-        self.house_dropdown.grid(column=4, row=2)
+        self.house_dropdown.grid(column=2, row=1)
 
         self.end_text = tk.StringVar()
         self.end_text.set("End\nRun\nEarly")
@@ -403,9 +403,9 @@ class RunPage(tk.Frame):
         self.master.destroy()
         self.footer.destroy()
         self.master = tk.Frame(self)
-        self.master.grid(column=2, row=1, rowspan=4)
+        self.master.grid(column=2, row=2, rowspan=4)
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=2, row=5)
+        self.footer.grid(column=2, row=6)
         self.running = False
         self.start_pause_text.set("Start")
         self.done = False
