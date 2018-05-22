@@ -31,8 +31,8 @@ class SAWS(tk.Tk):
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
         self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
-        # self.resizable(False, False)
-        # self.overrideredirect(True)
+        self.resizable(False, False)
+        self.overrideredirect(True)
         self.myFont = Font(size=30)
         self.option_add('*Dialog.msg.font', self.myFont)
 
