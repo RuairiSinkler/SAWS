@@ -573,13 +573,12 @@ class WeightInput():
         self.check_input()
 
     def check_input(self):
-        for i, button in enumerate(self.buttons):
-            oldstate = self.state[i]
-            newstate = GPIO.input(self.pin)
-            if oldstate != newstate:
-                self.state = newstate
-                if newstate == GPIO.LOW:
-                    self.increment_value(self.weigher)
+        oldstate = self.state
+        newstate = GPIO.input(self.pin)
+        if oldstate != newstate:
+            self.state = newstate
+            if newstate == GPIO.LOW:
+                self.increment_value(self.weigher)
         self.master.after(0.01, self.check_input)
 
 def main():
