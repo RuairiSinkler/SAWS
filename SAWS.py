@@ -426,7 +426,7 @@ class RunPage(tk.Frame):
         self.label_texts = {}
         self.motors = {}
         self.max_weigher = 0
-        self.canvas_size = int(self.controller.screen_height / 4)
+        self.canvas_size = int(self.controller.screen_height / 2)
         for ingredient in self.ingredients:
             # print(ingredient)
             name = ingredient[0]
