@@ -16,7 +16,7 @@ class WorksheetManager:
             self.sheet = self.workbook.active
             self.save()
         self.sheet = self.workbook.active
-        print(self.workbook.sheetnames)
+        # print(self.workbook.sheetnames)
 
     # Saves any work done
     def save(self):

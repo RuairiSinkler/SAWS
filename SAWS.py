@@ -371,7 +371,6 @@ class RunPage(tk.Frame):
         else:
             self.running = True
             self.start_pause_text.set("Pause")
-            print("Start")
             for weigher in range(1, self.max_weigher + 1):
                 self.increment_value(weigher, 0)
             if not self.done:
