@@ -1,5 +1,6 @@
 import DatabaseManagement as db
 import ExcelManagement as ex
+import RPi.GPIO as GPIO
 
 import time
 import sqlite3
@@ -7,7 +8,6 @@ import itertools
 import configparser
 import numpy as np
 import tkinter as tk
-from tkinter import messagebox
 from tkinter.font import Font
 from operator import itemgetter
 from openpyxl.utils import column_index_from_string
@@ -20,13 +20,15 @@ class SAWS(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.ration_db = db.DatabaseManager("rations.db")
-        config = configparser.ConfigParser()
-        config.read("config.ini")
-        dir = config["DEFAULT"].get("usb_location")
+        self.config = configparser.ConfigParser()
+        self.config.read("config.ini")
+        dir = self.config["DEFAULT"].get("usb_location")
         self.ration_ex = ex.WorksheetManager(dir, "rations")
         self.ration_logs_ex = ex.WorksheetManager(dir, "ration_logs")
 
         self.setup_database()
+
+        GPIO.setmode(GPIO.BCM)
 
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
@@ -263,6 +265,7 @@ class RationPage(tk.Frame):
             )
             label.pack()
 
+
         self.controller.show_frame("RationPage")
 
 
@@ -339,11 +342,11 @@ class RunPage(tk.Frame):
                 self.weigher_canvases[selected_weigher].draw_hopper()
         if self.running:
             if self.current_weighed[current_name].get() >= current_amount:
-                self.turn_off_motor(current_name)
+                self.turn_off_augar(current_name)
                 if next is not None:
-                    self.turn_on_motor(next)
+                    self.turn_on_augar(next)
             else:
-                self.turn_on_motor(current_name)
+                self.turn_on_augar(current_name)
         self.check_done()
 
     def ingredient_done(self, name, amount):
@@ -365,11 +368,13 @@ class RunPage(tk.Frame):
         else:
             self.end_text.set("End\nRun\nEarly")
 
-    def turn_on_motor(self, name):
-        self.motors[name].create_rectangle(0, 0, self.canvas_size, self.canvas_size, fill="green")
+    def turn_on_augar(self, name):
+        GPIO.output(self.augars[name][0], True)
+        self.augars[name][1].create_rectangle(0, 0, self.canvas_size, self.canvas_size, fill="green")
 
-    def turn_off_motor(self, name):
-        self.motors[name].create_rectangle(0, 0, self.canvas_size, self.canvas_size, fill="red")
+    def turn_off_augar(self, name):
+        GPIO.output(self.augars[name][0], False)
+        self.augars[name][1].create_rectangle(0, 0, self.canvas_size, self.canvas_size, fill="red")
 
     def start_pause(self):
         if self.running:
@@ -378,7 +383,7 @@ class RunPage(tk.Frame):
             for weigher in range(1, self.max_weigher + 1):
                 ingredients = [name for (name, _, ing_weigher, _) in self.ingredients if weigher == ing_weigher]
                 for name in ingredients:
-                    self.turn_off_motor(name)
+                    self.turn_off_augar(name)
             self.quit_button.grid()
         else:
             self.running = True
@@ -435,7 +440,7 @@ class RunPage(tk.Frame):
         unmeasured_counter = 0
         self.current_weighed = {}
         self.label_texts = {}
-        self.motors = {}
+        self.augars = {}
         self.max_weigher = 0
         self.canvas_size = int(self.controller.screen_height / 2)
         for ingredient in self.ingredients:
@@ -466,18 +471,20 @@ class RunPage(tk.Frame):
                     frame, textvariable=self.label_texts[name], font=self.controller.textFont
                 )
                 label.grid(column=weigher_counters[weigher - 1], row=0)
-                self.motors[name] = tk.Canvas(
+                self.augars[name] = (self.controller.config["AUGAR_PINS"].get("#{name.lower()}_pin"), tk.Canvas(
                     frame, width=self.canvas_size / 10, height=self.canvas_size / 10
-                )
-                self.motors[name].grid(column=weigher_counters[weigher - 1] + 1, row=0)
-                self.turn_off_motor(name)
+                ))
+                GPIO.setup(self.augars[name][0], GPIO.OUT)
+                self.augars[name][1].grid(column=weigher_counters[weigher - 1] + 1, row=0)
+                self.turn_off_augar(name)
                 weigher_counters[weigher - 1] += 2
         for weigher in range(1, self.max_weigher + 1):
-            button = tk.Button(
-                weigher_frames[weigher], text="More",
-                command=lambda weigher=weigher: self.increment_value(weigher)
-            )
-            button.grid(column=1, row=3)
+            # button = tk.Button(
+            #     weigher_frames[weigher], text="More",
+            #     command=lambda weigher=weigher: self.increment_value(weigher)
+            # )
+            # button.grid(column=1, row=3)
+            input = WeightInput(weigher, int(self.controller.config["WEIGHER_PINS"].get(str(weigher))))
             self.weigher_canvases[weigher] = Hopper(
                 weigher_frames[weigher], self.controller, self.canvas_size, self.canvas_size
             )
@@ -551,6 +558,25 @@ class Hopper(tk.Canvas):
             points = [gap, fill_y, self.width - gap, fill_y, self.width / 2, self.height]
             self.fill = self.create_polygon(points, fill='yellow')
         self.update()
+
+class WeightInput():
+
+    def __init__(self, weigher, weight_pin):
+        self.weigher = weigher
+        self.pin = weight_pin
+        self.state = GPIO.input(self.pin)
+        GPIO.setup(self.pin, GPIO.IN)
+        self.check_input()
+
+    def check_input(self):
+        for i, button in enumerate(self.buttons):
+            oldstate = self.state[i]
+            newstate = GPIO.input(self.pin)
+            if oldstate != newstate:
+                self.state = newstate
+                if newstate == GPIO.LOW:
+                    self.increment_value(self.weigher)
+        self.master.after(0.01, self.check_input)
 
 def main():
     # root = tk.Tk()
