@@ -475,7 +475,7 @@ class RunPage(tk.Frame):
                 print(name.lower())
                 print(name.lower()+"_pin")
                 print(self.controller.config["AUGAR_PINS"].get(name.lower()+"_pin"))
-                self.augars[name] = (int(self.controller.config["AUGAR_PINS"].get("#{name.lower()}_pin")), tk.Canvas(
+                self.augars[name] = (int(self.controller.config["AUGAR_PINS"].get(name.lower()+"_pin")), tk.Canvas(
                     frame, width=self.canvas_size / 10, height=self.canvas_size / 10
                 ))
                 GPIO.setup(self.augars[name][0], GPIO.OUT)
