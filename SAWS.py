@@ -538,7 +538,7 @@ class Hopper(tk.Canvas):
             fill_width = self.width * triangle_proportion
             gap = (self.width - fill_width) / 2
             points = [gap, fill_y, self.width - gap, fill_y, self.width / 2, self.height]
-            self.fill = self.create_polygon(points, fill='yello')
+            self.fill = self.create_polygon(points, fill='yellow')
         self.update()
 
 def main():
