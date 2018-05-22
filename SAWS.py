@@ -33,7 +33,7 @@ class SAWS(tk.Tk):
         self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
         self.resizable(False, False)
         self.overrideredirect(True)
-        self.myFont = Font(size=30)
+        self.myFont = Font(size=20)
         self.option_add('*Dialog.msg.font', self.myFont)
 
         container = tk.Frame(self)
@@ -125,17 +125,17 @@ class PinPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        pinpad = NumPad(self, controller, lambda: self.check_pin(pinpad))
-        pinpad.pack(fill="none", expand=True)
+        pin_pad = NumPad(self, controller, lambda: self.check_pin(pin_pad))
+        pin_pad.pack(fill="none", expand=True)
 
-    def check_pin(self, pinpad):
-        pin = pinpad.entry.get()
+    def check_pin(self, pin_pad):
+        pin = pin_pad.entry.get()
         pin_cell = self.controller.ration_ex.find("PIN")
         column = column_index_from_string(pin_cell.column)
         row = pin_cell.row
         set_pin = self.controller.ration_ex.read_cell(self.controller.ration_ex.get_cell(column + 1, row))
         if pin == str(set_pin):
-            pinpad.entry.delete(0, tk.INSERT)
+            pin_pad.entry.delete(0, tk.INSERT)
             self.controller.show_frame("MainMenu")
 
 class BatchPage(tk.Frame):
@@ -143,7 +143,7 @@ class BatchPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         num_pad = NumPad(self, controller, lambda: self.controller.frames["RunPage"].log_run(num_pad.entry.get()))
-        num_pad.pack()
+        num_pad.pack(fill="none", expand=True)
 
 class NumPad(tk.Frame):
 
@@ -260,9 +260,13 @@ class RunPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.master = tk.Frame(self)
-        self.master.grid(column=1, row=0, rowspan=4, sticky="nsew")
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(6, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(5, weight=1)
+        self.master.grid(column=2, row=1, rowspan=4, sticky="nsew")
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=1, row=4, sticky="nsew")
+        self.footer.grid(column=2, row=5, sticky="nsew")
         self.grid_rowconfigure(0, weight=1)
 
         self.controller = controller
@@ -277,7 +281,7 @@ class RunPage(tk.Frame):
         button = tk.Button(
             self, textvariable=self.start_pause_text, font=self.controller.myFont, command=self.start_pause
         )
-        button.grid(column=0, row=2)
+        button.grid(column=1, row=3)
 
         houses = self.controller.ration_db.get_all_houses()
         house_names = [house[1] for house in houses]
@@ -286,15 +290,15 @@ class RunPage(tk.Frame):
         self.house_dropdown = tk.OptionMenu(self, self.house, *house_names)
         self.house_dropdown.config(font=self.controller.myFont)
         self.house_dropdown["menu"].config(font=self.controller.myFont)
-        self.house_dropdown.grid(column=3, row=1)
+        self.house_dropdown.grid(column=4, row=2)
 
         self.end_text = tk.StringVar()
-        self.end_text.set("End Run Early")
+        self.end_text.set("End\nRun\nEarly")
         self.quit_button = tk.Button(
             self, textvariable=self.end_text, font=self.controller.myFont,
             command=lambda: self.controller.show_frame("AreYouSure")
         )
-        self.quit_button.grid(column=3, row=2)
+        self.quit_button.grid(column=4, row=3)
 
     def increment_value(self, selected_weigher, increment=None):
         ingredients = [(name, amount, ordering) for (name, amount, weigher, ordering) in self.ingredients if weigher == selected_weigher]
@@ -348,7 +352,7 @@ class RunPage(tk.Frame):
             self.end_text.set("Complete")
             self.quit_button.grid()
         else:
-            self.end_text.set("End Run Early")
+            self.end_text.set("End\nRun\nEarly")
 
     def turn_on_motor(self, name):
         self.motors[name].create_rectangle(0, 0, self.canvas_size, self.canvas_size, fill="green")
@@ -400,9 +404,9 @@ class RunPage(tk.Frame):
         self.master.destroy()
         self.footer.destroy()
         self.master = tk.Frame(self)
-        self.master.grid(column=1, row=0, rowspan=4)
+        self.master.grid(column=2, row=1, rowspan=4)
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=1, row=4)
+        self.footer.grid(column=2, row=5)
         self.running = False
         self.start_pause_text.set("Start")
         self.done = False
@@ -423,7 +427,7 @@ class RunPage(tk.Frame):
         self.label_texts = {}
         self.motors = {}
         self.max_weigher = 0
-        self.canvas_size = int(self.controller.screen_height / 2)
+        self.canvas_size = int(self.controller.screen_height / 4)
         for ingredient in self.ingredients:
             # print(ingredient)
             name = ingredient[0]
@@ -488,18 +492,22 @@ class AreYouSure(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(3, weight=1)
         w = tk.Label(self, text="Are you sure you want to end the run? The ration is not yet complete.", font=self.controller.myFont)
-        w.pack()
+        w.grid(row=1, column=1, columnspan=2)
 
         button = tk.Button(
             self, text="Yes", font=controller.myFont, command=lambda: controller.show_frame("BatchPage")
         )
-        button.pack()
+        button.grid(row=2, column=1, sticky="ew")
 
         button = tk.Button(
             self, text="No", font=controller.myFont, command=lambda: controller.show_frame("RunPage")
         )
-        button.pack()
+        button.grid(row=2, column=2, sticky="ew")
 
 class Hopper(tk.Canvas):
 
