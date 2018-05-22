@@ -126,8 +126,14 @@ class PinPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        explanation = tk.Label(self, text="Please enter the PIN code:", font=self.controller.mainFont)
+        explanation.grid(row=1, column=1)
         pin_pad = NumPad(self, controller, lambda: self.check_pin(pin_pad))
-        pin_pad.pack(fill="none", expand=True)
+        pin_pad.grid(row=2, column=1)
 
     def check_pin(self, pin_pad):
         pin = pin_pad.entry.get()
@@ -143,8 +149,14 @@ class BatchPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        explanation = tk.Label(self, text="Please enter the 6 digit\nBatch Number:", font=self.controller.mainFont)
+        explanation.grid(row=1, column=1)
         num_pad = NumPad(self, controller, lambda: self.controller.frames["RunPage"].log_run(num_pad.entry.get()))
-        num_pad.pack(fill="none", expand=True)
+        num_pad.grid(row=2, column=1)
 
 class NumPad(tk.Frame):
 
