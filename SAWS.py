@@ -473,8 +473,8 @@ class RunPage(tk.Frame):
                 label.grid(column=weigher_counters[weigher - 1], row=0)
                 print(name)
                 print(name.lower())
-                print("#{name.lower()}_pin")
-                print(self.controller.config["AUGAR_PINS"].get("#{name.lower()}_pin"))
+                print(name.lower()+"_pin")
+                print(self.controller.config["AUGAR_PINS"].get(name.lower()+"_pin"))
                 self.augars[name] = (int(self.controller.config["AUGAR_PINS"].get("#{name.lower()}_pin")), tk.Canvas(
                     frame, width=self.canvas_size / 10, height=self.canvas_size / 10
                 ))
