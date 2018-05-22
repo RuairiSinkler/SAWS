@@ -319,7 +319,7 @@ class RunPage(tk.Frame):
         else:
             new_value = self.current_weighed[current_name].get() + increment
         self.current_weighed[current_name].set(new_value)
-        self.label_texts[current_name].set("{}\n{}/{}kg".format(current_name, str(self.current_weighed[current_name].get()), str(current_amount)))
+        self.label_texts[current_name].set("{}\n{}\n/{}kg".format(current_name, str(self.current_weighed[current_name].get()), str(current_amount)))
         percentage = (self.current_weighed[current_name].get() / self.desired_amounts.get(current_name)) * 100
         self.weigher_canvases[selected_weigher].fill_hopper(percentage)
         if self.current_weighed[current_name].get() >= current_amount:
@@ -339,7 +339,7 @@ class RunPage(tk.Frame):
             self.current_weighed[name].set(amount)
         else:
             self.current_weighed[name].set(0)
-        self.label_texts[name].set("{}\n{}/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
+        self.label_texts[name].set("{}\n{}\n/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
         self.check_done()
 
     def check_done(self):
@@ -437,7 +437,7 @@ class RunPage(tk.Frame):
             self.current_weighed[name] = tk.DoubleVar()
             self.current_weighed[name].set(0)
             self.label_texts[name] = tk.StringVar()
-            self.label_texts[name].set("{}\n{}/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
+            self.label_texts[name].set("{}\n{}\n/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
             if weigher is None:
                 button = tk.Button(
                     self.footer, textvariable=self.label_texts[name], font=self.controller.textFont,
