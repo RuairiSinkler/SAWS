@@ -33,13 +33,15 @@ class SAWS(tk.Tk):
         self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
         # self.resizable(False, False)
         # self.overrideredirect(True)
-        self.myFont = Font(size=int(self.screen_width / 200))
+        self.myFont = Font(size=30)
         self.option_add('*Dialog.msg.font', self.myFont)
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
+        container.grid_rowconfigure(2, weight=1)
         container.grid_columnconfigure(0, weight=1)
+        container.grid_columnconfigure(2, weight=1)
 
         self.frames = {}
         for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure, BatchPage):
@@ -55,7 +57,8 @@ class SAWS(tk.Tk):
         # put all of the pages in the same location;
         # the one on the top of the stacking order
         # will be the one that is visible.
-        frame.grid(row=0, column=0, sticky="nsew")
+        #frame.grid(row=1, column=1, sticky="nsew")
+        frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
@@ -115,7 +118,7 @@ class SplashPage(tk.Frame):
         button = tk.Button(
             self, text="Start", font=controller.myFont, command=lambda: self.controller.show_frame("PinPage")
         )
-        button.pack()
+        button.pack(fill="none", expand="True")
 
 class PinPage(tk.Frame):
 
@@ -123,7 +126,7 @@ class PinPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         pinpad = NumPad(self, controller, lambda: self.check_pin(pinpad))
-        pinpad.pack()
+        pinpad.pack(fill="none", expand=True)
 
     def check_pin(self, pinpad):
         pin = pinpad.entry.get()
@@ -153,19 +156,19 @@ class NumPad(tk.Frame):
             button = tk.Button(
                 self, text=str(number), font=controller.myFont, command=lambda n=number: self.entry.insert(tk.INSERT, str(n))
             )
-            button.grid(column=(number - 1) % 3, row=int((number - 1) / 3) + 1)
+            button.grid(column=(number - 1) % 3, row=int((number - 1) / 3) + 1, sticky="ew")
         delete = tk.Button(
-            self, text="DEL", font=controller.myFont, command=lambda: self.entry.delete(self.entry.index(tk.INSERT) - 1)
+            self, text="  DEL  ", font=controller.myFont, command=lambda: self.entry.delete(self.entry.index(tk.INSERT) - 1)
         )
-        delete.grid(column=0, row=4)
+        delete.grid(column=0, row=4, sticky="ew")
         zero = tk.Button(
-            self, text="0", font=controller.myFont, command=lambda: self.entry.insert(tk.INSERT, "0")
+            self, text="   0   ", font=controller.myFont, command=lambda: self.entry.insert(tk.INSERT, "0")
         )
-        zero.grid(column=1, row=4)
+        zero.grid(column=1, row=4, sticky="ew")
         enter = tk.Button(
             self, text="ENTER", font=controller.myFont, command=enter_function
         )
-        enter.grid(column=2, row=4)
+        enter.grid(column=2, row=4, sticky="ew")
 
 class MainMenu(tk.Frame):
 
@@ -183,17 +186,17 @@ class MainMenu(tk.Frame):
                 self, text=name, font=self.controller.myFont,
                 command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
             )
-            button.pack()
+            button.pack(fill="x")
 
         button = tk.Button(
             self, text="Quit", font=controller.myFont, command=lambda: self.controller.show_frame("SplashPage")
         )
-        button.pack()
+        button.pack(fill="x")
 
         button = tk.Button(
             self, text="QUIT", font=controller.myFont, fg="red", command=controller.quit
         )
-        button.pack()
+        button.pack(fill="x")
 
 class RationPage(tk.Frame):
 
@@ -259,7 +262,8 @@ class RunPage(tk.Frame):
         self.master = tk.Frame(self)
         self.master.grid(column=1, row=0, rowspan=4, sticky="nsew")
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=1, row=4)
+        self.footer.grid(column=1, row=4, sticky="nsew")
+        self.grid_rowconfigure(0, weight=1)
 
         self.controller = controller
 
@@ -312,7 +316,7 @@ class RunPage(tk.Frame):
         else:
             new_value = self.current_weighed[current_name].get() + increment
         self.current_weighed[current_name].set(new_value)
-        self.label_texts[current_name].set("{}, {}/{}kg".format(current_name, str(self.current_weighed[current_name].get()), str(current_amount)))
+        self.label_texts[current_name].set("{}\n{}/{}kg".format(current_name, str(self.current_weighed[current_name].get()), str(current_amount)))
         percentage = (self.current_weighed[current_name].get() / self.desired_amounts.get(current_name)) * 100
         self.weigher_canvases[selected_weigher].fill_hopper(percentage)
         if self.current_weighed[current_name].get() >= current_amount:
@@ -332,7 +336,7 @@ class RunPage(tk.Frame):
             self.current_weighed[name].set(amount)
         else:
             self.current_weighed[name].set(0)
-        self.label_texts[name].set("{}, {}/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
+        self.label_texts[name].set("{}\n{}/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
         self.check_done()
 
     def check_done(self):
@@ -431,7 +435,7 @@ class RunPage(tk.Frame):
             self.current_weighed[name] = tk.DoubleVar()
             self.current_weighed[name].set(0)
             self.label_texts[name] = tk.StringVar()
-            self.label_texts[name].set("{}, {}/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
+            self.label_texts[name].set("{}\n{}/{}kg".format(name, str(self.current_weighed[name].get()), str(amount)))
             if weigher is None:
                 button = tk.Button(
                     self.footer, textvariable=self.label_texts[name], font=self.controller.myFont,
@@ -442,7 +446,7 @@ class RunPage(tk.Frame):
             else:
                 if weigher_frames[weigher] is None:
                     weigher_frames[weigher] = tk.Frame(self.master)
-                    weigher_frames[weigher].pack(side=tk.LEFT)
+                    weigher_frames[weigher].pack(side=tk.LEFT, expand=True)
                 frame = weigher_frames[weigher]
                 label = tk.Label(
                     frame, textvariable=self.label_texts[name], font=self.controller.myFont
@@ -459,11 +463,22 @@ class RunPage(tk.Frame):
                 weigher_frames[weigher], text="More",
                 command=lambda weigher=weigher: self.increment_value(weigher)
             )
-            button.grid(column=0, row=3 )
+            button.grid(column=1, row=3)
             self.weigher_canvases[weigher] = Hopper(
                 weigher_frames[weigher], self.controller, self.canvas_size, self.canvas_size
             )
-            self.weigher_canvases[weigher].grid(column=0, row=2, columnspan=4)
+            self.weigher_canvases[weigher].grid(row=2, column=1, columnspan=4, sticky="nsew")
+            # weigher_frames[weigher].grid_rowconfigure(1, weight=1)
+            # weigher_frames[weigher].grid_columnconfigure(0, weight=1)
+            # weigher_frames[weigher].grid_rowconfigure(1, weight=1)
+            # weigher_frames[weigher].grid_rowconfigure(3, weight=1)
+            # weigher_frames[weigher].grid_columnconfigure(0, weight=1)
+            # weigher_frames[weigher].grid_columnconfigure(weigher_counters[weigher - 1], weight=1)
+        for weigher in range(1, self.max_weigher + 1):
+            new_width = weigher_frames[weigher].winfo_width()
+            self.weigher_canvases[weigher].configure(width=new_width)
+            self.weigher_canvases[weigher].width = new_width
+            self.weigher_canvases[weigher].draw_hopper()
 
         self.check_done()
         self.controller.show_frame("RunPage")
@@ -498,6 +513,7 @@ class Hopper(tk.Canvas):
         self.draw_hopper()
 
     def draw_hopper(self):
+        self.delete("all")
         points = [0, 0, self.width, 0, self.width, self.triangle_y, self.width / 2, self.height, 0, self.triangle_y]
         self.hopper = self.create_polygon(points, fill='yellow', outline='black', width=3)
         self.update()
