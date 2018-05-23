@@ -339,7 +339,10 @@ class RunPage(tk.Frame):
             new_value = self.current_weighed[current_name].get() + increment
         self.current_weighed[current_name].set(new_value)
         self.label_texts[current_name].set("{}\n{}\n/{}kg".format(current_name, str(self.current_weighed[current_name].get()), str(current_amount)))
-        percentage = (self.current_weighed[current_name].get() / self.desired_amounts.get(current_name)) * 100
+        if int(self.desired_amounts.get(current_name)) == 0:
+            percentage = 100
+        else:
+            percentage = (self.current_weighed[current_name].get() / self.desired_amounts.get(current_name)) * 100
         self.weigher_canvases[selected_weigher].fill_hopper(percentage)
         if self.current_weighed[current_name].get() >= current_amount:
             if next is not None:
