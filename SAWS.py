@@ -310,7 +310,7 @@ class RunPage(tk.Frame):
         self.end_text.set("End\nRun\nEarly")
         self.quit_button = tk.Button(
             self, textvariable=self.end_text, font=self.controller.mainFont,
-            command=lambda: self.controller.show_frame("AreYouSure")
+            command=lambda: self.controller.frames["AreYouSure"].display_page(self.done)
         )
         self.quit_button.grid(column=4, row=3)
 
@@ -488,7 +488,7 @@ class RunPage(tk.Frame):
             #     command=lambda weigher=weigher: self.increment_value(weigher)
             # )
             # button.grid(column=1, row=3)
-            input = WeightInput(self.controller, weigher, int(self.controller.config["WEIGHER_PINS"].get(str(weigher))))
+            input = WeightInput(self, self.controller, weigher, int(self.controller.config["WEIGHER_PINS"].get(str(weigher))))
             self.weigher_canvases[weigher] = Hopper(
                 weigher_frames[weigher], self.controller, self.canvas_size, self.canvas_size
             )
@@ -531,6 +531,13 @@ class AreYouSure(tk.Frame):
         )
         button.grid(row=2, column=2, sticky="ew")
 
+    def display_page(self, done):
+        if done:
+            self.controller.show_frame("BatchPage")
+        else:
+            self.controller.show_frame("AreYouSure")
+
+
 class Hopper(tk.Canvas):
 
     def __init__(self, parent, controller, width, height):
@@ -565,8 +572,9 @@ class Hopper(tk.Canvas):
 
 class WeightInput():
 
-    def __init__(self, controller, weigher, weight_pin):
+    def __init__(self, parent, controller, weigher, weight_pin):
         self.controller = controller
+        self.parent = parent
         self.weigher = weigher
         self.pin = weight_pin
         GPIO.setup(self.pin, GPIO.IN)
@@ -579,7 +587,7 @@ class WeightInput():
         if oldstate != newstate:
             self.state = newstate
             if newstate == GPIO.LOW:
-                self.increment_value(self.weigher)
+                self.parent.increment_value(self.weigher)
         self.controller.after(10, self.check_input)
 
 def main():
