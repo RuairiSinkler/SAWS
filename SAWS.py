@@ -132,7 +132,9 @@ class PinPage(tk.Frame):
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
-        explanation = tk.Label(self, text="Please enter the PIN code:", font=self.controller.mainFont)
+        self.text = tk.StringVar()
+        self.text.set("Please enter the PIN code:")
+        explanation = tk.Label(self, textvariable=self.text, font=self.controller.mainFont)
         explanation.grid(row=1, column=1)
         pin_pad = NumPad(self, controller, lambda: self.check_pin(pin_pad))
         pin_pad.grid(row=2, column=1)
@@ -143,9 +145,11 @@ class PinPage(tk.Frame):
         column = column_index_from_string(pin_cell.column)
         row = pin_cell.row
         set_pin = self.controller.ration_ex.read_cell(self.controller.ration_ex.get_cell(column + 1, row))
-        if pin == str(set_pin):
+        if str(pin) == str(set_pin):
             pin_pad.entry.delete(0, tk.INSERT)
             self.controller.show_frame("MainMenu")
+        else:
+            self.text.set("Incorrect PIN please try again")
 
 class BatchPage(tk.Frame):
     def __init__(self, parent, controller):
