@@ -488,7 +488,7 @@ class RunPage(tk.Frame):
             #     command=lambda weigher=weigher: self.increment_value(weigher)
             # )
             # button.grid(column=1, row=3)
-            input = WeightInput(weigher, int(self.controller.config["WEIGHER_PINS"].get(str(weigher))))
+            input = WeightInput(self.controller, weigher, int(self.controller.config["WEIGHER_PINS"].get(str(weigher))))
             self.weigher_canvases[weigher] = Hopper(
                 weigher_frames[weigher], self.controller, self.canvas_size, self.canvas_size
             )
@@ -565,7 +565,8 @@ class Hopper(tk.Canvas):
 
 class WeightInput():
 
-    def __init__(self, weigher, weight_pin):
+    def __init__(self, controller, weigher, weight_pin):
+        self.controller = controller
         self.weigher = weigher
         self.pin = weight_pin
         GPIO.setup(self.pin, GPIO.IN)
@@ -579,7 +580,7 @@ class WeightInput():
             self.state = newstate
             if newstate == GPIO.LOW:
                 self.increment_value(self.weigher)
-        self.master.after(0.01, self.check_input)
+        self.controller.after(10, self.check_input)
 
 def main():
     # root = tk.Tk()
