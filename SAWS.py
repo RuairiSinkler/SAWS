@@ -145,9 +145,7 @@ class PinPage(tk.Frame):
         column = column_index_from_string(pin_cell.column)
         row = pin_cell.row
         set_pin = self.controller.ration_ex.read_cell(self.controller.ration_ex.get_cell(column + 1, row))
-        print(str(pin))
-        print(str(set_pin))
-        if str(pin) == str(set_pin):
+        if int(pin) == int(set_pin):
             pin_pad.entry.delete(0, tk.INSERT)
             self.controller.show_frame("MainMenu")
         else:
