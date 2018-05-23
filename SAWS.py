@@ -471,10 +471,6 @@ class RunPage(tk.Frame):
                     frame, textvariable=self.label_texts[name], font=self.controller.textFont
                 )
                 label.grid(column=weigher_counters[weigher - 1], row=0)
-                print(name)
-                print(name.lower())
-                print(name.lower()+"_pin")
-                print(self.controller.config["AUGAR_PINS"].get(name.lower()+"_pin"))
                 self.augars[name] = (int(self.controller.config["AUGAR_PINS"].get(name.lower()+"_pin")), tk.Canvas(
                     frame, width=self.canvas_size / 10, height=self.canvas_size / 10
                 ))
@@ -588,7 +584,7 @@ class WeightInput():
             self.state = newstate
             if newstate == GPIO.LOW:
                 self.parent.increment_value(self.weigher)
-        self.controller.after(10, self.check_input)
+        self.controller.after(20, self.check_input)
 
 def main():
     # root = tk.Tk()
