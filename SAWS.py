@@ -591,7 +591,7 @@ class WeightInput():
             self.state = newstate
             if newstate == GPIO.LOW:
                 self.parent.increment_value(self.weigher)
-        self.controller.after(100, self.check_input)
+        self.controller.after(200, self.check_input)
 
 def main():
     # root = tk.Tk()
