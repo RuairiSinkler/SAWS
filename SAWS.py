@@ -580,7 +580,7 @@ class WeightInput():
         self.parent = parent
         self.weigher = weigher
         self.pin = weight_pin
-        GPIO.setup(self.pin, GPIO.IN)
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         self.state = GPIO.input(self.pin)
         self.check_input()
 
@@ -589,7 +589,7 @@ class WeightInput():
         newstate = GPIO.input(self.pin)
         if oldstate != newstate:
             self.state = newstate
-            if newstate == GPIO.LOW:
+            if newstate == GPIO.HIGH:
                 self.parent.increment_value(self.weigher)
         self.controller.after(200, self.check_input)
 
