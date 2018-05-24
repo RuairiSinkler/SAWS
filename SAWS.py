@@ -598,8 +598,13 @@ def main():
     # hopper = Hopper(root, root, 1000, 600)
     # hopper.pack()
     # root.mainloop()
-    saws = SAWS()
-    saws.mainloop()
+    try:
+        saws = SAWS()
+        saws.mainloop()
+    except:
+        pass
+    finally:
+        GPIO.cleanup()
 
 if __name__ == "__main__":
     try:
