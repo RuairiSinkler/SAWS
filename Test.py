@@ -6,7 +6,7 @@ class WeightInput():
 
     def __init__(self, weight_pin):
         self.pin = weight_pin
-        GPIO.setup(self.pin, GPIO.IN)
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # GPIO.add_event_detect(self.pin, GPIO.RISING, callback=lambda: print("button pressed"))
         self.state = GPIO.input(self.pin)
         self.check_input()
