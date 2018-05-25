@@ -10,20 +10,20 @@ class WeightInput():
         # self.state = GPIO.input(self.pin)
         # self.check_input()
 
-    def check_input(self):
-        oldstate = self.state
-        newstate = GPIO.input(self.pin)
-        if oldstate != newstate:
-            self.state = newstate
-            if newstate == GPIO.HIGH:
-                self.parent.increment_value(self.weigher)
-        self.controller.after(200, self.check_input)
+    # def check_input(self):
+    #     oldstate = self.state
+    #     newstate = GPIO.input(self.pin)
+    #     if oldstate != newstate:
+    #         self.state = newstate
+    #         if newstate == GPIO.HIGH:
+    #             self.parent.increment_value(self.weigher)
+    #     self.controller.after(200, self.check_input)
 
 def main():
     try:
-        WeightInput(19)
-        WeightInput(26)
-        input("Press enter to exit:")
+        input1 = WeightInput(19)
+        input2 = WeightInput(26)
+        wait = input("Press enter to exit:")
     except:
         pass
     finally:
