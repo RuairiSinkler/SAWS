@@ -70,10 +70,7 @@ class SAWS(tk.Tk):
         frame.tkraise()
 
     def setup_database(self):
-        try:
-            self.ration_db.clear()
-        except sqlite3.OperationalError:
-            pass
+        self.ration_db.clear()
         self.ration_db.build()
 
         ingredient_cell = self.ration_ex.find("Ingredient")
