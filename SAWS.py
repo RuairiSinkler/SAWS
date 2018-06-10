@@ -597,8 +597,8 @@ def main():
     try:
         saws = SAWS()
         saws.mainloop()
-    except:
-        pass
+    except Exception as e:
+        print(e)
     finally:
         GPIO.cleanup()
 
