@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import DatabaseManagement as db
 import ExcelManagement as ex
 import RPi.GPIO as GPIO
