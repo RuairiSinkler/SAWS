@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO
-import os
 from Controller import *
 from Display import *
 from DatabaseManagement import *
@@ -7,7 +6,7 @@ from DatabaseManagement import *
 
 def main():
     ration_database = DatabaseManager("rations.db")
-    display = ConsoleDisplay(ration_database)
+    display = GUIDisplay(ration_database)
     controller = Controller(display, ration_database)
 
     on = True

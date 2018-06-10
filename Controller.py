@@ -61,6 +61,7 @@ class Controller:
         sl_done = False
 
         self.display.setup_weights()
+        self.display.display_weights([wheat_weight, barley_weight, soya_weight, limestone_weight], weight_limits)
 
         while not (complete):
 
@@ -115,26 +116,27 @@ class Controller:
         premix_done = False
         while not (all_done):
             if not soya_oil_done:
-                soya_oil_done = self.display.ask("Is the Soya Oil done?")
+                soya_oil_done = self.display.ask("Is the Soya Oil done? ({} kg)".format(soya_oil_limit))
                 if soya_oil_done:
                     soya_oil_weight = soya_oil_limit
             if not arbocell_done:
-                arbocell_done = self.display.ask("Is the Arbocell done?")
+                arbocell_done = self.display.ask("Is the Arbocell done? ({} kg)".format(arbocell_limit))
                 if arbocell_done:
                     arbocell_weight = arbocell_limit
             if not methionine_done:
-                methionine_done = self.display.ask("Is the Methinonine done?")
+                methionine_done = self.display.ask("Is the Methionine done? ({} kg)".format(methionine_limit))
                 if methionine_done:
                     methionine_weight = methionine_limit
             if not premix_done:
-                premix_done = self.display.ask("Is the Premix done?")
+                premix_done = self.display.ask("Is the Premix done? ({} kg)".format(premix_limit))
                 if premix_done:
                     premix_weight = premix_limit
             all_done = soya_oil_done and arbocell_done and methionine_done and premix_done
+        notes = self.display.get_input("Any notes to add?")
 
         end_weights = [wheat_weight, barley_weight, soya_weight, limestone_weight,
                        soya_oil_weight, arbocell_weight, methionine_weight, premix_weight]
-        self.log_run(ration_name, end_weights, weight_limits, house_id)
+        self.log_run(ration_name, end_weights, weight_limits, house_id, notes)
         return end_weights, weight_limits
 
     def assign_rations(self):
@@ -292,7 +294,7 @@ class Controller:
         if not (cancel):
             self.ration_database.change_batch(house, batch_number)
 
-    def log_run(self, ration_name, end_weights, weight_limits, house_id):
+    def log_run(self, ration_name, end_weights, weight_limits, house_id, notes):
         self.display.message("Logging run...")
         now = pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone("Europe/London"))
         now_string = now.strftime("%H:%M, %d/%m/%Y")
@@ -302,4 +304,4 @@ class Controller:
         directory = self.ration_database.get_house_name(house_id)
         filename = "Batch {}".format(str(batch_number))
         log = WorksheetManager(directory, filename)
-        log.fill_row(ration_name, end_weights, weight_limits, now_string)
+        log.fill_row(ration_name, end_weights, weight_limits, now_string, notes)

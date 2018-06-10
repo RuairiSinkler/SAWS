@@ -87,16 +87,6 @@ class WorksheetManager:
             self.write_cell("-", self.get_cell(i+2, 3))
         self.save()
 
-    # Fills a row appropriately with a runs information
-    def fill_row(self, ration_name, end_weights, weight_limits, now):
-        row = self.sheet.max_row + 1
-        self.write_cell(now, self.get_cell(2, row))
-        self.write_cell(ration_name, self.get_cell(3, row))
-        for i in range(8):
-            string = "{}/{}".format(end_weights[i], weight_limits[i])
-            self.write_cell(string, self.get_cell(i+4, row))
-        self.save()
-
     # Finds a value in the worksheet and returns its cell
     def find(self, search_string):
         for row in self.sheet.rows:
