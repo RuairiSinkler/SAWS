@@ -210,11 +210,6 @@ class MainMenu(tk.Frame):
         )
         button.pack(fill="x")
 
-        button = tk.Button(
-            self, text="QUIT", font=controller.mainFont, fg="red", command=controller.quit
-        )
-        button.pack(fill="x")
-
 class RationPage(tk.Frame):
 
     def __init__(self, parent, controller):
