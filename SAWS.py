@@ -22,7 +22,7 @@ class SAWS(tk.Tk):
 
         self.ration_db = db.DatabaseManager("rations.db")
         self.config = configparser.ConfigParser()
-        self.config.read("config.ini")
+        self.config.read("/home/pi/Documents/SAWS/config.ini")
         dir = self.config["DEFAULT"].get("usb_location")
         self.ration_ex = ex.WorksheetManager(dir, "rations")
         self.ration_logs_ex = ex.WorksheetManager(dir, "ration_logs")
