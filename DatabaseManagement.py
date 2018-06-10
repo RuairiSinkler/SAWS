@@ -9,7 +9,7 @@ class DatabaseManager:
     def run_sql_file(self, file_path):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
-        with open("/home/pi/Documents/SAWS//{}".format(file_path)) as f:
+        with open("/home/pi/Documents/SAWS/{}".format(file_path)) as f:
             cursor.executescript(f.read())
 
     def clear(self):
