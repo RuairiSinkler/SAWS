@@ -11,6 +11,8 @@ class DatabaseManager:
         cursor = connect.cursor()
         with open("/home/pi/Documents/SAWS/{}".format(file_path)) as f:
             cursor.executescript(f.read())
+        connect.commit()
+        connect.close()
 
     def clear(self):
         self.run_sql_file("delete_rations.sql")
