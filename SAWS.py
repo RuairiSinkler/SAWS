@@ -113,6 +113,9 @@ class SAWS(tk.Tk):
                 break
             self.ration_db.insert_house([name])
 
+    def shutdown(self):
+        os.system("sudo shutdown -h now")
+
 
 class SplashPage(tk.Frame):
 
@@ -124,7 +127,7 @@ class SplashPage(tk.Frame):
         )
         button.pack(fill="none", expand="True")
         button = tk.Button(
-            self, text="Shutdown", font=controller.mainFont, command=shutdown
+            self, text="Shutdown", font=controller.mainFont, command=self.controller.shutdown
         )
         button.pack(fill="none", expand="True")
 
@@ -593,9 +596,6 @@ class WeightInput():
             if newstate == GPIO.HIGH:
                 self.parent.increment_value(self.weigher)
         self.controller.after(200, self.check_input)
-
-    def shutdown(self):
-        os.system("sudo shutdown -h now")
 
 def main():
     # root = tk.Tk()
