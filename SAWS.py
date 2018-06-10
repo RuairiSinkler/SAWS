@@ -2,6 +2,7 @@ import DatabaseManagement as db
 import ExcelManagement as ex
 import RPi.GPIO as GPIO
 
+import os
 import time
 import sqlite3
 import itertools
@@ -409,7 +410,7 @@ class RunPage(tk.Frame):
             self.controller.ration_logs_ex.setup_sheet(house, headings)
             sheet = self.controller.ration_logs_ex.get_sheet(house)
         self.controller.ration_logs_ex.change_sheet(sheet)
-        time_run = time.strftime("%H:%M:%S, %d/%m/%y")
+        time_run = time.strftime("%d/%m/%y")
         ration = self.controller.ration_db.get_ration(self.ration_id)[1]
         self.controller.ration_logs_ex.log_run(time_run, ration, self.done, self.current_weighed, batch_number)
         self.controller.ration_logs_ex.save()
@@ -589,18 +590,23 @@ class WeightInput():
                 self.parent.increment_value(self.weigher)
         self.controller.after(200, self.check_input)
 
+    def shutdown(self):
+        os.system("sudo shutdown -h now")
+
 def main():
     # root = tk.Tk()
     # hopper = Hopper(root, root, 1000, 600)
     # hopper.pack()
     # root.mainloop()
-    try:
-        saws = SAWS()
-        saws.mainloop()
-    except Exception as e:
-        print(e)
-    finally:
-        GPIO.cleanup()
+    saws = SAWS()
+    saws.mainloop()
+    # try:
+    #     saws = SAWS()
+    #     saws.mainloop()
+    # except Exception as e:
+    #     print(e)
+    # finally:
+    #     GPIO.cleanup()
 
 if __name__ == "__main__":
     try:
