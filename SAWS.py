@@ -123,6 +123,10 @@ class SplashPage(tk.Frame):
             self, text="Start", font=controller.mainFont, command=lambda: self.controller.show_frame("PinPage")
         )
         button.pack(fill="none", expand="True")
+        button = tk.Button(
+            self, text="Shutdown", font=controller.mainFont, command=shutdown
+        )
+        button.pack(fill="none", expand="True")
 
 class PinPage(tk.Frame):
 
@@ -598,15 +602,11 @@ def main():
     # hopper = Hopper(root, root, 1000, 600)
     # hopper.pack()
     # root.mainloop()
-    saws = SAWS()
-    saws.mainloop()
-    # try:
-    #     saws = SAWS()
-    #     saws.mainloop()
-    # except Exception as e:
-    #     print(e)
-    # finally:
-    #     GPIO.cleanup()
+    try:
+        saws = SAWS()
+        saws.mainloop()
+    finally:
+        GPIO.cleanup()
 
 if __name__ == "__main__":
     try:
