@@ -5,28 +5,17 @@ from pathlib import Path
 
 class WorksheetManager:
     def __init__(self, directory, name):
-        success = False
-        append_to_directory = ""
-        while(not(success)):
-            try:
-                dir = directory + append_to_directory
-                if not(os.path.exists(dir)):
-                    os.makedirs(dir)
-                self.path = "{}/{}.xlsx".format(dir, name)
-                workbook = Path(self.path)
-                if workbook.is_file():
-                    self.workbook = openpyxl.load_workbook(self.path)
-                else:
-                    self.workbook = openpyxl.Workbook()
-                    self.sheet = self.workbook.active
-                    self.save()
-                self.sheet = self.workbook.active
-                success = True
-            except PermissionError:
-                if append_to_directory == "":
-                    append_to_directory = "1"
-                else:
-                    append_to_directory = str(int(append_to_directory) + 1)
+        dir = directory
+        self.path = "{}/{}.xlsx".format(dir, name)
+        workbook = Path(self.path)
+        if workbook.is_file():
+            self.workbook = openpyxl.load_workbook(self.path)
+        else:
+            self.workbook = openpyxl.Workbook()
+            self.sheet = self.workbook.active
+            self.save()
+        self.sheet = self.workbook.active
+        success = True
         # print(self.workbook.sheetnames)
 
     # Saves any work done
