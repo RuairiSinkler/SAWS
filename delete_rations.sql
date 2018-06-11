@@ -1,9 +1,9 @@
 PRAGMA foreign_keys = 0;
 
-DROP TABLE ingredients;
+DROP TABLE IF EXISTS ingredients;
 
-DROP TABLE rations;
+DROP TABLE IF EXISTS rations;
 
-DROP TABLE ration_ingredients;
+DROP TABLE IF EXISTS ration_ingredients;
 
-DROP TABLE houses;
+DROP TABLE IF EXISTS houses;
