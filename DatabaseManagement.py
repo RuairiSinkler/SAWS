@@ -4,7 +4,7 @@ from pathlib import Path
 
 class DatabaseManager:
     def __init__(self, database_name):
-        self.database_name = database_name
+        self.database_name = "/home/pi/Documents/SAWS/{}".format(database_name)
 
     def run_sql_file(self, file_path):
         connect = sqlite3.connect(self.database_name)
