@@ -26,7 +26,7 @@ class WorksheetManager:
                 if append_to_directory == "":
                     append_to_directory = "1"
                 else:
-                    append_to_directory = str(int(append_to_directory + 1))
+                    append_to_directory = str(int(append_to_directory) + 1)
         # print(self.workbook.sheetnames)
 
     # Saves any work done
