@@ -412,7 +412,7 @@ class RunPage(tk.Frame):
             self.controller.ration_logs_ex.create_sheet(house)
             sheet = self.controller.ration_logs_ex.get_sheet(house)
             self.controller.ration_logs_ex.change_sheet(sheet)
-            headings = ["Time Run", "Ration", "Complete"] + [name for (name, _, _, _) in self.ingredients] + ["Total", "Batch Number"]
+            headings = ["Date Run", "Ration", "Complete"] + [name for (name, _, _, _) in self.ingredients] + ["Total", "Batch Number"]
             self.controller.ration_logs_ex.setup_sheet(house, headings)
             sheet = self.controller.ration_logs_ex.get_sheet(house)
         self.controller.ration_logs_ex.change_sheet(sheet)
