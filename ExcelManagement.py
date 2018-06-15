@@ -28,7 +28,7 @@ class WorksheetManager:
 
     def log_run(self, time_run, ration, complete, amounts, batch_number):
         row = self.sheet.max_row + 1
-        column = openpyxl.utils.column_index_from_string(self.find("Time Run").column)
+        column = openpyxl.utils.column_index_from_string(self.find("Date Run").column)
         self.write_cell(time_run, self.get_cell(column, row))
         self.write_cell(ration, self.get_cell(column + 1, row))
         if complete:
