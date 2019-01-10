@@ -2,12 +2,16 @@
 Python program to automatically control a hopper/augar system for mixing ingredents to be milled for chicken feed.
 
 ## Software Installation Instructions
+### Ensuring USB works correctly
 * Ensure your USB is called "RATIONUSB" and copy rations.xlsx to it
-* Install usbmount with ```sudo apt-get install usbmount```
-* Install the openpyxl module with ```sudo pip3 install openpyxl```
+* Plug in your USB and run ```sudo blkid``` noting the UUID of your device (it will look something like ```5C24-1453```)
+* Run ```sudo nano fstab``` to edit the fstab file
+* Add to the bottom: ```UUID=*INSERT YOUR UUID HERE*  /media/pi/RATIONUSB  vfat  defaults,nofail  0  0```
 
 
+### Main Setup
 * Install latest version of Raspbian onto Raspberry Pi
+* Install the openpyxl module with ```sudo pip3 install openpyxl```
 * Clone this Github repository
 * Run ```sudo python3 SAWS/SAWS.py```
 
