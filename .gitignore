@@ -54,6 +54,6 @@ docs/_build/
 *.db
 
 # My additions
-.idea/
+.idea
 ration_logs.xlsx
 config.ini
