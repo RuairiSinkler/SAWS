@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import Global
 import DatabaseManagement as db
 import ExcelManagement as ex
 import RPi.GPIO as GPIO
@@ -11,6 +12,7 @@ import itertools
 import configparser
 import numpy as np
 import tkinter as tk
+import argparse
 from tkinter.font import Font
 from operator import itemgetter
 from openpyxl.utils import column_index_from_string
@@ -453,7 +455,6 @@ class RunPage(tk.Frame):
         self.max_weigher = 0
         self.canvas_size = int(self.controller.screen_height / 2)
         for ingredient in self.ingredients:
-            # print(ingredient)
             name = ingredient[0]
             amount = ingredient[1]
             weigher = ingredient[2]
@@ -488,16 +489,18 @@ class RunPage(tk.Frame):
                 self.turn_off_augar(name)
                 weigher_counters[weigher - 1] += 2
         for weigher in range(1, self.max_weigher + 1):
-            # button = tk.Button(
-            #     weigher_frames[weigher], text="More",
-            #     command=lambda weigher=weigher: self.increment_value(weigher)
-            # )
-            # button.grid(column=1, row=3)
+            if Global.dev_mode:
+                button = tk.Button(
+                    weigher_frames[weigher], text="More",
+                    command=lambda weigher=weigher: self.increment_value(weigher)
+                )
+            button.grid(column=1, row=3)
             input = WeightInput(self, self.controller, weigher, int(self.controller.config["WEIGHER_PINS"].get(str(weigher))))
             self.weigher_canvases[weigher] = Hopper(
                 weigher_frames[weigher], self.controller, self.canvas_size, self.canvas_size
             )
             self.weigher_canvases[weigher].grid(row=2, column=1, columnspan=4, sticky="nsew")
+
             # weigher_frames[weigher].grid_rowconfigure(1, weight=1)
             # weigher_frames[weigher].grid_columnconfigure(0, weight=1)
             # weigher_frames[weigher].grid_rowconfigure(1, weight=1)
@@ -575,6 +578,7 @@ class Hopper(tk.Canvas):
             self.fill = self.create_polygon(points, fill='yellow')
         self.update()
 
+
 class WeightInput():
 
     def __init__(self, parent, controller, weigher, weight_pin):
@@ -601,6 +605,13 @@ def main():
     # hopper = Hopper(root, root, 1000, 600)
     # hopper.pack()
     # root.mainloop()
+    parser = argparse.ArgumentParser(description="Parses arguments for SAWS")
+    parser.add_argument("-d", "--devmode", action="store_true",
+                        help="Enables Dev Mode")
+    args = parser.parse_args()
+
+    Global.dev_mode = args.devmode
+
     try:
         saws = SAWS()
         saws.mainloop()

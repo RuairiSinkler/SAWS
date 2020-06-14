@@ -1,10 +1,11 @@
 import RPi.GPIO as GPIO
+
 from Controller import *
 from Display import *
 from DatabaseManagement import *
 
-
 def main():
+
     ration_database = DatabaseManager("rations.db")
     display = GUIDisplay(ration_database)
     controller = Controller(display, ration_database)
