@@ -84,6 +84,8 @@ class SAWS(tk.Tk):
         self.ration_db.build()
 
         ingredient_cell = self.ration_ex.find("Ingredient")
+        if ingredient_cell is None:
+            raise USBError
         top_row = ingredient_cell.row
         column = column_index_from_string(ingredient_cell.column)
         for row in itertools.count(top_row + 1):
@@ -246,11 +248,6 @@ class RationPage(tk.Frame):
 
         self.ration_id = None
         self.name = None
-
-        # for x in range(2):
-        #     tk.Grid.rowconfigure(self, x, weight=1)
-        # for y in range(5):
-        #     tk.Grid.columnconfigure(self, y, weight=1)
 
         button = tk.Button(
             self.footer, text="Back", font=self.controller.mainFont,
