@@ -564,7 +564,9 @@ class ErrorMessage(tk.Frame):
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(3, weight=1)
-        w = tk.Label(self, text="Error!", font=self.controller.mainFont)
+
+        self.message = "Error!"
+        w = tk.Label(self, textvariable=self.message, font=self.controller.mainFont)
         w.grid(row=1, column=1, columnspan=2)
         button = tk.Button(
             self, text="Shutdown", font=self.controller.mainFont, command=self.controller.shutdown
@@ -572,7 +574,7 @@ class ErrorMessage(tk.Frame):
         button.grid(row=2, column=1, sticky="ew")
 
     def display_page(self, error):
-        print("Displaying error: {}".format(error.message))
+        self.message = error.message
         self.controller.show_frame("ErrorMessage")
 
 
