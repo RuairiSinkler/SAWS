@@ -566,7 +566,7 @@ class ErrorMessage(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(3, weight=1)
 
-        self.message = tk.StringVar
+        self.message = tk.StringVar()
         w = tk.Label(self, textvariable=self.message, font=self.controller.mainFont)
         w.grid(row=1, column=1, columnspan=2)
         button = tk.Button(
