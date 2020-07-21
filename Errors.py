@@ -10,6 +10,6 @@ class Error(Exception):
 
 class USBError(Error):
 
-    def __init__(self, message="Error reading rations.xlsx\nIs the USB plugged in and the sheet formatted correctly?"):
+    def __init__(self, message="Error reading rations.xlsx\nIs the USB plugged in and\nthe sheet formatted correctly?"):
         self.message = message
         super().__init__(self.message)
