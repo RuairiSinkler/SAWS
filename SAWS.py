@@ -20,6 +20,7 @@ from openpyxl.utils import column_index_from_string
 
 WEIGHER_INCREMENT = 25
 
+
 class SAWS(tk.Tk):
     
     def __init__(self, *args, **kwargs):
@@ -61,7 +62,6 @@ class SAWS(tk.Tk):
             self.create_frame(F, self.container)
 
         self.show_frame("SplashPage")
-
 
     def create_frame(self, F, container, *args):
         page_name = F.__name__
@@ -141,6 +141,7 @@ class SplashPage(tk.Frame):
         )
         button.pack(fill="none", expand="True")
 
+
 class PinPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -169,6 +170,7 @@ class PinPage(tk.Frame):
         else:
             self.text.set("Incorrect PIN please try again")
 
+
 class BatchPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -181,6 +183,7 @@ class BatchPage(tk.Frame):
         explanation.grid(row=1, column=1)
         num_pad = NumPad(self, controller, lambda: self.controller.frames["RunPage"].log_run(num_pad.entry.get()))
         num_pad.grid(row=2, column=1)
+
 
 class NumPad(tk.Frame):
 
@@ -207,6 +210,7 @@ class NumPad(tk.Frame):
         )
         enter.grid(column=2, row=4, sticky="ew")
 
+
 class MainMenu(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -227,6 +231,7 @@ class MainMenu(tk.Frame):
             self, text="Quit", font=controller.mainFont, command=lambda: self.controller.show_frame("SplashPage")
         )
         button.pack(fill="x")
+
 
 class RationPage(tk.Frame):
 
@@ -260,7 +265,6 @@ class RationPage(tk.Frame):
         )
 
         button.pack(side=tk.LEFT)
-
 
     def display_page(self, ration_id):
 
@@ -434,7 +438,6 @@ class RunPage(tk.Frame):
 
         self.controller.show_frame("MainMenu")
 
-
     def display_page(self, ration_id):
         self.master.destroy()
         self.footer.destroy()
@@ -526,6 +529,7 @@ class RunPage(tk.Frame):
         self.check_done()
         self.controller.show_frame("RunPage")
 
+
 class AreYouSure(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -565,7 +569,7 @@ class ErrorMessage(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(3, weight=1)
 
-        self.message = "Error!"
+        self.message = tk.StringVar
         w = tk.Label(self, textvariable=self.message, font=self.controller.mainFont)
         w.grid(row=1, column=1, columnspan=2)
         button = tk.Button(
@@ -574,7 +578,7 @@ class ErrorMessage(tk.Frame):
         button.grid(row=2, column=1, sticky="ew")
 
     def display_page(self, error):
-        self.message = error.message
+        self.message.set(error.message)
         self.controller.show_frame("ErrorMessage")
 
 
@@ -611,7 +615,7 @@ class Hopper(tk.Canvas):
         self.update()
 
 
-class WeightInput():
+class WeightInput:
 
     def __init__(self, parent, controller, weigher, weight_pin):
         self.controller = controller
@@ -624,13 +628,14 @@ class WeightInput():
         self.check_input()
 
     def check_input(self):
-        oldstate = self.state
-        newstate = GPIO.input(self.pin)
-        if oldstate != newstate:
-            self.state = newstate
-            if newstate == GPIO.HIGH:
+        old_state = self.state
+        new_state = GPIO.input(self.pin)
+        if old_state != new_state:
+            self.state = new_state
+            if new_state == GPIO.HIGH:
                 self.parent.increment_value(self.weigher)
         self.controller.after(200, self.check_input)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Parses arguments for SAWS")
@@ -650,6 +655,7 @@ def main():
             saws.mainloop()
     finally:
         GPIO.cleanup()
+
 
 if __name__ == "__main__":
     try:
