@@ -25,17 +25,27 @@ class SAWS(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_rowconfigure(2, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-        container.grid_columnconfigure(2, weight=1)
+        self.screen_width = self.winfo_screenwidth()
+        self.screen_height = self.winfo_screenheight()
+        self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
+        self.resizable(False, False)
+        self.overrideredirect(True)
+        self.mainFont = Font(size=25)
+        self.textFont = Font(size=15)
+        self.option_add('*Dialog.msg.font', self.mainFont)
+
+        self.container = tk.Frame(self)
+        self.container.pack(side="top", fill="both", expand=True)
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_rowconfigure(2, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
+        self.container.grid_columnconfigure(2, weight=1)
 
         self.frames = {}
 
-        self.create_frame(ErrorMessage, container)
+        self.create_frame(ErrorMessage, self.container)
 
+    def setup(self):
         self.ration_db = db.DatabaseManager("rations.db")
         self.config = configparser.ConfigParser()
         self.config.read("/home/pi/Documents/SAWS/config.ini")
@@ -47,19 +57,11 @@ class SAWS(tk.Tk):
 
         GPIO.setmode(GPIO.BCM)
 
-        self.screen_width = self.winfo_screenwidth()
-        self.screen_height = self.winfo_screenheight()
-        self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
-        self.resizable(False, False)
-        self.overrideredirect(True)
-        self.mainFont = Font(size=25)
-        self.textFont = Font(size=15)
-        self.option_add('*Dialog.msg.font', self.mainFont)
-
         for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure, BatchPage):
-            self.create_frame(F, container)
+            self.create_frame(F, self.container)
 
         self.show_frame("SplashPage")
+
 
     def create_frame(self, F, container, *args):
         page_name = F.__name__
@@ -637,8 +639,9 @@ def main():
     Global.dev_mode = args.devmode
 
     try:
+        saws = SAWS()
         try:
-            saws = SAWS()
+            saws.setup()
         except USBError as e:
             saws.display_error(e)
         finally:
