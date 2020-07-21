@@ -4,6 +4,7 @@ import Global
 import DatabaseManagement as db
 import ExcelManagement as ex
 import RPi.GPIO as GPIO
+from Errors import *
 
 import os
 import time
@@ -23,6 +24,17 @@ class SAWS(tk.Tk):
     
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_rowconfigure(2, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+        container.grid_columnconfigure(2, weight=1)
+
+        self.frames = {}
+
+        self.create_frame(ErrorMessage, container)
 
         self.ration_db = db.DatabaseManager("rations.db")
         self.config = configparser.ConfigParser()
@@ -44,14 +56,6 @@ class SAWS(tk.Tk):
         self.textFont = Font(size=15)
         self.option_add('*Dialog.msg.font', self.mainFont)
 
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_rowconfigure(2, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-        container.grid_columnconfigure(2, weight=1)
-
-        self.frames = {}
         for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure, BatchPage):
             self.create_frame(F, container)
 
@@ -113,6 +117,9 @@ class SAWS(tk.Tk):
             if name is None:
                 break
             self.ration_db.insert_house([name])
+
+    def display_error(self, error):
+        self.frames["ErrorMessage"].display_page(error)
 
     def shutdown(self):
         os.system("sudo shutdown -h now")
@@ -546,6 +553,27 @@ class AreYouSure(tk.Frame):
             self.controller.show_frame("AreYouSure")
 
 
+class ErrorMessage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(3, weight=1)
+        w = tk.Label(self, text="Error!", font=self.controller.mainFont)
+        w.grid(row=1, column=1, columnspan=2)
+        button = tk.Button(
+            self, text="Shutdown", font=self.controller.mainFont, command=self.controller.shutdown
+        )
+        button.grid(row=2, column=1, sticky="ew")
+
+    def display_page(self, error):
+        print("Displaying error: {}".format(error.message))
+        self.controller.show_frame("ErrorMessage")
+
+
 class Hopper(tk.Canvas):
 
     def __init__(self, parent, controller, width, height):
@@ -601,10 +629,6 @@ class WeightInput():
         self.controller.after(200, self.check_input)
 
 def main():
-    # root = tk.Tk()
-    # hopper = Hopper(root, root, 1000, 600)
-    # hopper.pack()
-    # root.mainloop()
     parser = argparse.ArgumentParser(description="Parses arguments for SAWS")
     parser.add_argument("-d", "--devmode", action="store_true",
                         help="Enables Dev Mode")
@@ -613,8 +637,12 @@ def main():
     Global.dev_mode = args.devmode
 
     try:
-        saws = SAWS()
-        saws.mainloop()
+        try:
+            saws = SAWS()
+        except USBError as e:
+            saws.display_error(e)
+        finally:
+            saws.mainloop()
     finally:
         GPIO.cleanup()
 
