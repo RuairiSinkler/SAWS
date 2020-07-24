@@ -56,15 +56,15 @@ class SAWS(tk.Tk):
         self.create_frame(WarningMessage, self.container)
 
     def setup(self):
+        GPIO.setmode(GPIO.BCM)
+
+        for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure, BatchPage):
+            self.create_frame(F, self.container)
+
+        self.show_frame("SplashPage")
+
         try:
             self.setup_database()
-
-            GPIO.setmode(GPIO.BCM)
-
-            for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure, BatchPage):
-                self.create_frame(F, self.container)
-
-            self.show_frame("SplashPage")
         except SAWSWarning as warning:
             self.display_warning(warning)
 
@@ -124,11 +124,8 @@ class SAWS(tk.Tk):
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
-                print("Amount: {}, Is None: {}".format(amount, amount is None))
                 if amount is None:
-                    print("Name: {}".format(name))
                     rations_with_empty_cells += "{}\n".format(name)
-                    print("rations thingy: {}".format(rations_with_empty_cells))
                     self.ration_ex.write_cell(0, amount_cell)
                     amount = 0
                 self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
@@ -142,9 +139,7 @@ class SAWS(tk.Tk):
                 break
             self.ration_db.insert_house([name])
 
-        print("rations: {}, is True: {}".format(rations_with_empty_cells, rations_with_empty_cells is True))
         if rations_with_empty_cells:
-            print("empty cell warning raise")
             raise EmptyCellWarning(rations_with_empty_cells)
 
     def display_error(self, error):
