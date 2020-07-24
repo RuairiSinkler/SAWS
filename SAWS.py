@@ -143,7 +143,7 @@ class SAWS(tk.Tk):
                 break
             self.ration_db.insert_house([name])
 
-        if rations_with_empty_cells:
+        if rations_with_empty_cells is not None:
             raise EmptyCellWarning(rations_with_empty_cells)
 
     def display_error(self, error):
