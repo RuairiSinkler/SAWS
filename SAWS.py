@@ -124,6 +124,7 @@ class SAWS(tk.Tk):
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
+                print("Amount: {}, Is None: {}".format(amount, amount is None))
                 if amount is None:
                     if rations_with_empty_cells is None:
                         rations_with_empty_cells = name
