@@ -596,9 +596,13 @@ class ErrorMessage(tk.Frame):
         w = tk.Label(self, textvariable=self.message, font=self.controller.mainFont)
         w.grid(row=1, column=1, columnspan=2)
         button = tk.Button(
-            self, text="Shutdown", font=self.controller.mainFont, command=self.controller.shutdown
+            self, text="Close SAWS", font=self.controller.mainFont, command=exit
         )
         button.grid(row=2, column=1, sticky="ew")
+        button = tk.Button(
+            self, text="Shutdown", font=self.controller.mainFont, command=self.controller.shutdown
+        )
+        button.grid(row=2, column=2, sticky="ew")
 
     def display_page(self, error):
         self.message.set(error.message)
