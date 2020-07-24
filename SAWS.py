@@ -5,6 +5,7 @@ import DatabaseManagement as db
 import ExcelManagement as ex
 import RPi.GPIO as GPIO
 from Errors import *
+from Warnings import *
 
 import os
 import time
@@ -42,19 +43,23 @@ class SAWS(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_columnconfigure(2, weight=1)
 
-        self.frames = {}
-
-        self.create_frame(ErrorMessage, self.container)
-
-    def setup(self):
         self.ration_db = db.DatabaseManager("rations.db")
         self.config = configparser.ConfigParser()
         self.config.read("/home/pi/Documents/SAWS/config.ini")
-        dir = self.config["DEFAULT"].get("usb_location")
-        self.ration_ex = ex.WorksheetManager(dir, "rations")
-        self.ration_logs_ex = ex.WorksheetManager(dir, "ration_logs")
+        usb_dir = self.config["DEFAULT"].get("usb_location")
+        self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
+        self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
 
-        self.setup_database()
+        self.frames = {}
+
+        self.create_frame(ErrorMessage, self.container)
+        self.create_frame(WarningMessage, self.container)
+
+    def setup(self):
+        try:
+            self.setup_database()
+        except Warning as warning:
+            self.display_warning(warning)
 
         GPIO.setmode(GPIO.BCM)
 
@@ -79,9 +84,16 @@ class SAWS(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
+    def hide_frame(self, page_name):
+        '''Hide a frame for the given page name'''
+        frame = self.frames[page_name]
+        frame.tklower()
+
     def setup_database(self):
         self.ration_db.clear()
         self.ration_db.build()
+
+        rations_with_empty_cells = None
 
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
@@ -90,7 +102,7 @@ class SAWS(tk.Tk):
         column = column_index_from_string(ingredient_cell.column)
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
-            weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column  + 1, row))
+            weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
             ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
             if name is None:
                 break
@@ -110,7 +122,15 @@ class SAWS(tk.Tk):
                 if ingredient is None:
                     break
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
-                amount = self.ration_ex.read_cell(self.ration_ex.get_cell(col, row))
+                amount_cell = self.ration_ex.get_cell(col, row)
+                amount = self.ration_ex.read_cell(amount_cell)
+                if amount is None:
+                    if rations_with_empty_cells is None:
+                        rations_with_empty_cells = name
+                    else:
+                        rations_with_empty_cells += "\n{}".format(name)
+                    self.ration_ex.write_cell(0, amount_cell)
+                    amount = 0
                 self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
 
         house_cell = self.ration_ex.find("Houses")
@@ -122,8 +142,14 @@ class SAWS(tk.Tk):
                 break
             self.ration_db.insert_house([name])
 
+        if rations_with_empty_cells:
+            raise EmptyCellWarning(rations_with_empty_cells)
+
     def display_error(self, error):
         self.frames["ErrorMessage"].display_page(error)
+
+    def display_warning(self, warning):
+        self.frames["WarningMessage"].display_page(warning)
 
     def shutdown(self):
         os.system("sudo shutdown -h now")
@@ -577,6 +603,29 @@ class ErrorMessage(tk.Frame):
     def display_page(self, error):
         self.message.set(error.message)
         self.controller.show_frame("ErrorMessage")
+
+
+class WarningMessage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(3, weight=1)
+
+        self.message = tk.StringVar()
+        w = tk.Label(self, textvariable=self.message, font=self.controller.mainFont)
+        w.grid(row=1, column=1, columnspan=2)
+        button = tk.Button(
+            self, text="Continue", font=self.controller.mainFont, command=self.controller.hide_frame("WarningMessage")
+        )
+        button.grid(row=2, column=1, sticky="ew")
+
+    def display_page(self, warning):
+        self.message.set(warning.message)
+        self.controller.show_frame("WarningMessage")
 
 
 class Hopper(tk.Canvas):
