@@ -144,6 +144,7 @@ class SAWS(tk.Tk):
 
         print("rations: {}, is True: {}".format(rations_with_empty_cells, rations_with_empty_cells is True))
         if rations_with_empty_cells:
+            print("empty cell warning raise")
             raise EmptyCellWarning(rations_with_empty_cells)
 
     def display_error(self, error):
