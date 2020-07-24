@@ -623,7 +623,7 @@ class WarningMessage(tk.Frame):
         w = tk.Label(self, textvariable=self.message, font=self.controller.mainFont)
         w.grid(row=1, column=1, columnspan=2)
         button = tk.Button(
-            self, text="Continue", font=self.controller.mainFont, command=self.controller.hide_frame("WarningMessage")
+            self, text="Continue", font=self.controller.mainFont, command=lambda: self.controller.hide_frame("WarningMessage")
         )
         button.grid(row=2, column=1, sticky="ew")
 
