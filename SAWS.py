@@ -58,7 +58,7 @@ class SAWS(tk.Tk):
     def setup(self):
         try:
             self.setup_database()
-        except Warning as warning:
+        except SAWSWarning as warning:
             self.display_warning(warning)
 
         GPIO.setmode(GPIO.BCM)
@@ -143,6 +143,7 @@ class SAWS(tk.Tk):
                 break
             self.ration_db.insert_house([name])
 
+        print("rations: {}, is None: {}".format(rations_with_empty_cells, rations_with_empty_cells is None))
         if rations_with_empty_cells is not None:
             raise EmptyCellWarning(rations_with_empty_cells)
 
