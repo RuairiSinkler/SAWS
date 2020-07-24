@@ -124,13 +124,13 @@ class SAWS(tk.Tk):
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
-                if amount is None:
-                    if rations_with_empty_cells is None:
-                        rations_with_empty_cells = name
-                    else:
-                        rations_with_empty_cells += "\n{}".format(name)
-                    self.ration_ex.write_cell(0, amount_cell)
-                    amount = 0
+                # if amount is None:
+                #     if rations_with_empty_cells is None:
+                #         rations_with_empty_cells = name
+                #     else:
+                #         rations_with_empty_cells += "\n{}".format(name)
+                #     self.ration_ex.write_cell(0, amount_cell)
+                #     amount = 0
                 self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
 
         house_cell = self.ration_ex.find("Houses")
