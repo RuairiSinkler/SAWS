@@ -93,7 +93,7 @@ class SAWS(tk.Tk):
         self.ration_db.clear()
         self.ration_db.build()
 
-        rations_with_empty_cells = None
+        rations_with_empty_cells = ""
 
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
@@ -126,7 +126,7 @@ class SAWS(tk.Tk):
                 amount = self.ration_ex.read_cell(amount_cell)
                 print("Amount: {}, Is None: {}".format(amount, amount is None))
                 if amount is None:
-                    if rations_with_empty_cells is None:
+                    if not rations_with_empty_cells:
                         rations_with_empty_cells = name
                     else:
                         rations_with_empty_cells += "\n{}".format(name)
@@ -143,8 +143,8 @@ class SAWS(tk.Tk):
                 break
             self.ration_db.insert_house([name])
 
-        print("rations: {}, is None: {}".format(rations_with_empty_cells, rations_with_empty_cells is None))
-        if rations_with_empty_cells is not None:
+        print("rations: {}, is True: {}".format(rations_with_empty_cells, rations_with_empty_cells is True))
+        if rations_with_empty_cells:
             raise EmptyCellWarning(rations_with_empty_cells)
 
     def display_error(self, error):
