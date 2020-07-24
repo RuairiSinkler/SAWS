@@ -127,6 +127,7 @@ class SAWS(tk.Tk):
                 if amount is None:
                     rations_with_empty_cells += "{}\n".format(name)
                     self.ration_ex.write_cell(0, amount_cell)
+                    self.ration_ex.save()
                     amount = 0
                 self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
 
