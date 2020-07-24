@@ -82,12 +82,12 @@ class SAWS(tk.Tk):
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
-        frame.tkraise()
+        frame.lift()
 
     def hide_frame(self, page_name):
         '''Hide a frame for the given page name'''
         frame = self.frames[page_name]
-        frame.tklower()
+        frame.lower()
 
     def setup_database(self):
         self.ration_db.clear()
