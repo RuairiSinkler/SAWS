@@ -59,6 +59,7 @@ class SAWS(tk.Tk):
         try:
             self.setup_database()
         except SAWSWarning as warning:
+            print("SAWSWarning Excepted")
             self.display_warning(warning)
 
         GPIO.setmode(GPIO.BCM)
