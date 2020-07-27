@@ -244,6 +244,9 @@ class MainMenu(tk.Frame):
         self.controller = controller
         rations = self.controller.ration_db.get_all_rations()
 
+        listbox = tk.Listbox(self)
+        listbox.pack()
+
         for ration in rations:
             id = ration[0]
             name = ration[1]
@@ -251,7 +254,8 @@ class MainMenu(tk.Frame):
                 self, text=name, font=self.controller.mainFont,
                 command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
             )
-            button.pack(fill="x")
+            listbox.insert(tk.END, button)
+            # button.pack(fill="x")
 
         button = tk.Button(
             self, text="Quit", font=controller.mainFont, command=lambda: self.controller.show_frame("SplashPage")
