@@ -97,6 +97,7 @@ class SAWS(tk.Tk):
     def setup_database(self):
         self.ration_db.clear()
         self.ration_db.build()
+        print("database built")
 
         rations_with_empty_cells = ""
 
