@@ -97,7 +97,6 @@ class SAWS(tk.Tk):
     def setup_database(self):
         self.ration_db.clear()
         self.ration_db.build()
-        print("database built")
 
         rations_with_empty_cells = ""
 
@@ -254,7 +253,7 @@ class MainMenu(tk.Frame):
         scrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
         canvas = tk.Canvas(self, bd=0, highlightthickness=0,
                            yscrollcommand=scrollbar.set)
-        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
+        canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
         scrollbar.config(command=canvas.yview)
 
         # reset the view
@@ -265,8 +264,6 @@ class MainMenu(tk.Frame):
         interior = tk.Frame(canvas)
         interior_id = canvas.create_window(0, 0, window=interior,
                                            anchor=tk.NW)
-
-        print("canvas setup")
 
         # track changes to the canvas and frame width and sync them,
         # also updating the scrollbar
@@ -290,7 +287,6 @@ class MainMenu(tk.Frame):
         for ration in rations:
             id = ration[0]
             name = ration[1]
-            print("ration {}".format(name))
             button = tk.Button(
                 interior, text=name, font=controller.mainFont,
                 command=lambda id=id: controller.frames["RationPage"].display_page(id)
