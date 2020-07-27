@@ -260,6 +260,8 @@ class MainMenu(tk.Frame):
         interior_id = canvas.create_window(0, 0, window=interior,
                                            anchor=tk.NW)
 
+        print("canvas setup")
+
         # track changes to the canvas and frame width and sync them,
         # also updating the scrollbar
         def _configure_interior(event):
@@ -282,6 +284,7 @@ class MainMenu(tk.Frame):
         for ration in rations:
             id = ration[0]
             name = ration[1]
+            print("ration {}".format(name))
             button = tk.Button(
                 interior, text=name, font=controller.mainFont,
                 command=lambda id=id: controller.frames["RationPage"].display_page(id)
