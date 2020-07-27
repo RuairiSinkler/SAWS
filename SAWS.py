@@ -241,24 +241,55 @@ class MainMenu(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.controller = controller
-        rations = self.controller.ration_db.get_all_rations()
+        rations = controller.ration_db.get_all_rations()
 
-        listbox = tk.Listbox(self)
-        listbox.pack()
+        # create a canvas object and a vertical scrollbar for scrolling it
+        scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
+        scrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
+        canvas = tk.Canvas(self, bd=0, highlightthickness=0,
+                           yscrollcommand=scrollbar.set)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
+        scrollbar.config(command=canvas.yview)
+
+        # reset the view
+        canvas.xview_moveto(0)
+        canvas.yview_moveto(0)
+
+        # create a frame inside the canvas which will be scrolled with it
+        interior = tk.Frame(canvas)
+        interior_id = canvas.create_window(0, 0, window=interior,
+                                           anchor=tk.NW)
+
+        # # track changes to the canvas and frame width and sync them,
+        # # also updating the scrollbar
+        # def _configure_interior(event):
+        #     # update the scrollbars to match the size of the inner frame
+        #     size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
+        #     canvas.config(scrollregion="0 0 %s %s" % size)
+        #     if interior.winfo_reqwidth() != canvas.winfo_width():
+        #         # update the canvas's width to fit the inner frame
+        #         canvas.config(width=interior.winfo_reqwidth())
+        #
+        # interior.bind('<Configure>', _configure_interior)
+        #
+        # def _configure_canvas(event):
+        #     if interior.winfo_reqwidth() != canvas.winfo_width():
+        #         # update the inner frame's width to fill the canvas
+        #         canvas.itemconfigure(interior_id, width=canvas.winfo_width())
+        #
+        # canvas.bind('<Configure>', _configure_canvas)
 
         for ration in rations:
             id = ration[0]
             name = ration[1]
             button = tk.Button(
-                self, text=name, font=self.controller.mainFont,
-                command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
+                interior, text=name, font=controller.mainFont,
+                command=lambda id=id: controller.frames["RationPage"].display_page(id)
             )
-            listbox.insert(tk.END, button)
-            # button.pack(fill="x")
+            button.pack(padx=10, pady=5, side=tk.TOP)
 
         button = tk.Button(
-            self, text="Quit", font=controller.mainFont, command=lambda: self.controller.show_frame("SplashPage")
+            interior, text="Quit", font=controller.mainFont, command=lambda: controller.show_frame("SplashPage")
         )
         button.pack(fill="x")
 
