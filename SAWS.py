@@ -58,15 +58,20 @@ class SAWS(tk.Tk):
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
+        database_warning = None
+
+        try:
+            self.setup_database()
+        except SAWSWarning as warning:
+            database_warning = warning
+
         for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure, BatchPage):
             self.create_frame(F, self.container)
 
         self.show_frame("SplashPage")
 
-        try:
-            self.setup_database()
-        except SAWSWarning as warning:
-            self.display_warning(warning)
+        if database_warning is not None:
+            self.display_warning(database_warning)
 
     def create_frame(self, F, container, *args):
         page_name = F.__name__
