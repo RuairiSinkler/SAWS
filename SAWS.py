@@ -383,8 +383,7 @@ class RunPage(tk.Frame):
 
         houses = self.controller.ration_db.get_all_houses()
         house_names = [house[1] for house in houses]
-        self.house_dropdown = ttk.Combobox(self, values=house_names,
-                                           state="readonly", font=self.controller.mainFont)
+        self.house_dropdown = ttk.Combobox(self, values=house_names, state="readonly")
         self.house_dropdown.current(0)
         self.house_dropdown.grid(column=2, row=1)
 
@@ -494,6 +493,7 @@ class RunPage(tk.Frame):
         self.controller.ration_logs_ex.change_sheet(sheet)
         time_run = time.strftime("%d/%m/%y")
         ration = self.controller.ration_db.get_ration(self.ration_id)[1]
+        print("{}\n{}\n{}\n{}\n{}\n".format(time_run, ration, self.done, self.current_weighed, batch_number))
         self.controller.ration_logs_ex.log_run(time_run, ration, self.done, self.current_weighed, batch_number)
         self.controller.ration_logs_ex.save()
 
