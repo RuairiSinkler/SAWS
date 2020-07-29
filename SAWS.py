@@ -382,7 +382,7 @@ class RunPage(tk.Frame):
 
         houses = self.controller.ration_db.get_all_houses()
         house_names = [house[1] for house in houses]
-        self.house_dropdown = ttk.Combobox(self, *house_names,
+        self.house_dropdown = ttk.Combobox(self, values=house_names,
                                            state="readonly", font=self.controller.mainFont)
         self.house_dropdown.current(0)
         self.house_dropdown.config(font=self.controller.mainFont)
