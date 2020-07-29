@@ -385,8 +385,6 @@ class RunPage(tk.Frame):
         self.house_dropdown = ttk.Combobox(self, values=house_names,
                                            state="readonly", font=self.controller.mainFont)
         self.house_dropdown.current(0)
-        self.house_dropdown.config(font=self.controller.mainFont)
-        self.house_dropdown["menu"].config(font=self.controller.mainFont)
         self.house_dropdown.grid(column=2, row=1)
 
         self.end_text = tk.StringVar()
