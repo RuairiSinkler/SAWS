@@ -36,6 +36,7 @@ class SAWS(tk.Tk):
         self.mainFont = Font(size=25)
         self.textFont = Font(size=15)
         self.option_add('*Dialog.msg.font', self.mainFont)
+        self.option_add("*TCombobox*Listbox*Font", self.mainFont)
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
