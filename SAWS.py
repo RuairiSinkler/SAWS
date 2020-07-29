@@ -198,7 +198,7 @@ class PinPage(tk.Frame):
         row = pin_cell.row
         set_pin = self.controller.ration_ex.read_cell(self.controller.ration_ex.get_cell(column + 1, row))
         if int(pin) == int(set_pin):
-            pin_pad.entry.delete(0, tk.INSERT)
+            pin_pad.clear()
             self.controller.show_frame("MainMenu")
         else:
             self.text.set("Incorrect PIN please try again")
@@ -214,8 +214,8 @@ class BatchPage(tk.Frame):
         self.grid_columnconfigure(2, weight=1)
         explanation = tk.Label(self, text="Please enter the 6 digit\nBatch Number:", font=self.controller.mainFont)
         explanation.grid(row=1, column=1)
-        num_pad = NumPad(self, controller, lambda: self.controller.frames["RunPage"].log_run(num_pad.entry.get()))
-        num_pad.grid(row=2, column=1)
+        self.num_pad = NumPad(self, controller, lambda: self.controller.frames["RunPage"].log_run(self.num_pad))
+        self.num_pad.grid(row=2, column=1)
 
 
 class NumPad(tk.Frame):
@@ -242,6 +242,9 @@ class NumPad(tk.Frame):
             self, text="ENTER", font=controller.mainFont, command=enter_function
         )
         enter.grid(column=2, row=4, sticky="ew")
+
+    def clear(self):
+        self.entry.delete(0, tk.INSERT)
 
 
 class MainMenu(tk.Frame):
@@ -477,9 +480,10 @@ class RunPage(tk.Frame):
             if not self.done:
                 self.quit_button.grid_remove()
 
-    def log_run(self, batch_number):
+    def log_run(self, num_pad):
         # result = messagebox.askyesno("End run early", "Are you sure you want to end the run before completing the ration?", icon='warning')
         # if result:
+        batch_number = num_pad.entry.get()
         house = self.house_dropdown.get()
         if house in self.controller.ration_logs_ex.workbook.sheetnames:
             sheet = self.controller.ration_logs_ex.get_sheet(house)
@@ -497,6 +501,7 @@ class RunPage(tk.Frame):
         self.controller.ration_logs_ex.save()
 
         self.controller.show_frame("MainMenu")
+        num_pad.clear()
 
     def display_page(self, ration_id):
         self.master.destroy()
