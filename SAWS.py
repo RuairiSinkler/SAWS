@@ -383,7 +383,7 @@ class RunPage(tk.Frame):
         house_names = [house[1] for house in houses]
         self.house = tk.StringVar()
         self.house.set(house_names[0])
-        self.house_dropdown = tk.OptionMenu(self, self.house, *house_names)
+        self.house_dropdown = tk.ComboBox(self, self.house, *house_names)
         self.house_dropdown.config(font=self.controller.mainFont)
         self.house_dropdown["menu"].config(font=self.controller.mainFont)
         self.house_dropdown.grid(column=2, row=1)
