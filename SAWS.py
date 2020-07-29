@@ -16,6 +16,7 @@ import numpy as np
 import tkinter as tk
 import argparse
 from tkinter.font import Font
+from tkinter import ttk
 from operator import itemgetter
 from openpyxl.utils import column_index_from_string
 
@@ -35,6 +36,7 @@ class SAWS(tk.Tk):
         self.mainFont = Font(size=25)
         self.textFont = Font(size=15)
         self.option_add('*Dialog.msg.font', self.mainFont)
+        self.option_add("*TCombobox*Listbox*Font", self.mainFont)
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
@@ -58,15 +60,20 @@ class SAWS(tk.Tk):
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
+        database_warning = None
+
+        try:
+            self.setup_database()
+        except SAWSWarning as warning:
+            database_warning = warning
+
         for F in (SplashPage, PinPage, MainMenu, RationPage, RunPage, AreYouSure, BatchPage):
             self.create_frame(F, self.container)
 
         self.show_frame("SplashPage")
 
-        try:
-            self.setup_database()
-        except SAWSWarning as warning:
-            self.display_warning(warning)
+        if database_warning is not None:
+            self.display_warning(database_warning)
 
     def create_frame(self, F, container, *args):
         page_name = F.__name__
@@ -241,20 +248,55 @@ class MainMenu(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.controller = controller
-        rations = self.controller.ration_db.get_all_rations()
+        rations = controller.ration_db.get_all_rations()
+
+        # create a canvas object and a vertical scrollbar for scrolling it
+        scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
+        scrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
+        canvas = tk.Canvas(self, bd=0, highlightthickness=0,
+                           yscrollcommand=scrollbar.set)
+        canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
+        scrollbar.config(command=canvas.yview)
+
+        # reset the view
+        canvas.xview_moveto(0)
+        canvas.yview_moveto(0)
+
+        # create a frame inside the canvas which will be scrolled with it
+        interior = tk.Frame(canvas)
+        interior_id = canvas.create_window(0, 0, window=interior,
+                                           anchor=tk.NW)
+
+        # track changes to the canvas and frame width and sync them,
+        # also updating the scrollbar
+        def _configure_interior(event):
+            # update the scrollbars to match the size of the inner frame
+            size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
+            canvas.config(scrollregion="0 0 %s %s" % size)
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the canvas's width to fit the inner frame
+                canvas.config(width=interior.winfo_reqwidth())
+
+        interior.bind('<Configure>', _configure_interior)
+
+        def _configure_canvas(event):
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the inner frame's width to fill the canvas
+                canvas.itemconfigure(interior_id, width=canvas.winfo_width())
+
+        canvas.bind('<Configure>', _configure_canvas)
 
         for ration in rations:
             id = ration[0]
             name = ration[1]
             button = tk.Button(
-                self, text=name, font=self.controller.mainFont,
-                command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
+                interior, text=name, font=controller.mainFont,
+                command=lambda id=id: controller.frames["RationPage"].display_page(id)
             )
-            button.pack(fill="x")
+            button.pack(padx=10, pady=5, side=tk.TOP)
 
         button = tk.Button(
-            self, text="Quit", font=controller.mainFont, command=lambda: self.controller.show_frame("SplashPage")
+            self, text="Quit", font=controller.mainFont, command=lambda: controller.show_frame("SplashPage")
         )
         button.pack(fill="x")
 
@@ -341,11 +383,8 @@ class RunPage(tk.Frame):
 
         houses = self.controller.ration_db.get_all_houses()
         house_names = [house[1] for house in houses]
-        self.house = tk.StringVar()
-        self.house.set(house_names[0])
-        self.house_dropdown = tk.OptionMenu(self, self.house, *house_names)
-        self.house_dropdown.config(font=self.controller.mainFont)
-        self.house_dropdown["menu"].config(font=self.controller.mainFont)
+        self.house_dropdown = ttk.Combobox(self, values=house_names, state="readonly", font=self.controller.mainFont)
+        self.house_dropdown.current(0)
         self.house_dropdown.grid(column=2, row=1)
 
         self.end_text = tk.StringVar()
@@ -441,7 +480,7 @@ class RunPage(tk.Frame):
     def log_run(self, batch_number):
         # result = messagebox.askyesno("End run early", "Are you sure you want to end the run before completing the ration?", icon='warning')
         # if result:
-        house = self.house.get()
+        house = self.house_dropdown.get()
         if house in self.controller.ration_logs_ex.workbook.sheetnames:
             sheet = self.controller.ration_logs_ex.get_sheet(house)
         else:
