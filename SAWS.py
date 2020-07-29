@@ -16,6 +16,7 @@ import numpy as np
 import tkinter as tk
 import argparse
 from tkinter.font import Font
+from tkinter import ttk
 from operator import itemgetter
 from openpyxl.utils import column_index_from_string
 
@@ -381,9 +382,9 @@ class RunPage(tk.Frame):
 
         houses = self.controller.ration_db.get_all_houses()
         house_names = [house[1] for house in houses]
-        self.house = tk.StringVar()
-        self.house.set(house_names[0])
-        self.house_dropdown = tk.Combobox(self, self.house, *house_names)
+        self.house_dropdown = ttk.Combobox(self, *house_names,
+                                           state="readonly", font=self.controller.mainFont)
+        self.house_dropdown.current(0)
         self.house_dropdown.config(font=self.controller.mainFont)
         self.house_dropdown["menu"].config(font=self.controller.mainFont)
         self.house_dropdown.grid(column=2, row=1)
@@ -481,7 +482,7 @@ class RunPage(tk.Frame):
     def log_run(self, batch_number):
         # result = messagebox.askyesno("End run early", "Are you sure you want to end the run before completing the ration?", icon='warning')
         # if result:
-        house = self.house.get()
+        house = self.house_dropdown.get()
         if house in self.controller.ration_logs_ex.workbook.sheetnames:
             sheet = self.controller.ration_logs_ex.get_sheet(house)
         else:
