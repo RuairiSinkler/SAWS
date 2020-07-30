@@ -251,6 +251,7 @@ class MainMenu(tk.Frame):
         rations = controller.ration_db.get_all_rations()
 
         ration_options = VerticalScrolledFrame(self)
+        ration_options.pack()
 
         for ration in rations:
             id = ration[0]
@@ -308,7 +309,7 @@ class RationPage(tk.Frame):
             self.master, text=self.name, font=self.controller.mainFont
         )
         label.pack()
-        
+
         ingredients_list = VerticalScrolledFrame(self.master)
         ingredients_list.pack()
         for ingredient in ingredients:
