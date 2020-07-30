@@ -250,47 +250,13 @@ class MainMenu(tk.Frame):
         tk.Frame.__init__(self, parent)
         rations = controller.ration_db.get_all_rations()
 
-        # create a canvas object and a vertical scrollbar for scrolling it
-        scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
-        scrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
-        canvas = tk.Canvas(self, bd=0, highlightthickness=0,
-                           yscrollcommand=scrollbar.set)
-        canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
-        scrollbar.config(command=canvas.yview)
-
-        # reset the view
-        canvas.xview_moveto(0)
-        canvas.yview_moveto(0)
-
-        # create a frame inside the canvas which will be scrolled with it
-        interior = tk.Frame(canvas)
-        interior_id = canvas.create_window(0, 0, window=interior,
-                                           anchor=tk.NW)
-
-        # track changes to the canvas and frame width and sync them,
-        # also updating the scrollbar
-        def _configure_interior(event):
-            # update the scrollbars to match the size of the inner frame
-            size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
-            canvas.config(scrollregion="0 0 %s %s" % size)
-            if interior.winfo_reqwidth() != canvas.winfo_width():
-                # update the canvas's width to fit the inner frame
-                canvas.config(width=interior.winfo_reqwidth())
-
-        interior.bind('<Configure>', _configure_interior)
-
-        def _configure_canvas(event):
-            if interior.winfo_reqwidth() != canvas.winfo_width():
-                # update the inner frame's width to fill the canvas
-                canvas.itemconfigure(interior_id, width=canvas.winfo_width())
-
-        canvas.bind('<Configure>', _configure_canvas)
+        scrollablecanvas = ScrollableCanvas(self)
 
         for ration in rations:
             id = ration[0]
             name = ration[1]
             button = tk.Button(
-                interior, text=name, font=controller.mainFont,
+                scrollablecanvas.interior, text=name, font=controller.mainFont,
                 command=lambda id=id: controller.frames["RationPage"].display_page(id)
             )
             button.pack(padx=10, pady=5, side=tk.TOP)
@@ -722,6 +688,45 @@ class WeightInput:
             if new_state == GPIO.HIGH:
                 self.parent.increment_value(self.weigher)
         self.controller.after(200, self.check_input)
+
+class ScrollableCanvas(tk.Canvas):
+
+    def __init__(self, parent):
+        # create a canvas object and a vertical scrollbar for scrolling it
+        scrollbar = tk.Scrollbar(parent, orient=tk.VERTICAL)
+        scrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
+        super().__init__(parent, bd=0, highlightthickness=0,
+                           yscrollcommand=scrollbar.set)
+        self.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
+        scrollbar.config(command=self.yview)
+
+        # reset the view
+        self.xview_moveto(0)
+        self.yview_moveto(0)
+
+        # create a frame inside the canvas which will be scrolled with it
+        self.interior = tk.Frame(self)
+        self.interior_id = self.create_window(0, 0, window=self.interior,
+                                           anchor=tk.NW)
+
+        self.interior.bind('<Configure>', self._configure_interior)
+
+        self.bind('<Configure>', self._configure_canvas)
+    
+    # track changes to the canvas and frame width and sync them,
+    # also updating the scrollbar
+    def _configure_interior(self, event):
+        # update the scrollbars to match the size of the inner frame
+        size = (self.interior.winfo_reqwidth(), self.interior.winfo_reqheight())
+        self.config(scrollregion="0 0 %s %s" % size)
+        if self.interior.winfo_reqwidth() != self.winfo_width():
+            # update the canvas's width to fit the inner frame
+            self.config(width=self.interior.winfo_reqwidth())
+
+    def _configure_canvas(self, event):
+        if self.interior.winfo_reqwidth() != self.winfo_width():
+            # update the inner frame's width to fill the canvas
+            self.itemconfigure(self.interior_id, width=self.winfo_width())
 
 
 def main():
