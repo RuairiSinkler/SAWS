@@ -312,8 +312,8 @@ class RationPage(tk.Frame):
         )
         label.pack()
 
-        # ingredients_list = VerticalScrolledFrame(self.master)
-        # ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
+        ingredients_list = VerticalScrolledFrame(self.master)
+        ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         # for ingredient in ingredients:
         #     print("{}, {}kg".format(ingredient[0], str(ingredient[1])))
         #     label = tk.Label(
