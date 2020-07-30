@@ -50,23 +50,62 @@ class VerticalScrolledFrame(tk.Frame):
 root = tk.Tk()
 root.title("Scrollable Frame Demo")
 root.configure(background="gray99")
+screen_width = root.winfo_screenwidth() // 2
+screen_height = root.winfo_screenheight() // 2
+root.geometry("{0}x{1}+0+0".format(screen_width, screen_height))
+
+# rations = [[0, "Ration 1"], [1, "Ration 2"], [2, "Ration 3"], [3, "Ration 4"], [0, "Ration 1"], [1, "Ration 2"], [2, "Ration 3"], [3, "Ration 4"], [0, "Ration 1"], [1, "Ration 2"], [2, "Ration 3"], [3, "Ration 4"], [0, "Ration 1"], [1, "Ration 2"], [2, "Ration 3"], [3, "Ration 4"], [0, "Ration 1"], [1, "Ration 2"], [2, "Ration 3"], [3, "Ration 4"], [0, "Ration 1"], [1, "Ration 2"], [2, "Ration 3"], [3, "Ration 4"], [0, "Ration 1"], [1, "Ration 2"], [2, "Ration 3"], [3, "Ration 4"]]
+
+# ration_options = VerticalScrolledFrame(root)
+# ration_options.pack(fill=tk.BOTH, expand=tk.TRUE)
+
+# for ration in rations:
+#     id = ration[0]
+#     name = ration[1]
+#     button = tk.Button(
+#         ration_options.interior, text=name
+#     )
+#     button.pack(padx=10, pady=5, side=tk.TOP)
+
+# button = tk.Button(
+#     root, text="Quit"
+# )
+# button.pack(side=tk.BOTTOM, fill="x")
+
+
+footer = tk.Frame(root)
+footer.pack(side=tk.BOTTOM)
+
+button = tk.Button(
+    footer, text="Back"
+)
+
+button.pack(side=tk.LEFT)
+
+button = tk.Button(
+    footer, text="Run"
+)
+
+button.pack(side=tk.LEFT)
+
+ingredients = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
 
 master = tk.Frame(root)
+master.pack(fill=tk.BOTH, expand=tk.TRUE)
 
+name = "Ration Name"
 label = tk.Label(
-    master, text="Ration Name",
+    master, text=name
 )
 label.pack()
+
 ingredients_list = VerticalScrolledFrame(master)
-ingredients_list.pack()
-ingredients = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
 for ingredient in ingredients:
     label = tk.Label(
         ingredients_list.interior, text="{}kg".format(ingredient)
     )
     label.pack()
-
-master.pack()
 
 
 # lis = list('ABCDEFGHIJKLMNOPQRSTUVWXYZ')

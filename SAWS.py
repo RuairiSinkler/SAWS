@@ -251,7 +251,7 @@ class MainMenu(tk.Frame):
         rations = controller.ration_db.get_all_rations()
 
         ration_options = VerticalScrolledFrame(self)
-        ration_options.pack()
+        ration_options.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         for ration in rations:
             id = ration[0]
@@ -265,7 +265,7 @@ class MainMenu(tk.Frame):
         button = tk.Button(
             self, text="Quit", font=controller.mainFont, command=lambda: controller.show_frame("SplashPage")
         )
-        button.pack(fill="x")
+        button.pack(side=tk.BOTTOM, fill="x")
 
 
 class RationPage(tk.Frame):
@@ -300,6 +300,7 @@ class RationPage(tk.Frame):
 
         self.master.destroy()
         self.master = tk.Frame(self)
+        self.master.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         self.ration_id = ration_id
 
@@ -311,14 +312,12 @@ class RationPage(tk.Frame):
         label.pack()
 
         ingredients_list = VerticalScrolledFrame(self.master)
-        ingredients_list.pack()
+        ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in ingredients:
             label = tk.Label(
                 ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
             )
             label.pack()
-
-        self.master.pack()
 
         self.controller.show_frame("RationPage")
 
