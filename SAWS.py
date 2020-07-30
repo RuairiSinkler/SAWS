@@ -250,13 +250,13 @@ class MainMenu(tk.Frame):
         tk.Frame.__init__(self, parent)
         rations = controller.ration_db.get_all_rations()
 
-        scrollablecanvas = ScrollableCanvas(self)
+        scrollable_canvas = ScrollableCanvas(self)
 
         for ration in rations:
             id = ration[0]
             name = ration[1]
             button = tk.Button(
-                scrollablecanvas.interior, text=name, font=controller.mainFont,
+                scrollable_canvas.interior, text=name, font=controller.mainFont,
                 command=lambda id=id: controller.frames["RationPage"].display_page(id)
             )
             button.pack(padx=10, pady=5, side=tk.TOP)
@@ -309,9 +309,12 @@ class RationPage(tk.Frame):
             self.master, text=self.name, font=self.controller.mainFont
         )
         label.pack()
+        ingredients_list = tk.Frame(self.master)
+        ingredients_list.pack()
+        scrollable_canvas = ScrollableCanvas(ingredients_list)
         for ingredient in ingredients:
             label = tk.Label(
-                self.master, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
+                scrollable_canvas.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
             )
             label.pack()
 
