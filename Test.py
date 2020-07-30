@@ -25,7 +25,7 @@ class VerticalScrolledFrame(tk.Frame):
         
         # create a frame inside the canvas which will be scrolled with it
         self.interior = interior = tk.Frame(canvas)
-        interior_id = canvas.create_window(0, 0, window=interior,
+        interior_id = canvas.create_window(0, 0, window=self.interior,
                                            anchor=tk.NW)
         
         # track changes to the canvas and frame width and sync them,
@@ -73,6 +73,42 @@ root.geometry("{0}x{1}+0+0".format(screen_width, screen_height))
 # button.pack(side=tk.BOTTOM, fill="x")
 
 
+# footer = tk.Frame(root)
+# footer.pack(side=tk.BOTTOM)
+
+# button = tk.Button(
+#     footer, text="Back"
+# )
+
+# button.pack(side=tk.LEFT)
+
+# button = tk.Button(
+#     footer, text="Run"
+# )
+
+# button.pack(side=tk.LEFT)
+
+ingredients = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+
+# master = tk.Frame(root)
+# master.pack(fill=tk.BOTH, expand=tk.TRUE)
+
+# name = "Ration Name"
+# label = tk.Label(
+#     master, text=name
+# )
+# label.pack()
+
+# ingredients_list = VerticalScrolledFrame(master)
+# ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
+# for ingredient in ingredients:
+#     label = tk.Label(
+#         ingredients_list.interior, text="{}kg".format(ingredient)
+#     )
+#     label.pack()
+
+master = tk.Frame(root)
+master.pack()
 footer = tk.Frame(root)
 footer.pack(side=tk.BOTTOM)
 
@@ -88,8 +124,7 @@ button = tk.Button(
 
 button.pack(side=tk.LEFT)
 
-ingredients = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
-
+master.destroy()
 master = tk.Frame(root)
 master.pack(fill=tk.BOTH, expand=tk.TRUE)
 
@@ -128,22 +163,22 @@ root.mainloop()
 # class WeightInput():
 #
 #     def __init__(self, weight_pin):
-#         self.pin = weight_pin
-#         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-#         # GPIO.add_event_detect(self.pin, GPIO.RISING, callback=lambda: print("button pressed"))
-#         self.state = GPIO.input(self.pin)
-#         self.check_input()
+#         pin = weight_pin
+#         GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#         # GPIO.add_event_detect(pin, GPIO.RISING, callback=lambda: print("button pressed"))
+#         state = GPIO.input(pin)
+#         check_input()
 #
 #     def check_input(self):
-#         oldstate = self.state
-#         newstate = GPIO.input(self.pin)
+#         oldstate = state
+#         newstate = GPIO.input(pin)
 #         if oldstate != newstate:
-#             self.state = newstate
+#             state = newstate
 #             if newstate == GPIO.LOW:
 #                 print("button pressed")
 #         time.sleep(0.2)
-#         self.check_input()
-#         # self.controller.after(200, self.check_input)
+#         check_input()
+#         # controller.after(200, check_input)
 #
 # def main():
 #     try:
