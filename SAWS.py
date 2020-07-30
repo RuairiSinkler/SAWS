@@ -250,7 +250,7 @@ class MainMenu(tk.Frame):
         tk.Frame.__init__(self, parent)
         rations = controller.ration_db.get_all_rations()
 
-        title_label = tk.Label(self, text="Main Menu", font=self.controller.mainFont)
+        title_label = tk.Label(self, text="Main Menu", font=controller.mainFont)
         title_label.pack()
 
         ration_options = VerticalScrolledFrame(self)
