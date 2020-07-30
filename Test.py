@@ -1,6 +1,45 @@
 import tkinter as tk
 from tkinter import ttk
 
+class ScrollableCanvas(tk.Canvas):
+
+    def __init__(self, parent):
+        # create a canvas object and a vertical scrollbar for scrolling it
+        scrollbar = tk.Scrollbar(parent, orient=tk.VERTICAL)
+        scrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
+        super().__init__(parent, bd=0, highlightthickness=0,
+                           yscrollcommand=scrollbar.set)
+        self.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
+        scrollbar.config(command=self.yview)
+
+        # reset the view
+        self.xview_moveto(0)
+        self.yview_moveto(0)
+
+        # create a frame inside the canvas which will be scrolled with it
+        self.interior = tk.Frame(self)
+        self.interior_id = self.create_window(0, 0, window=self.interior,
+                                           anchor=tk.NW)
+
+        self.interior.bind('<Configure>', self._configure_interior)
+
+        self.bind('<Configure>', self._configure_canvas)
+    
+    # track changes to the canvas and frame width and sync them,
+    # also updating the scrollbar
+    def _configure_interior(self, event):
+        # update the scrollbars to match the size of the inner frame
+        size = (self.interior.winfo_reqwidth(), self.interior.winfo_reqheight())
+        self.config(scrollregion="0 0 %s %s" % size)
+        if self.interior.winfo_reqwidth() != self.winfo_width():
+            # update the canvas's width to fit the inner frame
+            self.config(width=self.interior.winfo_reqwidth())
+
+    def _configure_canvas(self, event):
+        if self.interior.winfo_reqwidth() != self.winfo_width():
+            # update the inner frame's width to fill the canvas
+            self.itemconfigure(self.interior_id, width=self.winfo_width())
+
 class VerticalScrolledFrame(tk.Frame):
     """A pure Tkinter scrollable frame that actually works!
 
@@ -11,9 +50,23 @@ class VerticalScrolledFrame(tk.Frame):
     def __init__(self, parent, *args, **kw):
         tk.Frame.__init__(self, parent, *args, **kw)
 
-        dropdown = ttk.Combobox(self, values=["Some", "Values", "For", "The", "Combobox"], state="readonly")
-        dropdown.current(0)
-        dropdown.pack()
+        self.master = tk.Frame(self)
+        self.master.pack()
+
+        label = tk.Label(
+            self.master, text="Ration Name",
+        )
+        label.pack()
+        ingredients_list = tk.Frame(self.master)
+        scrollable_canvas = ScrollableCanvas(ingredients_list)
+        ingredients = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+        for ingredient in ingredients:
+            label = tk.Label(
+                scrollable_canvas.interior, text="{}kg".format(ingredient[0])
+            )
+            label.pack()
+
+        ingredients_list.pack()
 
         # # create a canvas object and a vertical scrollbar for scrolling it
         # vscrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)

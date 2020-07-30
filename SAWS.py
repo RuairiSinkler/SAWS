@@ -310,7 +310,6 @@ class RationPage(tk.Frame):
         )
         label.pack()
         ingredients_list = tk.Frame(self.master)
-        ingredients_list.pack()
         scrollable_canvas = ScrollableCanvas(ingredients_list)
         for ingredient in ingredients:
             label = tk.Label(
@@ -318,6 +317,7 @@ class RationPage(tk.Frame):
             )
             label.pack()
 
+        ingredients_list.pack()
 
         self.controller.show_frame("RationPage")
 
