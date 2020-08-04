@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import data.Global
+import data.Global as gb
 import database.DatabaseManagement as db
 import excel.ExcelManagement as ex
 import RPi.GPIO as GPIO
@@ -531,7 +531,7 @@ class RunPage(tk.Frame):
                 self.turn_off_augar(name)
                 weigher_counters[weigher - 1] += 2
         for weigher in range(1, self.max_weigher + 1):
-            if Global.dev_mode:
+            if gb.dev_mode:
                 button = tk.Button(
                     weigher_frames[weigher], text="More",
                     command=lambda weigher=weigher: self.increment_value(weigher)
@@ -738,7 +738,7 @@ def main():
                         help="Enables Dev Mode")
     args = parser.parse_args()
 
-    Global.dev_mode = args.devmode
+    gb.dev_mode = args.devmode
 
     try:
         saws = SAWS()
