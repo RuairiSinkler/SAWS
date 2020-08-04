@@ -275,8 +275,8 @@ class RationPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.master = tk.Frame(self)
-        self.master.pack()
+        # self.master = tk.Frame(self)
+        # self.master.pack()
         # self.footer = tk.Frame(self)
         # self.footer.pack(side=tk.BOTTOM)
 
@@ -301,9 +301,9 @@ class RationPage(tk.Frame):
 
     def display_page(self, ration_id):
 
-        self.master.destroy()
-        self.master = tk.Frame(self)
-        self.master.pack(fill=tk.BOTH, expand=tk.TRUE)
+        # self.master.destroy()
+        # self.master = tk.Frame(self)
+        # self.master.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         self.ration_id = ration_id
 
@@ -311,11 +311,11 @@ class RationPage(tk.Frame):
         print(self.name)
         ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
         label = tk.Label(
-            self.master, text=self.name, font=self.controller.mainFont
+            self, text=self.name, font=self.controller.mainFont
         )
         label.pack()
 
-        ingredients_list = VerticalScrolledFrame(self.master)
+        ingredients_list = VerticalScrolledFrame(self)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in ingredients:
             print("{}, {}kg".format(ingredient[0], str(ingredient[1])))
