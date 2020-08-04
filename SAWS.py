@@ -42,7 +42,7 @@ class SAWS(tk.Tk):
         self.config = configparser.ConfigParser()
         self.config.read("./data/config.ini")
         usb_dir = self.config["DEFAULT"].get("usb_location")
-        self.weigher_increment = self.config["DEFAULT"].get("weigher_increment")
+        self.weigher_increment = int(self.config["DEFAULT"].get("weigher_increment"))
         
         self.ration_db = db.DatabaseManager("./database", "rations.db")
         self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
