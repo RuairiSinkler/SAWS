@@ -45,7 +45,7 @@ class SAWS(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_columnconfigure(2, weight=1)
 
-        self.ration_db = db.DatabaseManager("rations.db")
+        self.ration_db = db.DatabaseManager("./database", "rations.db")
         self.config = configparser.ConfigParser()
         self.config.read("./data/config.ini")
         usb_dir = self.config["DEFAULT"].get("usb_location")
