@@ -739,6 +739,8 @@ def main():
     args = parser.parse_args()
 
     gb.dev_mode = args.devmode
+    if gb.dev_mode:
+        print("DEV_MODE ACTIVE")
 
     try:
         saws = SAWS()
