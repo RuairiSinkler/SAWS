@@ -197,7 +197,7 @@ class RunPage(tk.Frame):
             else:
                 if weigher_frames[weigher] is None:
                     weigher_frames[weigher] = tk.Frame(self.main)
-                    weigher_frames[weigher].pack(side=tk.LEFT, expandW=True)
+                    weigher_frames[weigher].pack(side=tk.LEFT, expand=True)
                 frame = weigher_frames[weigher]
                 label = tk.Label(
                     frame, textvariable=self.label_texts[name], font=self.controller.textFont
