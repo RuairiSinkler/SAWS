@@ -4,12 +4,12 @@ from pathlib import Path
 
 class DatabaseManager:
     def __init__(self, database_name):
-        self.database_name = "/home/pi/Documents/SAWS/{}".format(database_name)
+        self.database_name = "./{}".format(database_name)
 
     def run_sql_file(self, file_path):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
-        with open("/home/pi/Documents/SAWS/{}".format(file_path)) as f:
+        with open("./{}".format(file_path)) as f:
             cursor.executescript(f.read())
         connect.commit()
         connect.close()
@@ -43,7 +43,6 @@ class DatabaseManager:
         ration_id = cursor.fetchone()[0]
         if ration_id is None:
             ration_id = 0
-        # print(ration_id)
         values.insert(0, ration_id)
 
         execution = "INSERT INTO rations VALUES (?, ?)"
@@ -61,7 +60,6 @@ class DatabaseManager:
             house_id = 0
         values.insert(0, house_id)
         execution = "INSERT INTO houses VALUES (?, ?)"
-        # print(values)
         cursor.execute(execution, values)
         connect.commit()
 
@@ -81,10 +79,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        # print(ration)
         execution = "SELECT id FROM {} WHERE name = ?".format(table)
-        # print(execution)
-        # print(name)
         cursor.execute(execution, (name, ))
 
         result = cursor.fetchall()[0][0]
@@ -127,9 +122,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        # print(ration)
         execution = "SELECT * FROM rations WHERE id = ?"
-        # print(execution)
         cursor.execute(execution, (ration_id,))
 
         result = cursor.fetchall()[0]
@@ -142,9 +135,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        # print(ration)
         execution = "SELECT *  FROM rations"
-        # print(execution)
         cursor.execute(execution)
 
         result = cursor.fetchall()
@@ -157,11 +148,9 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        # print(ration)
         execution = "SELECT ingredients.name, amount, weigher, ordering FROM ration_ingredients " \
                     "JOIN ingredients ON ingredients.id = ration_ingredients.ingredient_id " \
                     "WHERE ration_id = ?"
-        # print(execution)
         cursor.execute(execution, (str(ration_id),))
 
         result = cursor.fetchall()
@@ -174,9 +163,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        # print(ration)
         execution = "SELECT * FROM houses"
-        # print(execution)
         cursor.execute(execution)
 
         result = cursor.fetchall()

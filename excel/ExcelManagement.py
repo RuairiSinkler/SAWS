@@ -15,8 +15,6 @@ class WorksheetManager:
             self.sheet = self.workbook.active
             self.save()
         self.sheet = self.workbook.active
-        success = True
-        # print(self.workbook.sheetnames)
 
     # Saves any work done
     def save(self):
@@ -66,7 +64,6 @@ class WorksheetManager:
     # Returns a cell variable given its column and row as numbers
     def get_cell(self, column, row):
         cell_name = "{}{}".format(openpyxl.utils.get_column_letter(column), str(row))
-        # print(cell_name)
         return self.sheet[cell_name]
 
     # Returns the value in a given cell object
@@ -75,7 +72,6 @@ class WorksheetManager:
 
     # Writes the given value into the given cell object
     def write_cell(self, value, cell):
-        # y (cell)
         cell.value = value
 
     # Setups sheet i.e. creates layout of file

@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-import Global
-import DatabaseManagement as db
-import ExcelManagement as ex
+import data.Global
+import database.DatabaseManagement as db
+import excel.ExcelManagement as ex
 import RPi.GPIO as GPIO
-from Errors import *
-from Warnings import *
+from errors.Errors import *
+from errors.Warnings import *
 
 import os
 import time
@@ -47,7 +47,7 @@ class SAWS(tk.Tk):
 
         self.ration_db = db.DatabaseManager("rations.db")
         self.config = configparser.ConfigParser()
-        self.config.read("/home/pi/Documents/SAWS/config.ini")
+        self.config.read("./data/config.ini")
         usb_dir = self.config["DEFAULT"].get("usb_location")
         self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
         self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
@@ -453,8 +453,6 @@ class RunPage(tk.Frame):
                 self.quit_button.grid_remove()
 
     def log_run(self, num_pad):
-        # result = messagebox.askyesno("End run early", "Are you sure you want to end the run before completing the ration?", icon='warning')
-        # if result:
         batch_number = num_pad.entry.get()
         house = self.house_dropdown.get()
         if house in self.controller.ration_logs_ex.workbook.sheetnames:
@@ -486,11 +484,6 @@ class RunPage(tk.Frame):
         self.start_pause_text.set("Start")
         self.done = False
         self.ration_id = ration_id
-
-        # unmeasured = tk.Frame(self.main, relief=tk.RAISED, borderwidth=1)
-        # unmeasured.pack(side=tk.BOTTOM)
-        # measured = tk.Frame(self.main, relief=tk.RAISED, borderwidth=1)
-        # measured.pack(side=tk.BOTTOM, expand=True)
 
         self.ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
         self.desired_amounts = {name: amount for (name, amount, _, _) in self.ingredients}
@@ -550,12 +543,6 @@ class RunPage(tk.Frame):
             )
             self.weigher_canvases[weigher].grid(row=2, column=1, columnspan=4, sticky="nsew")
 
-            # weigher_frames[weigher].grid_rowconfigure(1, weight=1)
-            # weigher_frames[weigher].grid_columnconfigure(0, weight=1)
-            # weigher_frames[weigher].grid_rowconfigure(1, weight=1)
-            # weigher_frames[weigher].grid_rowconfigure(3, weight=1)
-            # weigher_frames[weigher].grid_columnconfigure(0, weight=1)
-            # weigher_frames[weigher].grid_columnconfigure(weigher_counters[weigher - 1], weight=1)
         for weigher in range(1, self.max_weigher + 1):
             new_width = weigher_frames[weigher].winfo_width()
             if new_width > self.canvas_size:
@@ -687,7 +674,6 @@ class WeightInput:
         self.weigher = weigher
         self.pin = weight_pin
         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        # GPIO.add_event_detect(self.pin, GPIO.RISING, callback=lambda: self.parent.increment_value(self.weigher))
         self.state = GPIO.input(self.pin)
         self.check_input()
 
