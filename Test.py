@@ -90,16 +90,16 @@ root.geometry("{0}x{1}+0+0".format(screen_width, screen_height))
 
 ingredients = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
 
-# master = tk.Frame(root)
-# master.pack(fill=tk.BOTH, expand=tk.TRUE)
+# main = tk.Frame(root)
+# main.pack(fill=tk.BOTH, expand=tk.TRUE)
 
 # name = "Ration Name"
 # label = tk.Label(
-#     master, text=name
+#     main, text=name
 # )
 # label.pack()
 
-# ingredients_list = VerticalScrolledFrame(master)
+# ingredients_list = VerticalScrolledFrame(main)
 # ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
 # for ingredient in ingredients:
 #     label = tk.Label(
@@ -107,8 +107,8 @@ ingredients = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "1
 #     )
 #     label.pack()
 
-master = tk.Frame(root)
-master.pack()
+main = tk.Frame(root)
+main.pack()
 footer = tk.Frame(root)
 footer.pack(side=tk.BOTTOM)
 
@@ -124,17 +124,17 @@ button = tk.Button(
 
 button.pack(side=tk.LEFT)
 
-master.destroy()
-master = tk.Frame(root)
-master.pack(fill=tk.BOTH, expand=tk.TRUE)
+main.destroy()
+main = tk.Frame(root)
+main.pack(fill=tk.BOTH, expand=tk.TRUE)
 
 name = "Ration Name"
 label = tk.Label(
-    master, text=name
+    main, text=name
 )
 label.pack()
 
-ingredients_list = VerticalScrolledFrame(master)
+ingredients_list = VerticalScrolledFrame(main)
 ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
 for ingredient in ingredients:
     label = tk.Label(

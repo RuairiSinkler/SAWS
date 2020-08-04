@@ -275,47 +275,47 @@ class RationPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        # self.master = tk.Frame(self)
-        # self.master.pack()
-        # self.footer = tk.Frame(self)
-        # self.footer.pack(side=tk.BOTTOM)
+        self.main = tk.Frame(self)
+        self.main.pack()
+        self.footer = tk.Frame(self)
+        self.footer.pack(side=tk.BOTTOM)
 
         self.controller = controller
 
         self.ration_id = None
         self.name = None
 
-        # button = tk.Button(
-        #     self.footer, text="Back", font=self.controller.mainFont,
-        #     command=lambda: self.controller.show_frame("MainMenu")
-        # )
+        button = tk.Button(
+            self.footer, text="Back", font=self.controller.mainFont,
+            command=lambda: self.controller.show_frame("MainMenu")
+        )
 
-        # button.pack(side=tk.LEFT)
+        button.pack(side=tk.LEFT)
 
-        # button = tk.Button(
-        #     self.footer, text="Run", font=self.controller.mainFont,
-        #     command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id)
-        # )
+        button = tk.Button(
+            self.footer, text="Run", font=self.controller.mainFont,
+            command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id)
+        )
 
-        # button.pack(side=tk.LEFT)
+        button.pack(side=tk.LEFT)
 
     def display_page(self, ration_id):
 
-        # self.master.destroy()
-        # self.master = tk.Frame(self)
-        # self.master.pack(fill=tk.BOTH, expand=tk.TRUE)
+        self.main.destroy()
+        self.main = tk.Frame(self)
+        self.main.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         self.ration_id = ration_id
 
         self.name = self.controller.ration_db.get_ration(self.ration_id)[1]
         print(self.name)
         ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
-        label = tk.Label(
-            self, text=self.name, font=self.controller.mainFont
-        )
-        label.pack()
+        # label = tk.Label(
+        #     self, text=self.name, font=self.controller.mainFont
+        # )
+        # label.pack()
 
-        ingredients_list = VerticalScrolledFrame(self)
+        ingredients_list = VerticalScrolledFrame(self.main)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in ingredients:
             print("{}, {}kg".format(ingredient[0], str(ingredient[1])))
@@ -331,12 +331,12 @@ class RunPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.master = tk.Frame(self)
+        self.main = tk.Frame(self)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(7, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(5, weight=1)
-        self.master.grid(column=2, row=2, rowspan=4, sticky="nsew")
+        self.main.grid(column=2, row=2, rowspan=4, sticky="nsew")
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
         self.footer.grid(column=2, row=6, sticky="nsew")
         self.grid_rowconfigure(0, weight=1)
@@ -473,10 +473,10 @@ class RunPage(tk.Frame):
         self.controller.show_frame("MainMenu")
 
     def display_page(self, ration_id):
-        self.master.destroy()
+        self.main.destroy()
         self.footer.destroy()
-        self.master = tk.Frame(self)
-        self.master.grid(column=2, row=2, rowspan=4)
+        self.main = tk.Frame(self)
+        self.main.grid(column=2, row=2, rowspan=4)
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
         self.footer.grid(column=2, row=6)
         self.running = False
@@ -484,9 +484,9 @@ class RunPage(tk.Frame):
         self.done = False
         self.ration_id = ration_id
 
-        # unmeasured = tk.Frame(self.master, relief=tk.RAISED, borderwidth=1)
+        # unmeasured = tk.Frame(self.main, relief=tk.RAISED, borderwidth=1)
         # unmeasured.pack(side=tk.BOTTOM)
-        # measured = tk.Frame(self.master, relief=tk.RAISED, borderwidth=1)
+        # measured = tk.Frame(self.main, relief=tk.RAISED, borderwidth=1)
         # measured.pack(side=tk.BOTTOM, expand=True)
 
         self.ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
@@ -520,7 +520,7 @@ class RunPage(tk.Frame):
                 unmeasured_counter += 1
             else:
                 if weigher_frames[weigher] is None:
-                    weigher_frames[weigher] = tk.Frame(self.master)
+                    weigher_frames[weigher] = tk.Frame(self.main)
                     weigher_frames[weigher].pack(side=tk.LEFT, expand=True)
                 frame = weigher_frames[weigher]
                 label = tk.Label(
