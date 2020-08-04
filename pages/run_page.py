@@ -4,6 +4,7 @@ import numpy as np
 from tkinter import ttk
 from operator import itemgetter
 
+import data.settings as settings
 from pages.page_tools.augar import Augar
 from pages.page_tools.weight_input import WeightInput
 from pages.page_tools.hopper import Hopper
