@@ -277,27 +277,27 @@ class RationPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.master = tk.Frame(self)
         self.master.pack()
-        self.footer = tk.Frame(self)
-        self.footer.pack(side=tk.BOTTOM)
+        # self.footer = tk.Frame(self)
+        # self.footer.pack(side=tk.BOTTOM)
 
         self.controller = controller
 
         self.ration_id = None
         self.name = None
 
-        button = tk.Button(
-            self.footer, text="Back", font=self.controller.mainFont,
-            command=lambda: self.controller.show_frame("MainMenu")
-        )
+        # button = tk.Button(
+        #     self.footer, text="Back", font=self.controller.mainFont,
+        #     command=lambda: self.controller.show_frame("MainMenu")
+        # )
 
-        button.pack(side=tk.LEFT)
+        # button.pack(side=tk.LEFT)
 
-        button = tk.Button(
-            self.footer, text="Run", font=self.controller.mainFont,
-            command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id)
-        )
+        # button = tk.Button(
+        #     self.footer, text="Run", font=self.controller.mainFont,
+        #     command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id)
+        # )
 
-        button.pack(side=tk.LEFT)
+        # button.pack(side=tk.LEFT)
 
     def display_page(self, ration_id):
 
@@ -317,12 +317,12 @@ class RationPage(tk.Frame):
 
         ingredients_list = VerticalScrolledFrame(self.master)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
-        # for ingredient in ingredients:
-        #     print("{}, {}kg".format(ingredient[0], str(ingredient[1])))
-        #     label = tk.Label(
-        #         ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
-        #     )
-        #     label.pack()
+        for ingredient in ingredients:
+            print("{}, {}kg".format(ingredient[0], str(ingredient[1])))
+            label = tk.Label(
+                ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
+            )
+            label.pack()
 
         self.controller.show_frame("RationPage")
 
