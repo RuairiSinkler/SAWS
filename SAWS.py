@@ -310,10 +310,10 @@ class RationPage(tk.Frame):
         self.name = self.controller.ration_db.get_ration(self.ration_id)[1]
         print(self.name)
         ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
-        # label = tk.Label(
-        #     self, text=self.name, font=self.controller.mainFont
-        # )
-        # label.pack()
+        label = tk.Label(
+            self.main, text=self.name, font=self.controller.mainFont
+        )
+        label.pack()
 
         ingredients_list = VerticalScrolledFrame(self.main)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
