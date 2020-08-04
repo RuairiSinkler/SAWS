@@ -308,7 +308,6 @@ class RationPage(tk.Frame):
         self.ration_id = ration_id
 
         self.name = self.controller.ration_db.get_ration(self.ration_id)[1]
-        print(self.name)
         ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
         label = tk.Label(
             self.main, text=self.name, font=self.controller.mainFont
@@ -318,7 +317,6 @@ class RationPage(tk.Frame):
         ingredients_list = VerticalScrolledFrame(self.main)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in ingredients:
-            print("{}, {}kg".format(ingredient[0], str(ingredient[1])))
             label = tk.Label(
                 ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
             )
