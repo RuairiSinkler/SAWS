@@ -12,7 +12,7 @@ from openpyxl.utils import column_index_from_string
 import data.settings as settings
 import database.database_management as db
 import excel.excel_management as ex
-import exceptions as ex
+import exceptions as err
 import pages as pgs
 import pages.message_pages as mpgs
 
@@ -60,7 +60,7 @@ class SAWS(tk.Tk):
 
         try:
             self.setup_database()
-        except ex.SAWSWarning as warning:
+        except err.SAWSWarning as warning:
             database_warning = warning
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
@@ -100,7 +100,7 @@ class SAWS(tk.Tk):
 
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
-            raise ex.USBError
+            raise err.USBError
         top_row = ingredient_cell.row
         column = column_index_from_string(ingredient_cell.column)
         for row in itertools.count(top_row + 1):
@@ -144,7 +144,7 @@ class SAWS(tk.Tk):
             self.ration_db.insert_house([name])
 
         if rations_with_empty_cells:
-            raise ex.EmptyCellWarning(rations_with_empty_cells)
+            raise err.EmptyCellWarning(rations_with_empty_cells)
 
     def display_error(self, error):
         self.frames["ErrorPage"].display_page(error)
@@ -171,7 +171,7 @@ def main():
         saws = SAWS()
         try:
             saws.setup()
-        except er.USBError as e:
+        except err.USBError as e:
             saws.display_error(e)
         finally:
             saws.mainloop()
