@@ -253,47 +253,17 @@ class MainMenu(tk.Frame):
         tk.Frame.__init__(self, parent)
         rations = controller.ration_db.get_all_rations()
 
-        # create a canvas object and a vertical scrollbar for scrolling it
-        scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
-        scrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
-        canvas = tk.Canvas(self, bd=0, highlightthickness=0,
-                           yscrollcommand=scrollbar.set)
-        canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.TRUE)
-        scrollbar.config(command=canvas.yview)
+        title_label = tk.Label(self, text="Main Menu", font=controller.mainFont)
+        title_label.pack()
 
-        # reset the view
-        canvas.xview_moveto(0)
-        canvas.yview_moveto(0)
-
-        # create a frame inside the canvas which will be scrolled with it
-        interior = tk.Frame(canvas)
-        interior_id = canvas.create_window(0, 0, window=interior,
-                                           anchor=tk.NW)
-
-        # track changes to the canvas and frame width and sync them,
-        # also updating the scrollbar
-        def _configure_interior(event):
-            # update the scrollbars to match the size of the inner frame
-            size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
-            canvas.config(scrollregion="0 0 %s %s" % size)
-            if interior.winfo_reqwidth() != canvas.winfo_width():
-                # update the canvas's width to fit the inner frame
-                canvas.config(width=interior.winfo_reqwidth())
-
-        interior.bind('<Configure>', _configure_interior)
-
-        def _configure_canvas(event):
-            if interior.winfo_reqwidth() != canvas.winfo_width():
-                # update the inner frame's width to fill the canvas
-                canvas.itemconfigure(interior_id, width=canvas.winfo_width())
-
-        canvas.bind('<Configure>', _configure_canvas)
+        ration_options = VerticalScrolledFrame(self)
+        ration_options.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         for ration in rations:
             id = ration[0]
             name = ration[1]
             button = tk.Button(
-                interior, text=name, font=controller.mainFont,
+                ration_options.interior, text=name, font=controller.mainFont,
                 command=lambda id=id: controller.frames["RationPage"].display_page(id)
             )
             button.pack(padx=10, pady=5, side=tk.TOP)
@@ -301,15 +271,15 @@ class MainMenu(tk.Frame):
         button = tk.Button(
             self, text="Quit", font=controller.mainFont, command=lambda: controller.show_frame("SplashPage")
         )
-        button.pack(fill="x")
+        button.pack(side=tk.BOTTOM, fill="x")
 
 
 class RationPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.master = tk.Frame(self)
-        self.master.pack()
+        self.main = tk.Frame(self)
+        self.main.pack()
         self.footer = tk.Frame(self)
         self.footer.pack(side=tk.BOTTOM)
 
@@ -334,24 +304,26 @@ class RationPage(tk.Frame):
 
     def display_page(self, ration_id):
 
-        self.master.destroy()
-        self.master = tk.Frame(self)
-        self.master.pack()
+        self.main.destroy()
+        self.main = tk.Frame(self)
+        self.main.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         self.ration_id = ration_id
 
         self.name = self.controller.ration_db.get_ration(self.ration_id)[1]
         ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
         label = tk.Label(
-            self.master, text=self.name, font=self.controller.mainFont
+            self.main, text=self.name, font=self.controller.mainFont
         )
         label.pack()
+
+        ingredients_list = VerticalScrolledFrame(self.main)
+        ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in ingredients:
             label = tk.Label(
-                self.master, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
+                ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
             )
             label.pack()
-
 
         self.controller.show_frame("RationPage")
 
@@ -360,12 +332,12 @@ class RunPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.master = tk.Frame(self)
+        self.main = tk.Frame(self)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(7, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(5, weight=1)
-        self.master.grid(column=2, row=2, rowspan=4, sticky="nsew")
+        self.main.grid(column=2, row=2, rowspan=4, sticky="nsew")
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
         self.footer.grid(column=2, row=6, sticky="nsew")
         self.grid_rowconfigure(0, weight=1)
@@ -504,10 +476,10 @@ class RunPage(tk.Frame):
         num_pad.clear()
 
     def display_page(self, ration_id):
-        self.master.destroy()
+        self.main.destroy()
         self.footer.destroy()
-        self.master = tk.Frame(self)
-        self.master.grid(column=2, row=2, rowspan=4)
+        self.main = tk.Frame(self)
+        self.main.grid(column=2, row=2, rowspan=4)
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
         self.footer.grid(column=2, row=6)
         self.running = False
@@ -515,9 +487,9 @@ class RunPage(tk.Frame):
         self.done = False
         self.ration_id = ration_id
 
-        # unmeasured = tk.Frame(self.master, relief=tk.RAISED, borderwidth=1)
+        # unmeasured = tk.Frame(self.main, relief=tk.RAISED, borderwidth=1)
         # unmeasured.pack(side=tk.BOTTOM)
-        # measured = tk.Frame(self.master, relief=tk.RAISED, borderwidth=1)
+        # measured = tk.Frame(self.main, relief=tk.RAISED, borderwidth=1)
         # measured.pack(side=tk.BOTTOM, expand=True)
 
         self.ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
@@ -551,7 +523,7 @@ class RunPage(tk.Frame):
                 unmeasured_counter += 1
             else:
                 if weigher_frames[weigher] is None:
-                    weigher_frames[weigher] = tk.Frame(self.master)
+                    weigher_frames[weigher] = tk.Frame(self.main)
                     weigher_frames[weigher].pack(side=tk.LEFT, expand=True)
                 frame = weigher_frames[weigher]
                 label = tk.Label(
@@ -727,6 +699,51 @@ class WeightInput:
             if new_state == GPIO.HIGH:
                 self.parent.increment_value(self.weigher)
         self.controller.after(200, self.check_input)
+
+class VerticalScrolledFrame(tk.Frame):
+    """A pure Tkinter scrollable frame that actually works!
+
+    * Use the 'interior' attribute to place widgets inside the scrollable frame
+    * Construct and pack/place/grid normally
+    * This frame only allows vertical scrolling
+    """
+    def __init__(self, parent, *args, **kw):
+        tk.Frame.__init__(self, parent, *args, **kw)
+
+        # create a canvas object and a vertical scrollbar for scrolling it
+        vscrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
+        vscrollbar.pack(fill=tk.Y, side=tk.RIGHT, expand=tk.FALSE)
+        canvas = tk.Canvas(self, bd=0, highlightthickness=0,
+                        yscrollcommand=vscrollbar.set)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.TRUE)
+        vscrollbar.config(command=canvas.yview)
+        
+        # reset the view
+        canvas.xview_moveto(0)
+        canvas.yview_moveto(0)
+        
+        # create a frame inside the canvas which will be scrolled with it
+        self.interior = interior = tk.Frame(canvas)
+        interior_id = canvas.create_window(0, 0, window=interior,
+                                           anchor=tk.NW)
+        
+        # track changes to the canvas and frame width and sync them,
+        # also updating the scrollbar
+        def _configure_interior(event):
+            # update the scrollbars to match the size of the inner frame
+            size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
+            canvas.config(scrollregion="0 0 %s %s" % size)
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the canvas's width to fit the inner frame
+                canvas.config(width=interior.winfo_reqwidth())
+        
+        interior.bind('<Configure>', _configure_interior)
+        
+        def _configure_canvas(event):
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the inner frame's width to fill the canvas
+                canvas.itemconfigure(interior_id, width=canvas.winfo_width())
+        canvas.bind('<Configure>', _configure_canvas)
 
 
 def main():
