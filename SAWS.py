@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import os
+import time
+import re
 import itertools
 import configparser
 import argparse
@@ -82,10 +84,13 @@ class SAWS(tk.Tk):
         #frame.grid(row=1, column=1, sticky="nsew")
         frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
 
-    def show_frame(self, page_name):
+    def show_frame(self, page_name, aboveThis=None, belowThis=None):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
-        frame.lift()
+        if belowThis:
+            frame.lower(belowThis)
+        else:
+            frame.lift(aboveThis)
 
     def hide_frame(self, page_name):
         '''Hide a frame for the given page name'''
@@ -125,6 +130,8 @@ class SAWS(tk.Tk):
                 if ingredient is None:
                     break
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
+                if ingredient_id is None:
+                    self.display_warning(err.EmptyCellWarning)
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
                 if amount is None:
@@ -144,13 +151,36 @@ class SAWS(tk.Tk):
             self.ration_db.insert_house([name])
 
         if rations_with_empty_cells:
-            raise err.EmptyCellWarning(rations_with_empty_cells)
+            self.display_warning(err.EmptyCellWarning(rations_with_empty_cells))
 
     def display_error(self, error):
         self.frames["ErrorPage"].display_page(error)
 
     def display_warning(self, warning):
-        self.frames["WarningPage"].display_page(warning)
+        if self.frames["WarningPage"].active:
+            page_name = "TempWarningPage{}".format(time.time())
+            frame = mpgs.WarningPage(parent=self.container, controller=self)
+            self.frames[page_name] = frame
+
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            #frame.grid(row=1, column=1, sticky="nsew")
+            frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
+
+            most_recent_warning = self.frames["WarningPage"]
+            current_timestamp = 0
+            for frame_name, frame in self.frames.items():
+                temp_warning_regex = re.compile("TempWarningPage*")
+                if temp_warning_regex.match(frame_name):
+                    timestamp = int(''.join(filter(str.isdigit, frame_name)))
+                    if timestamp > current_timestamp:
+                        most_recent_warning = frame
+                        current_timestamp = timestamp
+
+            self.frames[page_name].display_page(warning, belowThis=most_recent_warning)
+        else:
+            self.frames["WarningPage"].display_page(warning)
 
     def shutdown(self):
         os.system("sudo shutdown -h now")

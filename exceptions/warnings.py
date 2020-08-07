@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 
-class SAWSWarning(Exception):
+class SAWSWarning(Warning):
 
     def __init__(self, message):
         self.message = message
