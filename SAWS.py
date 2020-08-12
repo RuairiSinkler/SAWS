@@ -103,8 +103,6 @@ class SAWS(tk.Tk):
         self.ration_db.clear()
         self.ration_db.build()
 
-        rations_with_empty_cells = ""
-
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
             raise err.USBError
@@ -135,7 +133,9 @@ class SAWS(tk.Tk):
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 if ingredient_id is None:
                     self.display_warning(err.MissingIngredientWarning(ingredient, name))
+                    print("Warning for ingredient {} displayed, continuing".format(ingredient))
                     ignored_ingredients.append(ingredient)
+                    break
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
                 if amount is None:
