@@ -121,6 +121,7 @@ class SAWS(tk.Tk):
         ration_cell = self.ration_ex.find("Ration")
         top_row = ration_cell.row
         column = column_index_from_string(ration_cell.column)
+        ignored_ingredients = []
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             if name is None:
@@ -129,11 +130,12 @@ class SAWS(tk.Tk):
             for col in itertools.count(column + 1):
                 ration_id = self.ration_db.get_id_by_name("rations", name)
                 ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
-                if ingredient is None:
+                if ingredient is None or ingredient in ignored_ingredients:
                     break
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 if ingredient_id is None:
                     self.display_warning(err.MissingIngredientWarning(ingredient, name))
+                    ignored_ingredients.append(ingredient)
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
                 if amount is None:

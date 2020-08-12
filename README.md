@@ -16,14 +16,6 @@ Python program to automatically control a hopper/augar system for mixing ingrede
 * Run ```sudo python3 SAWS/SAWS.py```
 
 ### To run at startup
-* Run```nano SAWS/SAWS.sh``` to edit the script file to contain you install location i.e.:
-```
-#!/bin/sh
-while (true)
-do
-  sudo python3 /FULL_INSTALL_PATH/SAWS/SAWS.py
-done
-```
 * Ensure ```~/.config/lxsession/LXDE-pi/autostart``` exists
 * Edit it with ```nano ~/.config/lxsession/LXDE-pi/autostart``` 
 * Ensure the file looks like this:
@@ -32,7 +24,6 @@ done
 @pcmanfm --desktop --profile LXDE-pi
 @xscreensaver -no-splash
 #@point-rpi
-
-@/FULL_INSTALL_PATH/SAWS/SAWS.sh
+@cd /FULL_INSTALL_PATH/SAWS && ./SAWS.sh
 ```
 * Reboot
