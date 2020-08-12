@@ -131,6 +131,7 @@ class SAWS(tk.Tk):
                 if ingredient is None or ingredient in ignored_ingredients:
                     break
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
+                print(ingredient_id)
                 if ingredient_id is None:
                     print("Displaying warning for ingredient {}".format(ingredient))
                     self.display_warning(err.MissingIngredientWarning(ingredient, name))
