@@ -128,24 +128,26 @@ class SAWS(tk.Tk):
             for col in itertools.count(column + 1):
                 ration_id = self.ration_db.get_id_by_name("rations", name)
                 ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
-                if ingredient is None or ingredient in ignored_ingredients:
+                if ingredient is None:
                     break
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
-                print(ingredient_id)
-                if ingredient_id is None:
-                    print("Displaying warning for ingredient {}".format(ingredient))
-                    self.display_warning(err.MissingIngredientWarning(ingredient, name))
-                    print("Warning for ingredient {} displayed, continuing".format(ingredient))
-                    ignored_ingredients.append(ingredient)
-                    break
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
-                if amount is None:
+                print(ingredient_id)
+                if ingredient_id is not None and amount is not None:
+                    self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                else if amount is None:
                     self.display_warning(err.EmptyCellWarning(name))
                     self.ration_ex.write_cell(0, amount_cell)
                     self.ration_ex.save()
                     amount = 0
-                self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                    self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                else if ingredient_id is None:
+                    print("Displaying warning for ingredient {}".format(ingredient))
+                    self.display_warning(err.MissingIngredientWarning(ingredient, name))
+                    print("Warning for ingredient {} displayed, continuing".format(ingredient))
+                    ignored_ingredients.append(ingredient)
+                
 
         house_cell = self.ration_ex.find("Houses")
         top_row = house_cell.row
@@ -162,6 +164,7 @@ class SAWS(tk.Tk):
     def display_warning(self, warning):
         if self.frames["WarningPage"].active:
             page_name = "TempWarningPage.{}".format(time.time_ns())
+            print(page_name)
 
             most_recent_warning = self.frames["WarningPage"]
             most_recent_timestamp = 0
