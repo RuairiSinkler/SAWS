@@ -73,8 +73,10 @@ class SAWS(tk.Tk):
         if database_warning is not None:
             self.display_warning(database_warning)
 
-    def create_frame(self, F, container, *args):
+    def create_frame(self, F, container, name=None, *args):
         page_name = F.__name__
+        if name is not None:
+            page_name = name
         frame = F(parent=container, controller=self, *args)
         self.frames[page_name] = frame
 
@@ -131,11 +133,11 @@ class SAWS(tk.Tk):
                     break
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 if ingredient_id is None:
-                    self.display_warning(err.EmptyCellWarning)
+                    self.display_warning(err.MissingIngredientWarning(ingredient, name))
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
                 if amount is None:
-                    rations_with_empty_cells += "{}\n".format(name)
+                    self.display_warning(err.EmptyCellWarning(name))
                     self.ration_ex.write_cell(0, amount_cell)
                     self.ration_ex.save()
                     amount = 0
@@ -150,16 +152,28 @@ class SAWS(tk.Tk):
                 break
             self.ration_db.insert_house([name])
 
-        if rations_with_empty_cells:
-            self.display_warning(err.EmptyCellWarning(rations_with_empty_cells))
-
     def display_error(self, error):
         self.frames["ErrorPage"].display_page(error)
 
     def display_warning(self, warning):
         if self.frames["WarningPage"].active:
-            page_name = "TempWarningPage{}".format(time.time())
-            frame = mpgs.WarningPage(parent=self.container, controller=self)
+            page_name = "TempWarningPage.{}".format(time.time_ns())
+
+            most_recent_warning = self.frames["WarningPage"]
+            most_recent_timestamp = 0
+            current_timestamp = int(''.join(filter(str.isdigit, page_name)))
+            for frame_name, frame in self.frames.items():
+                temp_warning_regex = re.compile("TempWarningPage*")
+                if temp_warning_regex.match(frame_name):
+                    timestamp = int(frame_name.split('.')[1])
+                    if current_timestamp == timestamp:
+                        current_timestamp += 1
+                        page_name = "TempWarningPage.{}".format(current_timestamp)
+                    if timestamp > most_recent_timestamp and timestamp < current_timestamp:
+                        most_recent_warning = frame
+                        most_recent_timestamp = timestamp
+
+            frame = mpgs.WarningPage(parent=self.container, controller=self, name=page_name, temp=True)
             self.frames[page_name] = frame
 
             # put all of the pages in the same location;
@@ -167,16 +181,6 @@ class SAWS(tk.Tk):
             # will be the one that is visible.
             #frame.grid(row=1, column=1, sticky="nsew")
             frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
-
-            most_recent_warning = self.frames["WarningPage"]
-            current_timestamp = 0
-            for frame_name, frame in self.frames.items():
-                temp_warning_regex = re.compile("TempWarningPage*")
-                if temp_warning_regex.match(frame_name):
-                    timestamp = int(''.join(filter(str.isdigit, frame_name)))
-                    if timestamp > current_timestamp:
-                        most_recent_warning = frame
-                        current_timestamp = timestamp
 
             self.frames[page_name].display_page(warning, belowThis=most_recent_warning)
         else:
