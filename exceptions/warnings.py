@@ -18,7 +18,7 @@ class EmptyCellWarning(SAWSWarning):
 class MissingIngredientWarning(SAWSWarning):
 
     def __init__(self, ingredient, ration):
-        self.message = "Ingredient '{}' has been\nused in ration '{}'\nbut it is not listed in the Ingredients list\nRation '{}' will be unavailable\nPlease check rations.xlsx".format(ingredient, ration, ration)
+        self.message = "Ingredient '{}' has been\nused in ration '{}'\nbut it is not listed in the Ingredients list\nThis ingredient will not appear in the ration\nPlease check rations.xlsx".format(ingredient, ration, ration)
         super().__init__(self.message)
 
 

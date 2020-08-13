@@ -112,38 +112,35 @@ class SAWS(tk.Tk):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
             ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
-            if name is None:
-                break
-            self.ration_db.insert_ingredient([name, weigher, ordering])
+            if name is not None:
+                self.ration_db.insert_ingredient([name, weigher, ordering])
 
         ration_cell = self.ration_ex.find("Ration")
         top_row = ration_cell.row
         column = column_index_from_string(ration_cell.column)
-        ignored_ingredients = []
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
-            if name is None:
-                break
-            self.ration_db.insert_ration([name])
-            for col in itertools.count(column + 1):
-                ration_id = self.ration_db.get_id_by_name("rations", name)
-                ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
-                if ingredient is None:
-                    break
-                ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
-                amount_cell = self.ration_ex.get_cell(col, row)
-                amount = self.ration_ex.read_cell(amount_cell)
-                if ingredient_id is not None and amount is not None:
-                    self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
-                elif amount is None:
-                    self.display_warning(err.EmptyCellWarning(name))
-                    self.ration_ex.write_cell(0, amount_cell)
-                    self.ration_ex.save()
-                    amount = 0
-                    self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
-                elif ingredient_id is None:
-                    self.display_warning(err.MissingIngredientWarning(ingredient, name))
-                    ignored_ingredients.append(ingredient)
+            if name is not None:
+                self.ration_db.insert_ration([name])
+                print("Ration {}".format(name))
+                for col in itertools.count(column + 1):
+                    ration_id = self.ration_db.get_id_by_name("rations", name)
+                    ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
+                    if ingredient is not None:
+                        print("Ingredient {}".format(ingredient))
+                        ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
+                        amount_cell = self.ration_ex.get_cell(col, row)
+                        amount = self.ration_ex.read_cell(amount_cell)
+                        if ingredient_id is not None and amount is not None:
+                            self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                        elif amount is None:
+                            self.display_warning(err.EmptyCellWarning(name))
+                            self.ration_ex.write_cell(0, amount_cell)
+                            self.ration_ex.save()
+                            amount = 0
+                            self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                        elif ingredient_id is None:
+                            self.display_warning(err.MissingIngredientWarning(ingredient, name))
                 
 
         house_cell = self.ration_ex.find("Houses")
@@ -151,9 +148,8 @@ class SAWS(tk.Tk):
         column = column_index_from_string(house_cell.column)
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
-            if name is None:
-                break
-            self.ration_db.insert_house([name])
+            if name is not None:
+                self.ration_db.insert_house([name])
 
     def display_error(self, error):
         self.frames["ErrorPage"].display_page(error)
