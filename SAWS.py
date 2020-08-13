@@ -133,7 +133,6 @@ class SAWS(tk.Tk):
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
-                print(ingredient_id)
                 if ingredient_id is not None and amount is not None:
                     self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
                 elif amount is None:
@@ -143,9 +142,7 @@ class SAWS(tk.Tk):
                     amount = 0
                     self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
                 elif ingredient_id is None:
-                    print("Displaying warning for ingredient {}".format(ingredient))
                     self.display_warning(err.MissingIngredientWarning(ingredient, name))
-                    print("Warning for ingredient {} displayed, continuing".format(ingredient))
                     ignored_ingredients.append(ingredient)
                 
 
