@@ -11,6 +11,7 @@ Python program to automatically control a hopper/augar system for mixing ingrede
 
 ### Main Setup
 * Install latest version of Raspbian onto Raspberry Pi
+* Ensure you have Python 3.7 or later installed (follow [this guide](https://samx18.io/blog/2018/09/05/python3_raspberrypi.html) if you need to update your Python)
 * Install the openpyxl module with ```sudo pip3 install openpyxl```
 * Clone this Github repository
 * Run ```sudo python3 SAWS/SAWS.py```

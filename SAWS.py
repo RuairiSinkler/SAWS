@@ -158,6 +158,7 @@ class SAWS(tk.Tk):
         self.frames["ErrorPage"].display_page(error)
 
     def display_warning(self, warning):
+        print("Displaying warning {}".format(warning.message))
         if self.frames["WarningPage"].active:
             page_name = "TempWarningPage.{}".format(time.time_ns())
             print(page_name)
