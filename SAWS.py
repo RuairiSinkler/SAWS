@@ -9,7 +9,6 @@ import argparse
 import tkinter as tk
 import RPi.GPIO as GPIO
 from tkinter.font import Font
-from openpyxl.utils import column_index_from_string
 
 import data.settings as settings
 import database.database_management as db
@@ -104,7 +103,7 @@ class SAWS(tk.Tk):
         top_row = ingredient_cell.row
         print("Top Row {}".format(top_row))
         print("ingredient_cell.column: {}".format(ingredient_cell.column))
-        column = column_index_from_string(ingredient_cell.column)
+        column = ingredient_cell.column
         print("Column {}".format(column))
         for row in itertools.count(top_row + 1):
             print("Row {}".format(row))
@@ -122,7 +121,7 @@ class SAWS(tk.Tk):
             print("Ration Cell is None")
             raise err.USBError
         top_row = ration_cell.row
-        column = column_index_from_string(ration_cell.column)
+        column = ration_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             if name is None:
@@ -152,7 +151,7 @@ class SAWS(tk.Tk):
 
         house_cell = self.ration_ex.find("Houses")
         top_row = house_cell.row
-        column = column_index_from_string(house_cell.column)
+        column = house_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             if name is not None:
