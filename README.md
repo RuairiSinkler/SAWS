@@ -17,6 +17,12 @@ Python program to automatically control a hopper/augar system for mixing ingrede
 * Run ```sudo python3 SAWS/SAWS.py```
 
 ### To run at startup
+#### Activate auto-login:
+* Run Raspi-Config with ```sudo raspi-config```
+* Navigate to ```3 Boot Options```
+* Then ```B1 Desktop / CLI```
+* Finally select ```B4 Desktop Autologin```
+#### Run SAWS at Desktop Boot
 * Ensure ```~/.config/lxsession/LXDE-pi/autostart``` exists
 * Edit it with ```nano ~/.config/lxsession/LXDE-pi/autostart``` 
 * Ensure the file looks like this:
