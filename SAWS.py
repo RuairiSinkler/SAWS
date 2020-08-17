@@ -60,6 +60,7 @@ class SAWS(tk.Tk):
         self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
+            print("Creating: {}".format(F.__name__))
             self.create_frame(F, self.container)
 
         self.show_frame("SplashPage")
