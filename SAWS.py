@@ -102,8 +102,11 @@ class SAWS(tk.Tk):
             print("Ingredient Cell is None")
             raise err.USBError
         top_row = ingredient_cell.row
+        print("Top Row {}".format(top_row))
         column = column_index_from_string(ingredient_cell.column)
+        print("Column {}".format(column))
         for row in itertools.count(top_row + 1):
+            print("Row {}".format(row))
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
             ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
