@@ -39,6 +39,7 @@ class WarningPage(tk.Frame):
         self.controller.hide_frame(self.name)
         if self.temp:
             del self.controller.frames[self.name]
+            self.controller.warning_frames.remove(self)
             self.destroy()
 
 class Controller(tk.Tk):
@@ -62,6 +63,7 @@ class Controller(tk.Tk):
         self.option_add("*TCombobox*Listbox*Font", self.mainFont)
 
         self.frames = {}
+        self.warning_frames = []
 
         page_name = "Base"
         frame = tk.Frame(self.container)
@@ -75,7 +77,8 @@ class Controller(tk.Tk):
         label = tk.Label(frame, text="Base Level")
         label.pack()
 
-        self.create_frame(WarningPage, self.container)
+        warning_frame = self.create_frame(WarningPage, self.container)
+        self.warning_frames.append(warning_frame)
         
 
 
@@ -94,22 +97,11 @@ class Controller(tk.Tk):
         frame.lower()
 
     def display_warning(self, warning):
+        print("Displaying warning {}".format(warning.message))
         if self.frames["WarningPage"].active:
-            page_name = "TempWarningPage.{}".format(time.time_ns())
-
-            most_recent_warning = self.frames["WarningPage"]
-            most_recent_timestamp = 0
-            current_timestamp = int(''.join(filter(str.isdigit, page_name)))
-            for frame_name, frame in self.frames.items():
-                temp_warning_regex = re.compile("TempWarningPage*")
-                if temp_warning_regex.match(frame_name):
-                    timestamp = int(frame_name.split('.')[1])
-                    if current_timestamp == timestamp:
-                        current_timestamp += 1
-                        page_name = "TempWarningPage.{}".format(current_timestamp)
-                    if timestamp > most_recent_timestamp and timestamp < current_timestamp:
-                        most_recent_warning = frame
-                        most_recent_timestamp = timestamp
+            current_timestamp = time.time_ns()
+            page_name = "TempWarningPage.{}".format(current_timestamp)
+            print(page_name)
 
             frame = WarningPage(parent=self.container, controller=self, name=page_name, temp=True)
             self.frames[page_name] = frame
@@ -120,7 +112,8 @@ class Controller(tk.Tk):
             #frame.grid(row=1, column=1, sticky="nsew")
             frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
 
-            self.frames[page_name].display_page(warning, belowThis=most_recent_warning)
+            self.frames[page_name].display_page(warning, belowThis=self.warning_frames[-1])
+            self.warning_frames.append(frame)
         else:
             self.frames["WarningPage"].display_page(warning)
             
@@ -137,6 +130,7 @@ class Controller(tk.Tk):
         # will be the one that is visible.
         #frame.grid(row=1, column=1, sticky="nsew")
         frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
+        return frame
         
 root = Controller()
 root.display_warning(err.SAWSWarning("Warning 1"))

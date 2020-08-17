@@ -33,4 +33,5 @@ class WarningPage(tk.Frame):
         self.controller.hide_frame(self.name)
         if self.temp:
             del self.controller.frames[self.name]
+            self.controller.warning_frames.remove(self)
             self.destroy()

@@ -50,9 +50,11 @@ class SAWS(tk.Tk):
         self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
 
         self.frames = {}
+        self.warning_frames = []
 
         self.create_frame(mpgs.ErrorPage, self.container)
-        self.create_frame(mpgs.WarningPage, self.container)
+        warning_frame = self.create_frame(mpgs.WarningPage, self.container)
+        self.warning_frames.append(warning_frame)
 
     def setup(self):
         GPIO.setmode(GPIO.BCM)
@@ -61,9 +63,14 @@ class SAWS(tk.Tk):
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             print("Creating: {}".format(F.__name__))
-            self.create_frame(F, self.container)
+            frame = self.create_frame(F, self.container)
+            self.hide_frame(frame)
 
-        self.show_frame("SplashPage")
+        display_below = None
+        if self.frames["WarningPage"].active:
+            display_below = self.warning_frames[-1]
+        
+        self.show_frame("SplashPage", display_below)
 
     def create_frame(self, F, container, name=None, *args):
         page_name = F.__name__
@@ -77,6 +84,7 @@ class SAWS(tk.Tk):
         # will be the one that is visible.
         #frame.grid(row=1, column=1, sticky="nsew")
         frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
+        return frame
 
     def show_frame(self, page_name, aboveThis=None, belowThis=None):
         '''Show a frame for the given page name'''
@@ -169,22 +177,9 @@ class SAWS(tk.Tk):
     def display_warning(self, warning):
         print("Displaying warning {}".format(warning.message))
         if self.frames["WarningPage"].active:
-            current_timestamp = time.time_ns()
-            page_name = "TempWarningPage.{}".format(current_timestamp)
+            timestamp = time.time_ns()
+            page_name = "TempWarningPage.{}".format(timestamp)
             print(page_name)
-
-            most_recent_warning = self.frames["WarningPage"]
-            most_recent_timestamp = 0
-            for frame_name, frame in self.frames.items():
-                temp_warning_regex = re.compile("TempWarningPage*")
-                if temp_warning_regex.match(frame_name):
-                    timestamp = int(frame_name.split('.')[1])
-                    if current_timestamp == timestamp:
-                        current_timestamp += 1
-                        page_name = "TempWarningPage.{}".format(current_timestamp)
-                    if timestamp > most_recent_timestamp and timestamp < current_timestamp:
-                        most_recent_warning = frame
-                        most_recent_timestamp = timestamp
 
             frame = mpgs.WarningPage(parent=self.container, controller=self, name=page_name, temp=True)
             self.frames[page_name] = frame
@@ -195,7 +190,8 @@ class SAWS(tk.Tk):
             #frame.grid(row=1, column=1, sticky="nsew")
             frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
 
-            self.frames[page_name].display_page(warning, belowThis=most_recent_warning)
+            self.frames[page_name].display_page(warning, belowThis=self.warning_frames[-1])
+            self.warning_frames.append(frame)
         else:
             self.frames["WarningPage"].display_page(warning)
 
