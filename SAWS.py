@@ -60,10 +60,7 @@ class SAWS(tk.Tk):
 
         database_warning = None
 
-        try:
-            self.setup_database()
-        except err.SAWSWarning as warning:
-            database_warning = warning
+        self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             self.create_frame(F, self.container)
@@ -100,6 +97,7 @@ class SAWS(tk.Tk):
         frame.lower()
 
     def setup_database(self):
+        print("Setting up database")
         self.ration_db.clear()
         self.ration_db.build()
 
@@ -160,12 +158,12 @@ class SAWS(tk.Tk):
     def display_warning(self, warning):
         print("Displaying warning {}".format(warning.message))
         if self.frames["WarningPage"].active:
-            page_name = "TempWarningPage.{}".format(time.time_ns())
+            current_timestamp = time.time_ns()
+            page_name = "TempWarningPage.{}".format(current_timestamp)
             print(page_name)
 
             most_recent_warning = self.frames["WarningPage"]
             most_recent_timestamp = 0
-            current_timestamp = int(''.join(filter(str.isdigit, page_name)))
             for frame_name, frame in self.frames.items():
                 temp_warning_regex = re.compile("TempWarningPage*")
                 if temp_warning_regex.match(frame_name):
