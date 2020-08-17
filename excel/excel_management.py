@@ -26,7 +26,7 @@ class WorksheetManager:
 
     def log_run(self, time_run, ration, complete, amounts, batch_number):
         row = self.sheet.max_row + 1
-        column = openpyxl.utils.column_index_from_string(self.find("Date Run").column)
+        column = self.find("Date Run").column
         self.write_cell(time_run, self.get_cell(column, row))
         self.write_cell(ration, self.get_cell(column + 1, row))
         if complete:
@@ -36,12 +36,12 @@ class WorksheetManager:
         self.write_cell(complete, self.get_cell(column + 2, row))
         total = 0
         for key, amount in amounts.items():
-            column = openpyxl.utils.column_index_from_string(self.find(key).column)
+            column = self.find(key).column
             self.write_cell(amount.get(), self.get_cell(column, row))
             total += amount.get()
-        column = openpyxl.utils.column_index_from_string(self.find("Total").column)
+        column = self.find("Total").column
         self.write_cell(total, self.get_cell(column, row))
-        column = openpyxl.utils.column_index_from_string(self.find("Batch Number").column)
+        column = self.find("Batch Number").column
         self.write_cell(batch_number, self.get_cell(column, row))
 
 

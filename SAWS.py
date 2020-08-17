@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 
 import os
+import time
+import re
 import itertools
 import configparser
 import argparse
 import tkinter as tk
 import RPi.GPIO as GPIO
 from tkinter.font import Font
-from openpyxl.utils import column_index_from_string
 
 import data.settings as settings
 import database.database_management as db
@@ -49,30 +50,32 @@ class SAWS(tk.Tk):
         self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
 
         self.frames = {}
+        self.warning_frames = []
 
         self.create_frame(mpgs.ErrorPage, self.container)
-        self.create_frame(mpgs.WarningPage, self.container)
+        warning_frame = self.create_frame(mpgs.WarningPage, self.container)
+        self.warning_frames.append(warning_frame)
 
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
-        database_warning = None
-
-        try:
-            self.setup_database()
-        except err.SAWSWarning as warning:
-            database_warning = warning
+        self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
+            print("Creating: {}".format(F.__name__))
             self.create_frame(F, self.container)
+            self.hide_frame(F.__name__)
 
-        self.show_frame("SplashPage")
+        display_below = None
+        if self.frames["WarningPage"].active:
+            display_below = self.warning_frames[-1]
+        
+        self.show_frame("SplashPage", display_below)
 
-        if database_warning is not None:
-            self.display_warning(database_warning)
-
-    def create_frame(self, F, container, *args):
+    def create_frame(self, F, container, name=None, *args):
         page_name = F.__name__
+        if name is not None:
+            page_name = name
         frame = F(parent=container, controller=self, *args)
         self.frames[page_name] = frame
 
@@ -81,11 +84,15 @@ class SAWS(tk.Tk):
         # will be the one that is visible.
         #frame.grid(row=1, column=1, sticky="nsew")
         frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
+        return frame
 
-    def show_frame(self, page_name):
+    def show_frame(self, page_name, aboveThis=None, belowThis=None):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
-        frame.lift()
+        if belowThis:
+            frame.lower(belowThis)
+        else:
+            frame.lift(aboveThis)
 
     def hide_frame(self, page_name):
         '''Hide a frame for the given page name'''
@@ -93,64 +100,100 @@ class SAWS(tk.Tk):
         frame.lower()
 
     def setup_database(self):
+        print("Setting up database")
         self.ration_db.clear()
         self.ration_db.build()
 
-        rations_with_empty_cells = ""
-
         ingredient_cell = self.ration_ex.find("Ingredient")
+        print("Ingredient Cell {}".format(ingredient_cell))
         if ingredient_cell is None:
+            print("Ingredient Cell is None")
             raise err.USBError
         top_row = ingredient_cell.row
-        column = column_index_from_string(ingredient_cell.column)
+        print("Top Row {}".format(top_row))
+        print("ingredient_cell.column: {}".format(ingredient_cell.column))
+        column = ingredient_cell.column
+        print("Column {}".format(column))
         for row in itertools.count(top_row + 1):
+            print("Row {}".format(row))
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
             ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
+            print("Ingredient: {}, {}, {}".format(name, weigher, ordering))
             if name is None:
                 break
             self.ration_db.insert_ingredient([name, weigher, ordering])
 
         ration_cell = self.ration_ex.find("Ration")
+        print("Ration Cell {}".format(ration_cell))
+        if ration_cell is None:
+            print("Ration Cell is None")
+            raise err.USBError
         top_row = ration_cell.row
-        column = column_index_from_string(ration_cell.column)
+        column = ration_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
+            print("Name: {}".format(name))
             if name is None:
+                print("Name is none, breaking")
                 break
             self.ration_db.insert_ration([name])
+            print("Ration {}".format(name))
             for col in itertools.count(column + 1):
                 ration_id = self.ration_db.get_id_by_name("rations", name)
                 ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
                 if ingredient is None:
                     break
+                print("Ingredient {}".format(ingredient))
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
-                if amount is None:
-                    rations_with_empty_cells += "{}\n".format(name)
-                    self.ration_ex.write_cell(0, amount_cell)
-                    self.ration_ex.save()
-                    amount = 0
-                self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                if ingredient_id is None:
+                    if amount is not None:
+                        self.display_warning(err.MissingIngredientWarning(ingredient, name))
+                else:
+                    if amount is None:
+                        self.display_warning(err.EmptyCellWarning(name))
+                        self.ration_ex.write_cell(0, amount_cell)
+                        self.ration_ex.save()
+                        amount = 0
+                        self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                    else:
+                        self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                
 
         house_cell = self.ration_ex.find("Houses")
         top_row = house_cell.row
-        column = column_index_from_string(house_cell.column)
+        column = house_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             if name is None:
                 break
             self.ration_db.insert_house([name])
 
-        if rations_with_empty_cells:
-            raise err.EmptyCellWarning(rations_with_empty_cells)
-
     def display_error(self, error):
         self.frames["ErrorPage"].display_page(error)
 
     def display_warning(self, warning):
-        self.frames["WarningPage"].display_page(warning)
+        print("Displaying warning {}".format(warning.message))
+        if self.frames["WarningPage"].active:
+            timestamp = time.time_ns()
+            page_name = "TempWarningPage.{}".format(timestamp)
+            print(page_name)
+
+            frame = mpgs.WarningPage(parent=self.container, controller=self, name=page_name, temp=True)
+            self.frames[page_name] = frame
+
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            #frame.grid(row=1, column=1, sticky="nsew")
+            frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
+
+            self.frames[page_name].display_page(warning, belowThis=self.warning_frames[-1])
+            self.warning_frames.append(frame)
+        else:
+            self.frames["WarningPage"].display_page(warning)
 
     def shutdown(self):
         os.system("sudo shutdown -h now")
@@ -171,7 +214,7 @@ def main():
         saws = SAWS()
         try:
             saws.setup()
-        except err.USBError as e:
+        except err.SAWSError as e:
             saws.display_error(e)
         finally:
             saws.mainloop()

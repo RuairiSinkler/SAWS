@@ -1,6 +1,5 @@
 import tkinter as tk
 from pages.page_tools.num_pad import NumPad
-from openpyxl.utils import column_index_from_string
 
 class PinPage(tk.Frame):
 
@@ -21,7 +20,7 @@ class PinPage(tk.Frame):
     def check_pin(self, pin_pad):
         pin = pin_pad.entry.get()
         pin_cell = self.controller.ration_ex.find("PIN")
-        column = column_index_from_string(pin_cell.column)
+        column = pin_cell.column
         row = pin_cell.row
         set_pin = self.controller.ration_ex.read_cell(self.controller.ration_ex.get_cell(column + 1, row))
         if int(pin) == int(set_pin):

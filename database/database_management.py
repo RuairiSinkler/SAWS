@@ -83,7 +83,9 @@ class DatabaseManager:
         execution = "SELECT id FROM {} WHERE name = ?".format(table)
         cursor.execute(execution, (name, ))
 
-        result = cursor.fetchall()[0][0]
+        result = cursor.fetchone()
+        if result is not None:
+            result = result[0]
 
         connect.close()
 
