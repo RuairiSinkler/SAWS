@@ -31,6 +31,6 @@ Python program to automatically control a hopper/augar system for mixing ingrede
 @pcmanfm --desktop --profile LXDE-pi
 @xscreensaver -no-splash
 #@point-rpi
-@cd /FULL_INSTALL_PATH/SAWS && ./SAWS.sh
+@/FULL_INSTALL_PATH/SAWS.sh
 ```
 * Reboot

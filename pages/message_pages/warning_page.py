@@ -9,8 +9,7 @@ class WarningPage(tk.Frame):
         self.grid_rowconfigure(3, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(3, weight=1)
-
-        print("{} created".format(name))
+        
         self.name = name
         self.active = False
         self.temp = temp
