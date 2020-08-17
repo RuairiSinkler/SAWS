@@ -2,8 +2,9 @@
 
 SUCCESS=false
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd $DIR
 for i in {1..5}; do
-    if sudo python3 $DIR/SAWS.py; then
+    if sudo python3 SAWS.py; then
         $success=true
         break
     else

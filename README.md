@@ -4,27 +4,27 @@ Python program to automatically control a hopper/augar system for mixing ingrede
 ## Software Installation Instructions
 ### Ensuring USB works correctly
 * Ensure your USB is called "RATIONUSB" and copy rations.xlsx to it
-* Plug in your USB and run ```sudo blkid``` noting the UUID of your device (it will look something like ```5C24-1453```)
-* Run ```sudo nano fstab``` to edit the fstab file
-* Add to the bottom: ```UUID=*INSERT YOUR UUID HERE*  /media/pi/RATIONUSB  vfat  defaults,nofail  0  0```
+* Plug in your USB and run `sudo blkid` noting the UUID of your device (it will look something like `5C24-1453`)
+* Run `sudo nano fstab` to edit the fstab file
+* Add to the bottom: `UUID=*INSERT YOUR UUID HERE*  /media/pi/RATIONUSB  vfat  defaults,nofail  0  0`
 
 
 ### Main Setup
 * Install latest version of Raspberry Pi OS onto Raspberry Pi (tested with Buster)
 * Ensure you have Python 3.7 or later installed
-* Install the openpyxl module with ```sudo pip3 install openpyxl```
+* Install the openpyxl module with `sudo pip3 install openpyxl`
 * Clone this Github repository
-* Run ```sudo python3 SAWS/SAWS.py```
+* Run `sudo python3 SAWS/SAWS.py`
 
 ### To run at startup
 #### Activate auto-login:
-* Run Raspi-Config with ```sudo raspi-config```
-* Navigate to ```3 Boot Options```
-* Then ```B1 Desktop / CLI```
-* Finally select ```B4 Desktop Autologin```
+* Run Raspi-Config with `sudo raspi-config`
+* Navigate to `3 Boot Options`
+* Then `B1 Desktop / CLI`
+* Finally select `B4 Desktop Autologin`
 #### Run SAWS at Desktop Boot
-* Ensure ```~/.config/lxsession/LXDE-pi/autostart``` exists
-* Edit it with ```nano ~/.config/lxsession/LXDE-pi/autostart``` 
+* Ensure `~/.config/lxsession/LXDE-pi/autostart` exists
+* Edit it with `nano ~/.config/lxsession/LXDE-pi/autostart`
 * Ensure the file looks like this:
 ```
 #@lxpanel --profile LXDE-pi
