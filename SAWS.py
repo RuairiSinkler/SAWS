@@ -125,6 +125,7 @@ class SAWS(tk.Tk):
         column = ration_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
+            print("Name: {}".format(name))
             if name is None:
                 break
             self.ration_db.insert_ration([name])
