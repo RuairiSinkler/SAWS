@@ -103,6 +103,7 @@ class SAWS(tk.Tk):
             raise err.USBError
         top_row = ingredient_cell.row
         print("Top Row {}".format(top_row))
+        print("ingredient_cell.column: {}".format(ingredient_cell.column))
         column = column_index_from_string(ingredient_cell.column)
         print("Column {}".format(column))
         for row in itertools.count(top_row + 1):
