@@ -58,17 +58,12 @@ class SAWS(tk.Tk):
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
-        database_warning = None
-
         self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             self.create_frame(F, self.container)
 
         self.show_frame("SplashPage")
-
-        if database_warning is not None:
-            self.display_warning(database_warning)
 
     def create_frame(self, F, container, name=None, *args):
         page_name = F.__name__
@@ -102,7 +97,9 @@ class SAWS(tk.Tk):
         self.ration_db.build()
 
         ingredient_cell = self.ration_ex.find("Ingredient")
+        print("Ingredient Cell {}".format(ingredient_cell))
         if ingredient_cell is None:
+            print("Ingredient Cell is None")
             raise err.USBError
         top_row = ingredient_cell.row
         column = column_index_from_string(ingredient_cell.column)
@@ -110,11 +107,16 @@ class SAWS(tk.Tk):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
             ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
+            print("Ingredient: {}, {}, {}".format(name, weigher, ordering))
             if name is None:
                 break
             self.ration_db.insert_ingredient([name, weigher, ordering])
 
         ration_cell = self.ration_ex.find("Ration")
+        print("Ration Cell {}".format(ration_cell))
+        if ration_cell is None:
+            print("Ration Cell is None")
+            raise err.USBError
         top_row = ration_cell.row
         column = column_index_from_string(ration_cell.column)
         for row in itertools.count(top_row + 1):
@@ -207,7 +209,7 @@ def main():
         saws = SAWS()
         try:
             saws.setup()
-        except err.USBError as e:
+        except err.SAWSError as e:
             saws.display_error(e)
         finally:
             saws.mainloop()
