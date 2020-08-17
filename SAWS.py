@@ -127,6 +127,7 @@ class SAWS(tk.Tk):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             print("Name: {}".format(name))
             if name is None:
+                print("Name is none, breaking")
                 break
             self.ration_db.insert_ration([name])
             print("Ration {}".format(name))
@@ -158,8 +159,9 @@ class SAWS(tk.Tk):
         column = house_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
-            if name is not None:
-                self.ration_db.insert_house([name])
+            if name is None:
+                break
+            self.ration_db.insert_house([name])
 
     def display_error(self, error):
         self.frames["ErrorPage"].display_page(error)
