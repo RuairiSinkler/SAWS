@@ -64,7 +64,7 @@ class SAWS(tk.Tk):
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             print("Creating: {}".format(F.__name__))
             frame = self.create_frame(F, self.container)
-            self.hide_frame(frame)
+            self.hide_frame(F.__name__)
 
         display_below = None
         if self.frames["WarningPage"].active:
