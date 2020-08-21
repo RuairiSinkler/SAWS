@@ -164,7 +164,7 @@ class RunPage(tk.Frame):
             if weigher_id is None:
                 button = tk.Button(
                     self.footer, textvariable=ingredient.label, font=self.controller.textFont,
-                    command=lambda name=name, amount=ingredient: self.ingredient_done(ingredient)
+                    command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
                 )
                 button.grid(column=unmeasured_counter, row=0)
                 unmeasured_counter += 1
