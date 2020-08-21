@@ -159,7 +159,7 @@ class RunPage(tk.Frame):
             desired_amount = db_ingredient[1]
             weigher_id = db_ingredient[2]
             ordering = db_ingredient[3]
-            ingredient = Ingredient(name, desired_amount, weigher_id, ordering)
+            ingredient = Ingredient(name, desired_amount, ordering)
             self.ingredients.append(ingredient)
             if weigher_id is None:
                 button = tk.Button(
@@ -169,7 +169,7 @@ class RunPage(tk.Frame):
                 button.grid(column=unmeasured_counter, row=0)
                 unmeasured_counter += 1
             else:
-                if self.weighers[weigher_id] is None:
+                if weigher_id not in self.weighers:
                     self.weighers[weigher_id] = Weigher(self, self.controller, weigher_id)
                 weigher = self.weighers[weigher_id]
                 weigher.add_ingredient(ingredient)
