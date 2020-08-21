@@ -170,7 +170,7 @@ class RunPage(tk.Frame):
                 unmeasured_counter += 1
             else:
                 if weigher_id not in self.weighers:
-                    self.weighers[weigher_id] = Weigher(self, self.controller, weigher_id)
+                    self.weighers[weigher_id] = Weigher(self.main, self.controller, weigher_id)
                 weigher = self.weighers[weigher_id]
                 weigher.add_ingredient(ingredient)
                 ingredient.augar = Augar(
