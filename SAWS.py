@@ -62,7 +62,6 @@ class SAWS(tk.Tk):
         self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
-            print("Creating: {}".format(F.__name__))
             self.create_frame(F, self.container)
             self.hide_frame(F.__name__)
 
@@ -100,51 +99,37 @@ class SAWS(tk.Tk):
         frame.lower()
 
     def setup_database(self):
-        print("Setting up database")
         self.ration_db.clear()
         self.ration_db.build()
 
         ingredient_cell = self.ration_ex.find("Ingredient")
-        print("Ingredient Cell {}".format(ingredient_cell))
         if ingredient_cell is None:
-            print("Ingredient Cell is None")
             raise err.USBError
         top_row = ingredient_cell.row
-        print("Top Row {}".format(top_row))
-        print("ingredient_cell.column: {}".format(ingredient_cell.column))
         column = ingredient_cell.column
-        print("Column {}".format(column))
         for row in itertools.count(top_row + 1):
-            print("Row {}".format(row))
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
             ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
-            print("Ingredient: {}, {}, {}".format(name, weigher, ordering))
             if name is None:
                 break
             self.ration_db.insert_ingredient([name, weigher, ordering])
 
         ration_cell = self.ration_ex.find("Ration")
-        print("Ration Cell {}".format(ration_cell))
         if ration_cell is None:
-            print("Ration Cell is None")
             raise err.USBError
         top_row = ration_cell.row
         column = ration_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
-            print("Name: {}".format(name))
             if name is None:
-                print("Name is none, breaking")
                 break
             self.ration_db.insert_ration([name])
-            print("Ration {}".format(name))
             for col in itertools.count(column + 1):
                 ration_id = self.ration_db.get_id_by_name("rations", name)
                 ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
                 if ingredient is None:
                     break
-                print("Ingredient {}".format(ingredient))
                 ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
                 amount_cell = self.ration_ex.get_cell(col, row)
                 amount = self.ration_ex.read_cell(amount_cell)
@@ -175,11 +160,9 @@ class SAWS(tk.Tk):
         self.frames["ErrorPage"].display_page(error)
 
     def display_warning(self, warning):
-        print("Displaying warning {}".format(warning.message))
         if self.frames["WarningPage"].active:
             timestamp = time.time_ns()
             page_name = "TempWarningPage.{}".format(timestamp)
-            print(page_name)
 
             frame = mpgs.WarningPage(parent=self.container, controller=self, name=page_name, temp=True)
             self.frames[page_name] = frame
