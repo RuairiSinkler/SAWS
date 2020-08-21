@@ -178,7 +178,7 @@ class RunPage(tk.Frame):
                     tk.Canvas(weigher.frame, width=self.canvas_size / 10, height=self.canvas_size / 10),
                     self.canvas_size
                 )
-                ingredient.augar.canvas.grid(column=len(weigher.ingredients) + 1, row=0)
+                ingredient.augar.canvas.grid(column=len(weigher.ingredients) * 2, row=0)
                 ingredient.augar.turn_off()
                 
         for weigher_id, weigher in self.weighers.items():

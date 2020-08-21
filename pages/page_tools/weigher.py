@@ -21,7 +21,7 @@ class Weigher:
         label = tk.Label(
             self.frame, textvariable=ingredient.label, font=self.controller.textFont
         )
-        label.grid(column=len(self.ingredients), row=0)
+        label.grid(column=(len(self.ingredients) * 2) - 1, row=0)
 
     def get_active_ingredient(self):
         for ingredient in self.ingredients:

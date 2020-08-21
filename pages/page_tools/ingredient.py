@@ -20,7 +20,7 @@ class Ingredient:
         if self.desired_amount == 0:
             return 100
         else:
-            return (self.current_amount // self.desired_amount) * 100
+            return (self.current_amount / self.desired_amount) * 100
 
     def done(self):
         return self.current_amount >= self.desired_amount
