@@ -67,10 +67,12 @@ class RunPage(tk.Frame):
         next_ingredient = None
         if ingredient.done():
             next_ingredient = weigher.get_active_ingredient()
+            print("Ingredient {} is done, next ingredient is {}".format(ingredient, next_ingredient))
             if next_ingredient is not None:
                 weigher.hopper.draw_hopper()
         if self.running:
             if ingredient.done():
+                print("Ingredient {} is done and we are running, next ingredient is {}".format(ingredient, next_ingredient))
                 ingredient.augar.turn_off()
                 if next_ingredient is not None:
                     next_ingredient.augar.turn_on()
