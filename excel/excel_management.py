@@ -24,7 +24,7 @@ class WorksheetManager:
         self.workbook.create_sheet(title)
         self.save()
 
-    def log_run(self, time_run, ration, complete, amounts, batch_number):
+    def log_run(self, time_run, ration, complete, ingredients, batch_number):
         row = self.sheet.max_row + 1
         column = self.find("Date Run").column
         self.write_cell(time_run, self.get_cell(column, row))
@@ -35,10 +35,10 @@ class WorksheetManager:
             complete = "No"
         self.write_cell(complete, self.get_cell(column + 2, row))
         total = 0
-        for key, amount in amounts.items():
-            column = self.find(key).column
-            self.write_cell(amount.get(), self.get_cell(column, row))
-            total += amount.get()
+        for ingredient in ingredients:
+            column = self.find(ingredient.name).column
+            self.write_cell(ingredient.current_amount, self.get_cell(column, row))
+            total += ingredient.current_amount
         column = self.find("Total").column
         self.write_cell(total, self.get_cell(column, row))
         column = self.find("Batch Number").column

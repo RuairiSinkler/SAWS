@@ -17,5 +17,5 @@ class WeightInput:
         if old_state != new_state:
             self.state = new_state
             if new_state == GPIO.HIGH:
-                self.parent.increment_value(self.weigher)
+                self.parent.increment_weight(self.weigher)
         self.controller.after(200, self.check_input)
