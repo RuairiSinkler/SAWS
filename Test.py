@@ -97,11 +97,9 @@ class Controller(tk.Tk):
         frame.lower()
 
     def display_warning(self, warning):
-        print("Displaying warning {}".format(warning.message))
         if self.frames["WarningPage"].active:
             current_timestamp = time.time_ns()
             page_name = "TempWarningPage.{}".format(current_timestamp)
-            print(page_name)
 
             frame = WarningPage(parent=self.container, controller=self, name=page_name, temp=True)
             self.frames[page_name] = frame
