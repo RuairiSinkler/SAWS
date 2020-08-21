@@ -65,19 +65,20 @@ class RunPage(tk.Frame):
         percentage = ingredient.percentage()
         weigher.hopper.fill_hopper(percentage)
         next_ingredient = None
-        if ingredient.done():
-            next_ingredient = weigher.get_active_ingredient()
-            print("Ingredient {} is done, next ingredient is {}".format(ingredient.name, next_ingredient.name))
-            if next_ingredient is not None:
-                weigher.hopper.draw_hopper()
+        
         if self.running:
             if ingredient.done():
-                print("Ingredient {} is done and we are running, next ingredient is {}".format(ingredient.name, next_ingredient.name))
                 ingredient.augar.turn_off()
+                next_ingredient = weigher.get_active_ingredient()
                 if next_ingredient is not None:
                     next_ingredient.augar.turn_on()
             else:
                 ingredient.augar.turn_on()
+
+        if ingredient.done():
+            next_ingredient = weigher.get_active_ingredient()
+            if next_ingredient is not None:
+                weigher.hopper.draw_hopper()
         
         self.check_done()
 
