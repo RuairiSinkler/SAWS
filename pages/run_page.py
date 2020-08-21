@@ -181,7 +181,7 @@ class RunPage(tk.Frame):
                 ingredient.augar.canvas.grid(column=len(weigher.ingredients) + 1, row=0)
                 ingredient.augar.turn_off()
                 
-        for _, weigher in self.weighers.items():
+        for weigher_id, weigher in self.weighers.items():
             if settings.dev_mode:
                 button = tk.Button(
                     weigher.frame, text="More",
