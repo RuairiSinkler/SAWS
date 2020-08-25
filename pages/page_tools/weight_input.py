@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 class WeightInput:
 
     def __init__(self, parent, controller, weigher, weight_pin):
+        self.active = True
         self.controller = controller
         self.parent = parent
         self.weigher = weigher
@@ -18,4 +19,5 @@ class WeightInput:
             self.state = new_state
             if new_state == GPIO.HIGH:
                 self.parent.increment_weight(self.weigher)
-        self.controller.after(200, self.check_input)
+        if self.active:
+            self.controller.after(200, self.check_input)

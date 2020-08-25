@@ -27,10 +27,14 @@ class RunPage(tk.Frame):
 
         self.controller = controller
 
+        self.canvas_size = int(self.controller.screen_height / 2)
+
         self.running = False
         self.max_weigher = 0
         self.done = False
         self.ration_id = None
+
+        self.weight_inputs = []
 
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
@@ -80,7 +84,7 @@ class RunPage(tk.Frame):
             if next_ingredient is not None:
                 weigher.hopper.draw_hopper()
         
-        self.check_done()
+        self.done = self.check_done()
 
     def ingredient_done(self, ingredient):
         if ingredient.current_amount == 0:
@@ -88,18 +92,19 @@ class RunPage(tk.Frame):
         else:
             ingredient.current_amount = 0
         ingredient.label.set("{}\n{}\n/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount)))
-        self.check_done()
+        self.done = self.check_done()
 
     def check_done(self):
-        self.done = True
+        done = True
         for ingredient in self.ingredients:
             if not ingredient.done():
-                self.done = False
-        if self.done:
+                done = False
+        if done:
             self.end_text.set("Complete")
             self.quit_button.grid()
         else:
             self.end_text.set("End\nRun\nEarly")
+        return done
 
     def start_pause(self):
         if self.running:
@@ -135,6 +140,10 @@ class RunPage(tk.Frame):
         self.controller.ration_logs_ex.log_run(time_run, ration, self.done, self.ingredients, batch_number)
         self.controller.ration_logs_ex.save()
 
+        for weight_input in self.weight_inputs:
+            weight_input.active = False
+            self.weight_inputs.remove(weight_input)
+
         self.controller.show_frame("MainMenuPage")
         num_pad.clear()
 
@@ -156,17 +165,11 @@ class RunPage(tk.Frame):
         db_ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
         self.desired_amounts = {name: desired_amount for (name, desired_amount, _, _) in self.ingredients}
         unmeasured_counter = 0
-        
-        self.canvas_size = int(self.controller.screen_height / 2)
 
         for db_ingredient in db_ingredients:
-            name = db_ingredient[0]
-            desired_amount = db_ingredient[1]
-            weigher_id = db_ingredient[2]
-            ordering = db_ingredient[3]
-            ingredient = Ingredient(name, desired_amount, ordering)
+            ingredient = Ingredient.fromDbIngredient(db_ingredient)
             self.ingredients.append(ingredient)
-            if weigher_id is None:
+            if ingredient.weigher_id is None:
                 button = tk.Button(
                     self.footer, textvariable=ingredient.label, font=self.controller.textFont,
                     command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
@@ -174,12 +177,12 @@ class RunPage(tk.Frame):
                 button.grid(column=unmeasured_counter, row=0)
                 unmeasured_counter += 1
             else:
-                if weigher_id not in self.weighers:
-                    self.weighers[weigher_id] = Weigher(self.main, self.controller, weigher_id)
-                weigher = self.weighers[weigher_id]
+                if ingredient.weigher_id not in self.weighers:
+                    self.weighers[ingredient.weigher_id] = Weigher(self.main, self.controller, ingredient.weigher_id)
+                weigher = self.weighers[ingredient.weigher_id]
                 weigher.add_ingredient(ingredient)
                 ingredient.augar = Augar(
-                    int(self.controller.config["AUGAR_PINS"].get(name.lower()+"_pin")), 
+                    int(self.controller.config["AUGAR_PINS"].get(ingredient.name.lower()+"_pin")), 
                     tk.Canvas(weigher.frame, width=self.canvas_size / 10, height=self.canvas_size / 10),
                     self.canvas_size
                 )
@@ -193,7 +196,7 @@ class RunPage(tk.Frame):
                     command=lambda weigher=weigher: self.increment_weight(weigher)
                 )
                 button.grid(column=1, row=3)
-            WeightInput(self, self.controller, weigher, int(self.controller.config["WEIGHER_PINS"].get(str(weigher_id))))
+            self.weight_inputs.append(WeightInput(self, self.controller, weigher, int(self.controller.config["WEIGHER_PINS"].get(str(weigher_id)))))
             weigher.hopper = Hopper(
                 weigher.frame, self.controller, self.canvas_size, self.canvas_size
             )
@@ -206,5 +209,5 @@ class RunPage(tk.Frame):
                 weigher.hopper.width = new_width
                 weigher.hopper.draw_hopper()
 
-        self.check_done()
+        self.done = self.check_done()
         self.controller.show_frame("RunPage")
