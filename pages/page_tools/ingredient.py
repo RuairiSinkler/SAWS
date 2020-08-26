@@ -15,7 +15,7 @@ class Ingredient:
 
     @classmethod
     def fromDbIngredient(cls, db_ingredient, augar=None):
-        return cls(db_ingredient[0], db_ingredient[1], db_ingredient[2], db_ingredient[3], augar)
+        return cls(*db_ingredient, augar)
 
     def increment_amount(self, increment):
         self.current_amount += increment

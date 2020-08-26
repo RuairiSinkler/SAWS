@@ -110,7 +110,7 @@ class WorksheetManager:
                     version_cell = self._create_version_cell(sheet_version)
                     self.save()
                 if sheet_version < 2.0:
-                    self._move_table(self.find("Ingredient"), 192, 3000)
+                    self._move_table(self.find("Ingredient"), 5, 3)
                     # sheet_version = 2.0
                     # self._update_version_cell(sheet_version, version_cell)
                     self.save()
@@ -139,50 +139,24 @@ class WorksheetManager:
 
     def _move_table(self, origin_cell, column_shift=0, row_shift=0):
         origin_cell = self._get_upper_left_most_cell(origin_cell)
-        table_cells, column_bounds, row_bounds = self._get_table_cells(origin_cell)
-        column_order = 1
-        row_order = 1
-        if column_shift > 0:
-            column_order = -1
-            for row in range(row_bounds[0] - 1, row_bounds[1] + 2):
-                for shift in range(1, column_shift + 1):
-                    cell = self.get_cell(column_bounds[1] + shift, row)
-                    cell_value = self.read_cell(cell)
-                    if cell_value is not None and cell_value != '':
-                        self._move_table(cell, column_shift, row_shift) 
-        elif column_shift < 0:
-            for row in range(row_bounds[0] - 1, row_bounds[1] + 2):
-                for shift in range(1, abs(column_shift) + 1):
-                    cell = self.get_cell(origin_cell.column - shift, row)
-                    cell_value = self.read_cell(cell)
-                    if cell_value is not None and cell_value != '':
-                        self._move_table(cell, column_shift, row_shift)
-        if row_shift > 0:
-            row_order = -1
-            for column in range(column_bounds[0] - 1, column_bounds[1] + 2):
-                for shift in range(1, row_shift + 1):
-                    cell = self.get_cell(column, row_bounds[1] + shift)
-                    cell_value = self.read_cell(cell)
-                    if cell_value is not None and cell_value != '':
-                        self._move_table(cell, column_shift, row_shift)
-        elif row_shift < 0:
-            for column in range(column_bounds[0] - 1, column_bounds[1] + 2):
-                for shift in range(1, abs(row_shift) + 1):
-                    cell = self.get_cell(column, row_bounds[1] - shift)
-                    cell_value = self.read_cell(cell)
-                    if cell_value is not None and cell_value != '':
-                        self._move_table(cell, column_shift, row_shift)
+        if origin_cell.column + column_shift < 1:
+            column_shift = 1 - origin_cell.column
+        if origin_cell.row + row_shift < 1:
+            row_shift = 1 - origin_cell.row
+        table_bounds, buffer_zone = self._get_table_cells(origin_cell, column_shift, row_shift)
 
-        self.sheet.move_range("{}:{}".format(table_cells[0, 0].coordinate, table_cells[-1, -1].coordinate), rows=row_shift, cols=column_shift)
+        furthest_column = 0
+        for coordinate in buffer_zone:
+            furthest_column = max(furthest_column, coordinate[0])
 
-        # table_cells_view = table_cells[::row_order,::column_order]
-        # for i, row in enumerate(table_cells_view):
-        #     for j, cell in enumerate(row):
-        #         new_cell = self.get_cell(cell.column + column_shift, cell.row + row_shift)
-        #         self.write_cell(cell.value, new_cell)
-        #         self.write_cell("", cell)
-        #         cell = new_cell
-        #         table_cells_view[i, j] = cell
+        for coordinate in (buffer_zone):
+            cell = self.get_cell(*coordinate)
+            cell_value = self.read_cell(cell)
+            if cell_value is not None and cell_value != '':
+                self._move_table(cell, furthest_column + 1 - cell.column)
+
+        self.sheet.move_range("{}:{}".format(table_bounds[0].coordinate, table_bounds[1].coordinate), rows=row_shift, cols=column_shift)
+
         self.save()
 
     def _get_upper_left_most_cell(self, cell):
@@ -204,7 +178,7 @@ class WorksheetManager:
                 cell = self._get_upper_left_most_cell(cell)
         return cell
 
-    def _get_table_cells(self, origin_cell):
+    def _get_table_cells(self, origin_cell, column_shift=0, row_shift=0):
         origin_column = origin_cell.column
         origin_row = origin_cell.row
         column_bounds = [origin_column, origin_column]
@@ -223,12 +197,21 @@ class WorksheetManager:
             row += 1
             cell_value = self.read_cell(self.get_cell(origin_column, row))
 
-        cells = []
-        for row in range(row_bounds[0], row_bounds[1] + 1):
-            row_cells = []
-            for column in range(column_bounds[0], column_bounds[1] + 1):
-                row_cells.append(self.get_cell(column, row))
-            cells.append(row_cells)
-        return np.array(cells), column_bounds, row_bounds
+        buffer_zone = []
+        row_start = row_bounds[0]
+        column_start = column_bounds[0]
+        if row_start > 1:
+            row_start -= 1
+        if column_start > 1:
+            column_start -= 1
 
+        for row in range(row_start, row_bounds[1] + 2):
+            for column in range(column_start, column_bounds[1] + 2):
+                buffer_column = column + column_shift
+                buffer_row = row + row_shift
+                if buffer_column > 0 and buffer_row > 0:
+                    if not (buffer_column in range(column_start, column_bounds[1] + 2) and buffer_row in range(row_start, row_bounds[1] + 2)):
+                        buffer_zone.append((buffer_column, buffer_row))
 
+        table_bounds = (self.get_cell(column_bounds[0], row_bounds[0]), self.get_cell(column_bounds[1], row_bounds[1]))
+        return table_bounds, buffer_zone
