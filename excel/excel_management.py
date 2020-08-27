@@ -148,21 +148,20 @@ class WorksheetManager:
                 pass
     
     def _create_version_cell(self, version):
-        version_cell = None
-        for row in self.sheet.rows:
-            for cell in row:
-                if self._cell_is_empty(cell):
-                    if version_cell is not None:
-                        self.write_cell("VERSION", version_cell)
-                        self.write_cell(str(version), cell)
-                        return version_cell
-                    else:
-                        version_cell = cell
-                else:
-                    version_cell = None
+        num_rows_to_insert = 0
+        for row in range(1, 3):
+            for column in range(1, 4):
+                cell = self.get_cell(column, row)
+                if not self._cell_is_empty(cell):
+                    num_rows_to_insert = max(num_rows_to_insert, 3 - cell.row)
+
+        self.sheet.insert_rows(1, amount=num_rows_to_insert)
+        self.write_cell("VERSION", self.get_cell(1, 1))
+        self.write_cell(str(version), self.get_cell(2, 1))
+        return self.get_cell(1, 1)
 
     def _update_version_cell(self, version, version_cell):
-        self.write_cell(version, self.get_cell(version_cell.column + 1, version_cell.row))
+        self.write_cell(str(version), self.get_cell(version_cell.column + 1, version_cell.row))
 
     def _move_table(self, origin_cell, column_shift=0, row_shift=0):
         origin_cell = self._get_upper_left_most_cell(origin_cell)
@@ -211,18 +210,26 @@ class WorksheetManager:
         column_bounds = [origin_column, origin_column]
         row_bounds = [origin_row, origin_row]
 
-        row = row_bounds[0]
-        cell = self.get_cell(origin_column, row)
-        while not self._cell_is_empty(cell):
-            row_bounds[1] = max(row, row_bounds[1])
-            column = column_bounds[0]
-            cell = self.get_cell(column, row)
-            while not self._cell_is_empty(cell):
-                column_bounds[1] = max(column, column_bounds[1])
-                column += 1
-                cell = self.get_cell(column, row)
-            row += 1
-            cell = self.get_cell(origin_column, row)
+        all_cells = [origin_cell]
+        for cell in all_cells:
+            if cell.column > 1:
+                cell_check = self.get_cell(cell.column - 1, cell.row)
+                if cell_check not in all_cells and not self._cell_is_empty(cell_check):
+                    all_cells.append(cell_check)
+                    column_bounds[0] = min(cell_check.column, column_bounds[0])
+            cell_check = self.get_cell(cell.column + 1, cell.row)
+            if cell_check not in all_cells and not self._cell_is_empty(cell_check):
+                all_cells.append(cell_check)
+                column_bounds[1] = max(cell_check.column, column_bounds[1])
+            if cell.row > 1:
+                cell_check = self.get_cell(cell.column, cell.row - 1)
+                if cell_check not in all_cells and not self._cell_is_empty(cell_check):
+                    all_cells.append(cell_check)
+                    row_bounds[0] = min(cell_check.row, row_bounds[0])
+            cell_check = self.get_cell(cell.column, cell.row + 1)
+            if cell_check not in all_cells and not self._cell_is_empty(cell_check):
+                all_cells.append(cell_check)
+                row_bounds[1] = max(cell_check.row, row_bounds[1])
             
         table_bounds = (self.get_cell(column_bounds[0], row_bounds[0]), self.get_cell(column_bounds[1], row_bounds[1]))
         return table_bounds
