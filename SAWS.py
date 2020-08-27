@@ -116,6 +116,12 @@ class SAWS(tk.Tk):
             ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 3, row))
             if name is None:
                 break
+            if (
+                    (not augar_pin or not weigher or not ordering)
+                    and
+                    (augar_pin or weigher or ordering)
+                ):
+                raise err.IngredientError(name)
             self.ration_db.insert_ingredient([name, augar_pin, weigher, ordering])
 
         ration_cell = self.ration_ex.find("Ration")
