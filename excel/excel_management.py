@@ -1,8 +1,11 @@
 import os
 import openpyxl
 import itertools
+import configparser
 import numpy as np
 from pathlib import Path
+
+import exceptions as err
 
 RATIONS_SHEET_VERSION = 2.0
 RATION_LOGS_SHEET_VERSION = 1.0
@@ -110,7 +113,35 @@ class WorksheetManager:
                     version_cell = self._create_version_cell(sheet_version)
                     self.save()
                 if sheet_version < 2.0:
-                    self._move_table(self.find("Ingredient"), 5, 3)
+
+                    ingredient_cell = self.find("Ingredient")
+                    ingredients_table_bounds = self._get_table_bounds(self._get_upper_left_most_cell(ingredient_cell))
+                    new_column = ingredient_cell.column + 1
+                    for row in self.sheet.rows:
+                        previous_cell = row[new_column - 2]
+                        cell = row[new_column - 1]
+                        if (
+                                not (self._cell_is_empty(previous_cell) or self._cell_within_table_bounds(previous_cell, ingredients_table_bounds)) 
+                            and not (self._cell_is_empty(cell) or self._cell_within_table_bounds(cell, ingredients_table_bounds))
+                            ):
+                            origin_cell = self._get_upper_left_most_cell(cell)
+                            column_shift = new_column - origin_cell.column
+                            self._move_table(origin_cell, column_shift, 0)
+                    self.sheet.insert_cols(new_column)
+                    self.write_cell("Augar Pin", self.get_cell(new_column, ingredient_cell.row))
+                    
+                    top_row = ingredient_cell.row
+                    column = ingredient_cell.column
+                    config = configparser.ConfigParser()
+                    config.read("./data/config.ini")
+                    for row in itertools.count(top_row + 1):
+                        name = self.read_cell(self.get_cell(column, row))
+                        if name is None:
+                            break
+                        augar_pin = config["AUGAR_PINS"].get("{}_pin".format(name.lower().replace(" ", "_")))
+                        if augar_pin is not None:
+                            self.write_cell(augar_pin, self.get_cell(new_column, row))
+                    self.save()
                     # sheet_version = 2.0
                     # self._update_version_cell(sheet_version, version_cell)
                     self.save()
@@ -123,8 +154,7 @@ class WorksheetManager:
         version_cell = None
         for row in self.sheet.rows:
             for cell in row:
-                cell_value = self.read_cell(cell)
-                if cell_value is None and cell_value == '':
+                if self._cell_is_empty(cell):
                     if version_cell is not None:
                         self.write_cell("VERSION", version_cell)
                         self.write_cell(str(version), cell)
@@ -143,7 +173,8 @@ class WorksheetManager:
             column_shift = 1 - origin_cell.column
         if origin_cell.row + row_shift < 1:
             row_shift = 1 - origin_cell.row
-        table_bounds, buffer_zone = self._get_table_cells(origin_cell, column_shift, row_shift)
+        table_bounds = self._get_table_bounds(origin_cell)
+        buffer_zone = self._get_buffer_zone(table_bounds, column_shift, row_shift)
 
         furthest_column = 0
         for coordinate in buffer_zone:
@@ -151,8 +182,7 @@ class WorksheetManager:
 
         for coordinate in (buffer_zone):
             cell = self.get_cell(*coordinate)
-            cell_value = self.read_cell(cell)
-            if cell_value is not None and cell_value != '':
+            if not self._cell_is_empty(cell):
                 self._move_table(cell, furthest_column + 1 - cell.column)
 
         self.sheet.move_range("{}:{}".format(table_bounds[0].coordinate, table_bounds[1].coordinate), rows=row_shift, cols=column_shift)
@@ -162,40 +192,47 @@ class WorksheetManager:
     def _get_upper_left_most_cell(self, cell):
         if cell.row > 1:
             cell_check = self.get_cell(cell.column, cell.row - 1)
-            cell_value = self.read_cell(cell_check)
-            while cell_value is not None and cell_value != '':
+            while not self._cell_is_empty(cell_check):
                 cell = cell_check
+                if cell.row == 1:
+                    break
                 cell_check = self.get_cell(cell.column, cell.row - 1)
-                cell_value = self.read_cell(cell_check)
         if cell.column > 1:
             cell_check = self.get_cell(cell.column - 1, cell.row)
-            cell_value = self.read_cell(cell_check)
-            if cell_value is not None:
-                while cell_value is not None and cell_value != '':
+            if not self._cell_is_empty(cell_check):
+                while not self._cell_is_empty(cell_check):
                     cell = cell_check
+                    if cell.column == 1:
+                        break
                     cell_check = self.get_cell(cell.column - 1, cell.row)
-                    cell_value = self.read_cell(cell_check)
                 cell = self._get_upper_left_most_cell(cell)
         return cell
 
-    def _get_table_cells(self, origin_cell, column_shift=0, row_shift=0):
+    def _get_table_bounds(self, origin_cell):
         origin_column = origin_cell.column
         origin_row = origin_cell.row
         column_bounds = [origin_column, origin_column]
         row_bounds = [origin_row, origin_row]
 
         row = row_bounds[0]
-        cell_value = self.read_cell(self.get_cell(origin_column, row))
-        while cell_value is not None and cell_value != '':
+        cell = self.get_cell(origin_column, row)
+        while not self._cell_is_empty(cell):
             row_bounds[1] = max(row, row_bounds[1])
             column = column_bounds[0]
-            cell_value = self.read_cell(self.get_cell(column, row))
-            while cell_value is not None and cell_value != '':
+            cell = self.get_cell(column, row)
+            while not self._cell_is_empty(cell):
                 column_bounds[1] = max(column, column_bounds[1])
                 column += 1
-                cell_value = self.read_cell(self.get_cell(column, row))
+                cell = self.get_cell(column, row)
             row += 1
-            cell_value = self.read_cell(self.get_cell(origin_column, row))
+            cell = self.get_cell(origin_column, row)
+            
+        table_bounds = (self.get_cell(column_bounds[0], row_bounds[0]), self.get_cell(column_bounds[1], row_bounds[1]))
+        return table_bounds
+
+    def _get_buffer_zone(self, table_bounds, column_shift=0, row_shift=0):
+        row_bounds = [table_bounds[0].row, table_bounds[1].row]
+        column_bounds = [table_bounds[1].column, table_bounds[1].column]
 
         buffer_zone = []
         row_start = row_bounds[0]
@@ -213,5 +250,10 @@ class WorksheetManager:
                     if not (buffer_column in range(column_start, column_bounds[1] + 2) and buffer_row in range(row_start, row_bounds[1] + 2)):
                         buffer_zone.append((buffer_column, buffer_row))
 
-        table_bounds = (self.get_cell(column_bounds[0], row_bounds[0]), self.get_cell(column_bounds[1], row_bounds[1]))
-        return table_bounds, buffer_zone
+        return buffer_zone
+
+    def _cell_within_table_bounds(self, cell, table_bounds):
+        return cell.column in range(table_bounds[0].column, table_bounds[1].column + 1) and cell.row in range(table_bounds[0].row, table_bounds[1].row + 1)
+
+    def _cell_is_empty(self, cell):
+        return cell.value is None or cell.value == ''
