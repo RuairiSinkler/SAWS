@@ -59,6 +59,8 @@ class SAWS(tk.Tk):
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
+        self.ration_ex.update_sheets("rations")
+        self.ration_logs_ex.update_sheets("ration_logs")
         self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
