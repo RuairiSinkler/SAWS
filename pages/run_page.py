@@ -163,7 +163,6 @@ class RunPage(tk.Frame):
         self.ingredients = []
 
         db_ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
-        self.desired_amounts = {name: desired_amount for (name, desired_amount, _, _) in self.ingredients}
         unmeasured_counter = 0
 
         for db_ingredient in db_ingredients:
@@ -182,7 +181,7 @@ class RunPage(tk.Frame):
                 weigher = self.weighers[ingredient.weigher_id]
                 weigher.add_ingredient(ingredient)
                 ingredient.augar = Augar(
-                    int(self.controller.config["AUGAR_PINS"].get(ingredient.name.lower()+"_pin")), 
+                    int(ingredient.augar_pin), 
                     tk.Canvas(weigher.frame, width=self.canvas_size / 10, height=self.canvas_size / 10),
                     self.canvas_size
                 )

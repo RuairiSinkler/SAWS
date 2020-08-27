@@ -29,7 +29,7 @@ class DatabaseManager:
         if ingredient_id is None:
             ingredient_id = 0
         values.insert(0, ingredient_id)
-        execution = "INSERT INTO ingredients VALUES (?, ?, ?, ?)"
+        execution = "INSERT INTO ingredients VALUES (?, ?, ?, ?, ?)"
         cursor.execute(execution, values)
         connect.commit()
 
@@ -151,7 +151,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT ingredients.name, amount, weigher, ordering FROM ration_ingredients " \
+        execution = "SELECT ingredients.name, amount, augar_pin, weigher, ordering FROM ration_ingredients " \
                     "JOIN ingredients ON ingredients.id = ration_ingredients.ingredient_id " \
                     "WHERE ration_id = ?"
         cursor.execute(execution, (str(ration_id),))

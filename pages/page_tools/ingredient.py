@@ -2,9 +2,10 @@ import tkinter as tk
 
 class Ingredient:
 
-    def __init__(self, name, desired_amount, weigher_id, ordering, augar=None):
+    def __init__(self, name, desired_amount, augar_pin, weigher_id, ordering, augar=None):
         self.name = name
         self.desired_amount = desired_amount
+        self.augar_pin = augar_pin
         self.weigher_id = weigher_id
         self.ordering = ordering
         self.augar = augar

@@ -3,6 +3,7 @@ PRAGMA foreign_keys = 1;
 CREATE TABLE ingredients (
   id INTEGER NOT NULL PRIMARY KEY,
   name STRING NOT NULL,
+  augar_pin INT,
   weigher INT,
   ordering INT,
   UNIQUE(name)

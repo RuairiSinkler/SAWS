@@ -7,9 +7,6 @@ from pathlib import Path
 
 import exceptions as err
 
-RATIONS_SHEET_VERSION = 2.0
-RATION_LOGS_SHEET_VERSION = 1.0
-
 class WorksheetManager:
     def __init__(self, directory, name):
         dir = directory
@@ -107,7 +104,7 @@ class WorksheetManager:
             if version_cell is not None:
                 sheet_version = float(self.read_cell(self.get_cell(version_cell.column + 1, version_cell.row)))
             
-            if sheet_type == "rations" and sheet_version < RATIONS_SHEET_VERSION:
+            if sheet_type == "rations":
                 if sheet_version < 1.0:
                     sheet_version = 1.0
                     version_cell = self._create_version_cell(sheet_version)
@@ -142,12 +139,12 @@ class WorksheetManager:
                         if augar_pin is not None:
                             self.write_cell(augar_pin, self.get_cell(new_column, row))
                     self.save()
-                    # sheet_version = 2.0
-                    # self._update_version_cell(sheet_version, version_cell)
+                    sheet_version = 2.0
+                    self._update_version_cell(sheet_version, version_cell)
                     self.save()
                     
 
-            elif sheet_type == "ration_logs" and sheet_version < RATION_LOGS_SHEET_VERSION:
+            elif sheet_type == "ration_logs":
                 pass
     
     def _create_version_cell(self, version):

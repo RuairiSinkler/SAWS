@@ -109,11 +109,12 @@ class SAWS(tk.Tk):
         column = ingredient_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
-            weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
-            ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
+            augar_pin = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
+            weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
+            ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 3, row))
             if name is None:
                 break
-            self.ration_db.insert_ingredient([name, weigher, ordering])
+            self.ration_db.insert_ingredient([name, augar_pin, weigher, ordering])
 
         ration_cell = self.ration_ex.find("Ration")
         if ration_cell is None:
