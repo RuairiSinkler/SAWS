@@ -21,7 +21,6 @@ class Weigher:
         self.frame.pack(side=tk.LEFT, expand=True)
 
         if settings.dev_mode:
-            print("dev_mode working")
             button = tk.Button(
                 self.frame, text="More",
                 command=lambda weigher=self: self.run_page.increment_weight(weigher)
