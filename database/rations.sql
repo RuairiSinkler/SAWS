@@ -4,7 +4,6 @@ CREATE TABLE weighers (
   id INTEGER NOT NULL PRIMARY KEY,
   weigher_pin INT NOT NULL,
   increment INT,
-  UNIQUE(weigher_id)
 );
 
 CREATE TABLE ingredients (
