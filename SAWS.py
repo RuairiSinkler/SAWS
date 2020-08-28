@@ -248,6 +248,7 @@ def main():
             saws.display_error(e)
         except Exception as e:
             saws.display_error(e, non_SAWS_error=True)
+            raise e
         finally:
             saws.mainloop()
     except:

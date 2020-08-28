@@ -138,7 +138,7 @@ class RunPage(tk.Frame):
 
         for weigher_id, weigher in self.weighers.items():
             weigher.active = False
-            self.weighers.remove(weighers[weigher_id])
+        self.weighers = {}
 
         self.controller.show_frame("MainMenuPage")
         num_pad.clear()
