@@ -7,7 +7,7 @@ for i in {1..5}; do
     if ! $SUCCESS; then
         sudo python3 SAWS.py &
         sleep 1
-        if pgrep "sudo python3 SAWS.py"; then
+        if $(ps aux | grep "[s]udo python3 SAWS.py"); then
             $SUCCESS=true
             break
         else
