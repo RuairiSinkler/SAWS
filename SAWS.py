@@ -8,6 +8,7 @@ import configparser
 import argparse
 import tkinter as tk
 import RPi.GPIO as GPIO
+import traceback
 from tkinter.font import Font
 
 import data.settings as settings
@@ -204,7 +205,7 @@ class SAWS(tk.Tk):
             self.ration_db.insert_house([name])
 
     def display_error(self, error, non_SAWS_error=False):
-        print(error)
+        traceback.print_exc()
         self.frames["ErrorPage"].display_page(error, non_SAWS_error)
 
     def display_warning(self, warning):
@@ -253,8 +254,7 @@ def main():
         finally:
             saws.mainloop()
     except Exception as e:
-        print(e)
-        raise e
+        traceback.print_exc()
     finally:
         GPIO.cleanup()
 

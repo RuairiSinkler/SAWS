@@ -1,5 +1,6 @@
 import tkinter as tk
 import sys
+import traceback
 
 class ErrorPage(tk.Frame):
 
@@ -30,7 +31,8 @@ class ErrorPage(tk.Frame):
     def display_page(self, error, non_SAWS_error=False):
         if non_SAWS_error:
             self.title.set("UNEXPECTED ERROR")
+            self.message.set(traceback.format_exc())
         else:
             self.title.set("ERROR") 
-        self.message.set(str(error))
+            self.message.set(str(error))
         self.controller.show_frame("ErrorPage")
