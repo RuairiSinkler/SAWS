@@ -12,6 +12,7 @@ class Weigher:
         self.controller = controller
         self.weigher_id = weigher_id
         self.weigher_pin = weigher_pin
+        self.increment = increment
         GPIO.setup(self.weigher_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         self.ingredients = []
