@@ -49,20 +49,19 @@ class SAWS(tk.Tk):
 
         self.config = configparser.ConfigParser()
         self.config.read("./data/config.ini")
-        usb_dir = self.config["DEFAULT"].get("usb_location")
+        self.usb_dir = self.config["DEFAULT"].get("usb_location")
         self.weigher_increment = int(self.config["DEFAULT"].get("weigher_increment"))
 
 
+    def setup(self):
+        GPIO.setmode(GPIO.BCM)
 
-        if not os.path.isdir(usb_dir) or not os.path.ismount(usb_dir):
+        if not os.path.isdir(self.usb_dir) or not os.path.ismount(self.usb_dir):
             raise err.USBError
         
         self.ration_db = db.DatabaseManager("./database", "rations.db")
-        self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
-        self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
-
-    def setup(self):
-        GPIO.setmode(GPIO.BCM)
+        self.ration_ex = ex.WorksheetManager(self.usb_dir, "rations")
+        self.ration_logs_ex = ex.WorksheetManager(self.usb_dir, "ration_logs")
 
         self.ration_ex.update_sheets("rations")
         self.ration_logs_ex.update_sheets("ration_logs")
