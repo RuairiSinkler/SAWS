@@ -104,13 +104,13 @@ class WorksheetManager:
             if version_cell is not None:
                 sheet_version = float(self.read_cell(self.get_cell(version_cell.column + 1, version_cell.row)))
             
+            if sheet_version < 1.0:
+                sheet_version = 1.0
+                version_cell = self._create_version_cell(sheet_version)
+                self.save()
+            
             if sheet_type == "rations":
-                if sheet_version < 1.0:
-                    sheet_version = 1.0
-                    version_cell = self._create_version_cell(sheet_version)
-                    self.save()
                 if sheet_version < 2.0:
-
                     ingredient_cell = self.find("Ingredient")
                     ingredients_table_bounds = self._get_table_bounds(self._get_upper_left_most_cell(ingredient_cell))
                     new_column = ingredient_cell.column + 1

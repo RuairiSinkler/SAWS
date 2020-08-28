@@ -91,36 +91,6 @@ class DatabaseManager:
 
         return result
 
-    def update_ration(self, values):
-        # Perform Validation on the values inserted to go into the rations database
-        all_ok = isinstance(values[1], str) and values[1]
-        for i in range(2, 10):
-            if (i == 8):
-                all_ok = all_ok and isinstance(values[i], float)
-            else:
-                all_ok = all_ok and isinstance(values[i], int)
-
-        # If all is ok then insert otherwise raise an exception
-        if all_ok:
-            ration_id = values.pop(0)
-            values.append(ration_id)
-
-            connect = sqlite3.connect(self.database_name)
-            cursor = connect.cursor()
-
-            execution = "UPDATE rations SET ration_name = ?, " \
-                        "wheat = ?, barley = ?, soya = ?, " \
-                        "limestone = ?, soya_oil = ?, arbocell = ?," \
-                        "methionine = ?, premix = ? " \
-                        "WHERE ration_id = ?"
-
-            cursor.execute(execution, values)
-            connect.commit()
-
-            connect.close()
-        else:
-            raise (IOError)
-
     def get_ration(self, ration_id):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
