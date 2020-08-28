@@ -127,13 +127,14 @@ class SAWS(tk.Tk):
         top_row = weigher_cell.row
         column = weigher_cell.column
         for row in itertools.count(top_row + 1):
-            weigher_id = int(self.ration_ex.read_cell(self.ration_ex.get_cell(column, row)))
+            weigher_id = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
+            if weigher_id is None:
+                break
+            weigher_id = int(weigher_id)
             weigher_pin = int(self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row)))
             increment = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
             if increment is None:
                 increment = self.default_weigher_increment
-            if weigher_id is None:
-                break
             print("weigher insert: {}, {}, {}".format(weigher_id, weigher_pin, increment))
             self.ration_db.insert_weigher([weigher_id, weigher_pin, increment])
             print("weigher inserted")
@@ -146,11 +147,17 @@ class SAWS(tk.Tk):
         column = ingredient_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
-            augar_pin = int(self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row)))
-            weigher_id = int(self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row)))
-            ordering = int(self.ration_ex.read_cell(self.ration_ex.get_cell(column + 3, row)))
             if name is None:
                 break
+            augar_pin = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
+            if augar_pin:
+                augar_pin = int(augar_pin)
+            weigher_id = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
+            if weigher_id:
+                weigher_id = int(weigher_id)
+            ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 3, row))
+            if ordering:
+                ordering = int(ordering)
             if (
                     (not augar_pin or not weigher_id or not ordering)
                     and
