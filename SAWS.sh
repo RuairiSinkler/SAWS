@@ -8,8 +8,6 @@ for i in {1..$RETRIES} ; do
     if [ "$SUCCESS" = false ] ; then
         sudo python3 SAWS.py &
         sleep 1
-        echo $(ps aux | grep '[s]udo python3 SAWS.py')
-        echo $(ps aux | grep -q '[s]udo python3 SAWS.py')
         if [[ $(ps aux | grep '[s]udo python3 SAWS.py') ]]; then
             SUCCESS=true
             break
