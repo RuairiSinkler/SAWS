@@ -40,21 +40,26 @@ class SAWS(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_columnconfigure(2, weight=1)
 
-        self.config = configparser.ConfigParser()
-        self.config.read("./data/config.ini")
-        usb_dir = self.config["DEFAULT"].get("usb_location")
-        self.weigher_increment = int(self.config["DEFAULT"].get("weigher_increment"))
-        
-        self.ration_db = db.DatabaseManager("./database", "rations.db")
-        self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
-        self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
-
         self.frames = {}
         self.warning_frames = []
 
         self.create_frame(mpgs.ErrorPage, self.container)
         warning_frame = self.create_frame(mpgs.WarningPage, self.container)
         self.warning_frames.append(warning_frame)
+
+        self.config = configparser.ConfigParser()
+        self.config.read("./data/config.ini")
+        usb_dir = self.config["DEFAULT"].get("usb_location")
+        self.weigher_increment = int(self.config["DEFAULT"].get("weigher_increment"))
+
+
+
+        if not os.path.isdir(usb_dir) or not os.path.ismount(usb_dir):
+            raise err.USBError
+        
+        self.ration_db = db.DatabaseManager("./database", "rations.db")
+        self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
+        self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
 
     def setup(self):
         GPIO.setmode(GPIO.BCM)
