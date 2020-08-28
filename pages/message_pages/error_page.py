@@ -27,5 +27,5 @@ class ErrorPage(tk.Frame):
         if non_SAWS_error:
             self.message.set("UNEXPECTED ERROR\n{}".format(str(error)))
         else:    
-            self.message.set(str(error)
+            self.message.set(str(error))
         self.controller.show_frame("ErrorPage")
