@@ -248,18 +248,16 @@ def main():
             saws.display_error(e)
         except Exception as e:
             saws.display_error(e, non_SAWS_error=True)
-            print("Re-raising error")
+            print(e)
             raise e
         finally:
             saws.mainloop()
     except Exception as e:
-            raise e
+        print(e)
+        raise e
     finally:
         GPIO.cleanup()
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        raise e
+    main()
