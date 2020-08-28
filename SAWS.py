@@ -252,8 +252,8 @@ def main():
             raise e
         finally:
             saws.mainloop()
-    except:
-            raise
+    except Exception as e:
+            raise e
     finally:
         GPIO.cleanup()
 
@@ -261,5 +261,5 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except:
-        raise
+    except Exception as e:
+        raise e

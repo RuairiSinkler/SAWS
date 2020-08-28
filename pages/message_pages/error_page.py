@@ -6,13 +6,13 @@ class ErrorPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        # self.grid_rowconfigure(0, weight=1)
-        # self.grid_rowconfigure(3, weight=1)
-        # self.grid_columnconfigure(0, weight=1)
-        # self.grid_columnconfigure(3, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(4, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(4, weight=1)
 
         self.title = tk.StringVar()
-        w = tk.Label(self, textvariable=self.title, font=self.controller.textFont)
+        w = tk.Label(self, textvariable=self.title, font=self.controller.mainFont)
         w.grid(row=1, column=1, columnspan=2)
 
         self.message = tk.StringVar()

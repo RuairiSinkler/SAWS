@@ -6,7 +6,7 @@ class WarningPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(3, weight=1)
+        self.grid_rowconfigure(4, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
@@ -14,13 +14,18 @@ class WarningPage(tk.Frame):
         self.active = False
         self.temp = temp
 
+        self.title = tk.StringVar()
+        self.title.set("WARNING")
+        w = tk.Label(self, textvariable=self.title, font=self.controller.mainFont)
+        w.grid(row=1, column=1)
+
         self.message = tk.StringVar()
         w = tk.Label(self, textvariable=self.message, font=self.controller.textFont)
-        w.grid(row=1, column=1)
+        w.grid(row=2, column=1)
         button = tk.Button(
             self, text="Continue", font=self.controller.mainFont, command=lambda:self.hide_page()
         )
-        button.grid(row=2, column=1, sticky="ew")
+        button.grid(row=3, column=1, sticky="ew")
 
     def display_page(self, warning, belowThis=None):
         self.active = True
