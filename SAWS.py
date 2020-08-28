@@ -236,7 +236,7 @@ def main():
             saws.setup()
         except err.SAWSError as e:
             saws.display_error(e)
-        except:
+        except Exception as e:
             saws.display_error(e, non_SAWS_error=True)
         finally:
             saws.mainloop()
