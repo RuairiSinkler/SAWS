@@ -60,10 +60,10 @@ class SAWS(tk.Tk):
             raise err.ConfigError(section, option)
         usb_dir = self.config[section].get(option)
 
-        option = "weigher_increment"
+        option = "default_weigher_increment"
         if not self.config.has_option(section, option):
             raise err.ConfigError(section, option)
-        self.weigher_increment = int(self.config[section].get(option))
+        self.default_weigher_increment = int(self.config[section].get(option))
 
         if not os.path.ismount(usb_dir):
             raise err.USBError
@@ -117,6 +117,21 @@ class SAWS(tk.Tk):
         self.ration_db.clear()
         self.ration_db.build()
 
+        weigher_cell = self.ration_ex.find("Weighers")
+        if weigher_cell is None:
+            raise err.USBError
+        top_row = weigher_cell.row
+        column = weigher_cell.column
+        for row in itertools.count(top_row + 1):
+            weigher_id = int(self.ration_ex.read_cell(self.ration_ex.get_cell(column, row)))
+            weigher_pin = int(self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row)))
+            increment = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
+            if increment is None:
+                increment = self.default_weigher_increment
+            if weigher_id is None:
+                break
+            self.ration_db.insert_weigher([weigher_id, weigher_pin, increment])
+
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
             raise err.USBError
@@ -135,10 +150,6 @@ class SAWS(tk.Tk):
                     (augar_pin or weigher_id or ordering)
                 ):
                 raise err.IngredientError(name)
-            option = str(weigher_id)
-            section = "WEIGHER_PINS"
-            if not self.config.has_option(section, option):
-                raise err.ConfigError(section, option)
             self.ration_db.insert_ingredient([name, augar_pin, weigher_id, ordering])
 
         ration_cell = self.ration_ex.find("Ration")

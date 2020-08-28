@@ -1,10 +1,17 @@
 PRAGMA foreign_keys = 1;
 
+CREATE TABLE weighers (
+  id INTEGER NOT NULL PRIMARY KEY,
+  weigher_pin INT NOT NULL,
+  increment INT,
+  UNIQUE(weigher_id)
+);
+
 CREATE TABLE ingredients (
   id INTEGER NOT NULL PRIMARY KEY,
   name STRING NOT NULL,
   augar_pin INT,
-  weigher INT,
+  weigher_id INT REFERENCES weighers(id),
   ordering INT,
   UNIQUE(name)
 );

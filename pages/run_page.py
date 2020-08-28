@@ -4,12 +4,10 @@ import numpy as np
 from tkinter import ttk
 from operator import itemgetter
 
-import data.settings as settingse
 from pages.page_tools.ingredient import Ingredient
 from pages.page_tools.weigher import Weigher
 from pages.page_tools.augar import Augar
 from pages.page_tools.weight_input import WeightInput
-from pages.page_tools.hopper import Hopper
 
 class RunPage(tk.Frame):
 
@@ -33,8 +31,6 @@ class RunPage(tk.Frame):
         self.max_weigher = 0
         self.done = False
         self.ration_id = None
-
-        self.weight_inputs = []
 
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
@@ -63,7 +59,7 @@ class RunPage(tk.Frame):
             ingredient = weigher.ingredients[-1]
 
         if increment is None:
-            increment = self.controller.weigher_increment
+            increment = weigher.increment
 
         ingredient.increment_amount(increment)
         percentage = ingredient.percentage()
@@ -140,9 +136,9 @@ class RunPage(tk.Frame):
         self.controller.ration_logs_ex.log_run(time_run, ration, self.done, self.ingredients, batch_number)
         self.controller.ration_logs_ex.save()
 
-        for weight_input in self.weight_inputs:
-            weight_input.active = False
-            self.weight_inputs.remove(weight_input)
+        for weigher_id, weigher in self.weighers.items():
+            weigher.active = False
+            self.weighers.remove(weighers[weigher_id])
 
         self.controller.show_frame("MainMenuPage")
         num_pad.clear()
@@ -177,7 +173,8 @@ class RunPage(tk.Frame):
                 unmeasured_counter += 1
             else:
                 if ingredient.weigher_id not in self.weighers:
-                    self.weighers[ingredient.weigher_id] = Weigher(self.main, self.controller, ingredient.weigher_id)
+                    db_weigher = self.controller.ration_db.get_weigher(ingredient.weigher_id)
+                    self.weighers[ingredient.weigher_id] = Weigher.fromDbWeigher(self, self.main, self.controller, db_weigher)
                 weigher = self.weighers[ingredient.weigher_id]
                 weigher.add_ingredient(ingredient)
                 ingredient.augar = Augar(
@@ -187,20 +184,6 @@ class RunPage(tk.Frame):
                 )
                 ingredient.augar.canvas.grid(column=len(weigher.ingredients) * 2, row=0)
                 ingredient.augar.turn_off()
-                
-        for weigher_id, weigher in self.weighers.items():
-            if settings.dev_mode:
-                button = tk.Button(
-                    weigher.frame, text="More",
-                    command=lambda weigher=weigher: self.increment_weight(weigher)
-                )
-                button.grid(column=1, row=3)
-            weigher_pin = self.controller.config["WEIGHER_PINS"].get(str(weigher_id))
-            self.weight_inputs.append(WeightInput(self, self.controller, weigher, int(weigher_pin)))
-            weigher.hopper = Hopper(
-                weigher.frame, self.controller, self.canvas_size, self.canvas_size
-            )
-            weigher.hopper.grid(row=2, column=1, columnspan=4, sticky="nsew")
 
         for _, weigher in self.weighers.items():
             new_width = weigher.frame.winfo_width()

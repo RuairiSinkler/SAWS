@@ -21,6 +21,15 @@ class DatabaseManager:
     def build(self):
         self.run_sql_file("rations.sql")
 
+    def insert_weigher(self, values):
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+        execution = "INSERT INTO weighers VALUES (?, ?, ?)"
+        cursor.execute(execution, values)
+        connect.commit()
+
+        connect.close()
+
     def insert_ingredient(self, values):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
@@ -104,11 +113,24 @@ class DatabaseManager:
 
         return result
 
+    def get_weigher(self, weigher_id):
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        execution = "SELECT * FROM weighers WHERE id = ?"
+        cursor.execute(execution, (weigher_id,))
+
+        result = cursor.fetchall()[0]
+
+        connect.close()
+
+        return result
+
     def get_all_rations(self):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT *  FROM rations"
+        execution = "SELECT * FROM rations"
         cursor.execute(execution)
 
         result = cursor.fetchall()
@@ -121,7 +143,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT ingredients.name, amount, augar_pin, weigher, ordering FROM ration_ingredients " \
+        execution = "SELECT ingredients.name, amount, augar_pin, weigher_id, ordering FROM ration_ingredients " \
                     "JOIN ingredients ON ingredients.id = ration_ingredients.ingredient_id " \
                     "WHERE ration_id = ?"
         cursor.execute(execution, (str(ration_id),))

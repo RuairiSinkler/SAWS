@@ -131,15 +131,53 @@ class WorksheetManager:
                     column = ingredient_cell.column
                     config = configparser.ConfigParser()
                     config.read("./data/config.ini")
-                    for row in itertools.count(top_row + 1):
-                        name = self.read_cell(self.get_cell(column, row))
-                        if name is None:
-                            break
-                        augar_pin = config["AUGAR_PINS"].get("{}_pin".format(name.lower().replace(" ", "_")))
-                        if augar_pin is not None:
-                            self.write_cell(augar_pin, self.get_cell(new_column, row))
-                    self.save()
+                    if config.has_section("AUGAR_PINS"):
+                        for row in itertools.count(top_row + 1):
+                            name = self.read_cell(self.get_cell(column, row))
+                            if name is None:
+                                break
+                            augar_pin = config["AUGAR_PINS"].get("{}_pin".format(name.lower().replace(" ", "_")))
+                            if augar_pin is not None:
+                                self.write_cell(augar_pin, self.get_cell(new_column, row))
+                        self.save()
+
                     sheet_version = 2.0
+                    self._update_version_cell(sheet_version, version_cell)
+                    self.save()
+                
+                if sheet_version < 2.1:
+                    weigher_cell = self.find("Weighers")
+                    weighers_table_bounds = self._get_table_bounds(self._get_upper_left_most_cell(weigher_cell))
+                    new_column = weigher_cell.column + 1
+                    for row in self.sheet.rows:
+                        previous_cell = row[new_column - 2]
+                        cell = row[new_column - 1]
+                        if (
+                                not (self._cell_is_empty(previous_cell) or self._cell_within_table_bounds(previous_cell, weighers_table_bounds)) 
+                            and not (self._cell_is_empty(cell) or self._cell_within_table_bounds(cell, weighers_table_bounds))
+                            ):
+                            origin_cell = self._get_upper_left_most_cell(cell)
+                            column_shift = new_column - origin_cell.column
+                            self._move_table(origin_cell, column_shift, 0)
+                    self.sheet.insert_cols(new_column)
+                    self.write_cell("Weigher Pin", self.get_cell(new_column, weigher_cell.row))
+                    
+                    top_row = weigher_cell.row
+                    column = weigher_cell.column
+                    config = configparser.ConfigParser()
+                    config.read("./data/config.ini")
+                    if config.has_section("WEIGHER_PINS"):
+                        for row in itertools.count(top_row + 1):
+                            weigher_id = self.read_cell(self.get_cell(column, row))
+                            if weigher_id is None:
+                                break
+                            weigher_id = int(weigher_id)
+                            weigher_pin = config["WEIGHER_PINS"].get(str(weigher_id))
+                            if weigher_pin is not None:
+                                self.write_cell(weigher_pin, self.get_cell(new_column, row))
+                        self.save()
+
+                    sheet_version = 2.1
                     self._update_version_cell(sheet_version, version_cell)
                     self.save()
                     
