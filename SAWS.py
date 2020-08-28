@@ -47,6 +47,7 @@ class SAWS(tk.Tk):
         self.create_frame(mpgs.ErrorPage, self.container)
         warning_frame = self.create_frame(mpgs.WarningPage, self.container)
         self.warning_frames.append(warning_frame)
+        self.report_callback_exception = self.display_callback_error
 
 
     def setup(self):
@@ -214,6 +215,11 @@ class SAWS(tk.Tk):
     def display_error(self, error, non_SAWS_error=False):
         traceback.print_exc()
         self.frames["ErrorPage"].display_page(error, non_SAWS_error)
+
+    def display_callback_error(self, exc, val, tb):
+        non_SAWS_error = not isinstance(exc, err.SAWSError)
+        traceback.print_exc()
+        self.frames["ErrorPage"].display_page(exc, non_SAWS_error)
 
     def display_warning(self, warning):
         if self.frames["WarningPage"].active:
