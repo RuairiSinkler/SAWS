@@ -15,7 +15,7 @@ class WarningPage(tk.Frame):
         self.temp = temp
 
         self.message = tk.StringVar()
-        w = tk.Label(self, textvariable=self.message, font=self.controller.mainFont)
+        w = tk.Label(self, textvariable=self.message, font=self.controller.textFont)
         w.grid(row=1, column=1)
         button = tk.Button(
             self, text="Continue", font=self.controller.mainFont, command=lambda:self.hide_page()
