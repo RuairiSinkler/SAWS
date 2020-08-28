@@ -4,7 +4,7 @@ SUCCESS=false
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $DIR
 for i in {1..5}; do
-    if [[] ! $SUCCESS ]]; then
+    if [[ ! $SUCCESS ]]; then
         sudo python3 SAWS.py &
         sleep 1
         if [[ $(ps aux | grep -q '[s]udo python3 SAWS.py') ]]; then
