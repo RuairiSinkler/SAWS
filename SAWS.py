@@ -204,6 +204,7 @@ class SAWS(tk.Tk):
             self.ration_db.insert_house([name])
 
     def display_error(self, error, non_SAWS_error=False):
+        print(error)
         self.frames["ErrorPage"].display_page(error, non_SAWS_error)
 
     def display_warning(self, warning):
@@ -248,7 +249,6 @@ def main():
             saws.display_error(e)
         except Exception as e:
             saws.display_error(e, non_SAWS_error=True)
-            print(e)
             raise e
         finally:
             saws.mainloop()
