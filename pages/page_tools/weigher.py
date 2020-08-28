@@ -1,8 +1,8 @@
 import tkinter as tk
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 import data.settings as settings
-from hopper import Hopper
+from pages.page_tools.hopper import Hopper
 
 class Weigher:
 
