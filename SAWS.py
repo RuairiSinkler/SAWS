@@ -135,6 +135,7 @@ class SAWS(tk.Tk):
                 break
             print("weigher insert: {}, {}, {}".format(weigher_id, weigher_pin, increment))
             self.ration_db.insert_weigher([weigher_id, weigher_pin, increment])
+            print("weigher inserted")
 
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
