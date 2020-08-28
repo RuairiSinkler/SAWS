@@ -1,8 +1,8 @@
 import tkinter as tk
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 
 import data.settings as settings
-from pages.page_tools.hopper import Hopper
+from hopper import Hopper
 
 class Weigher:
 
@@ -20,6 +20,7 @@ class Weigher:
         self.frame.pack(side=tk.LEFT, expand=True)
 
         if settings.dev_mode:
+            print("dev_mode working")
             button = tk.Button(
                 self.frame, text="More",
                 command=lambda weigher=self: self.run_page.increment_weight(weigher)
