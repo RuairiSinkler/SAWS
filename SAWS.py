@@ -114,12 +114,14 @@ class SAWS(tk.Tk):
         frame.lower()
 
     def setup_database(self):
+        print("setup_database")
         self.ration_db.clear()
         self.ration_db.build()
 
         weigher_cell = self.ration_ex.find("Weighers")
         if weigher_cell is None:
             raise err.USBError
+        print(weigher_cell)
         top_row = weigher_cell.row
         column = weigher_cell.column
         for row in itertools.count(top_row + 1):
@@ -130,6 +132,7 @@ class SAWS(tk.Tk):
                 increment = self.default_weigher_increment
             if weigher_id is None:
                 break
+            print("weigher insert: {}, {}, {}".format(weigher_id, weigher_pin, increment))
             self.ration_db.insert_weigher([weigher_id, weigher_pin, increment])
 
         ingredient_cell = self.ration_ex.find("Ingredient")
