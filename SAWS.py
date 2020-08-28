@@ -75,6 +75,7 @@ class SAWS(tk.Tk):
         self.ration_ex.update_sheets("rations")
         self.ration_logs_ex.update_sheets("ration_logs")
         self.setup_database()
+        print("Finished setting up database")
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             self.create_frame(F, self.container)
@@ -138,6 +139,7 @@ class SAWS(tk.Tk):
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
             raise err.USBError
+        print(ingredient_cell)
         top_row = ingredient_cell.row
         column = ingredient_cell.column
         for row in itertools.count(top_row + 1):
@@ -158,6 +160,7 @@ class SAWS(tk.Tk):
         ration_cell = self.ration_ex.find("Ration")
         if ration_cell is None:
             raise err.USBError
+        print(ration_cell)
         top_row = ration_cell.row
         column = ration_cell.column
         for row in itertools.count(top_row + 1):
@@ -188,6 +191,9 @@ class SAWS(tk.Tk):
                 
 
         house_cell = self.ration_ex.find("Houses")
+        if house_cell is None:
+            raise err.USBError
+        print(house_cell)
         top_row = house_cell.row
         column = house_cell.column
         for row in itertools.count(top_row + 1):
