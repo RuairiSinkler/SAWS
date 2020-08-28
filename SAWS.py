@@ -56,7 +56,7 @@ class SAWS(tk.Tk):
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
-        if not os.path.isdir(self.usb_dir) or not os.path.ismount(self.usb_dir):
+        if not os.path.ismount(self.usb_dir):
             raise err.USBError
         
         self.ration_db = db.DatabaseManager("./database", "rations.db")
