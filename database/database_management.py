@@ -143,7 +143,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT ingredients.name, amount, augar_pin, weighers.id, ordering FROM ration_ingredients " \
+        execution = "SELECT ingredients.name, amount, augar_pin, weigher_id, ordering FROM ration_ingredients " \
                     "JOIN ingredients ON ingredients.id = ration_ingredients.ingredient_id " \
                     "WHERE ration_id = ?"
         cursor.execute(execution, (str(ration_id),))
