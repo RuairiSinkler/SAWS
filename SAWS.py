@@ -215,8 +215,12 @@ def main():
             saws.setup()
         except err.SAWSError as e:
             saws.display_error(e)
+        except:
+            raise
         finally:
             saws.mainloop()
+    except:
+            raise
     finally:
         GPIO.cleanup()
 
