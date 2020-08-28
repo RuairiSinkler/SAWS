@@ -77,7 +77,6 @@ class SAWS(tk.Tk):
         self.ration_ex.update_sheets("rations")
         self.ration_logs_ex.update_sheets("ration_logs")
         self.setup_database()
-        print("Finished setting up database")
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             self.create_frame(F, self.container)
@@ -117,14 +116,12 @@ class SAWS(tk.Tk):
         frame.lower()
 
     def setup_database(self):
-        print("setup_database")
         self.ration_db.clear()
         self.ration_db.build()
 
         weigher_cell = self.ration_ex.find("Weighers")
         if weigher_cell is None:
-            raise err.USBError
-        print(weigher_cell)
+            raise err.CellError("Weighers")
         top_row = weigher_cell.row
         column = weigher_cell.column
         for row in itertools.count(top_row + 1):
@@ -136,14 +133,11 @@ class SAWS(tk.Tk):
             increment = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
             if increment is None:
                 increment = self.default_weigher_increment
-            print("weigher insert: {}, {}, {}".format(weigher_id, weigher_pin, increment))
             self.ration_db.insert_weigher([weigher_id, weigher_pin, increment])
-            print("weigher inserted")
 
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
-            raise err.USBError
-        print(ingredient_cell)
+            raise err.CellError("Ingredient")
         top_row = ingredient_cell.row
         column = ingredient_cell.column
         for row in itertools.count(top_row + 1):
@@ -172,8 +166,7 @@ class SAWS(tk.Tk):
 
         ration_cell = self.ration_ex.find("Ration")
         if ration_cell is None:
-            raise err.USBError
-        print(ration_cell)
+            raise err.CellError("Ration")
         top_row = ration_cell.row
         column = ration_cell.column
         for row in itertools.count(top_row + 1):
@@ -205,8 +198,7 @@ class SAWS(tk.Tk):
 
         house_cell = self.ration_ex.find("Houses")
         if house_cell is None:
-            raise err.USBError
-        print(house_cell)
+            raise err.CellError("Houses")
         top_row = house_cell.row
         column = house_cell.column
         for row in itertools.count(top_row + 1):
