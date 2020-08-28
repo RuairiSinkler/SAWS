@@ -114,6 +114,7 @@ class DatabaseManager:
         return result
 
     def get_weigher(self, weigher_id):
+        print("Getting weigher_id {}".format(weigher_id))
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
