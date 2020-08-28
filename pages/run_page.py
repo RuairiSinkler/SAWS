@@ -4,8 +4,7 @@ import numpy as np
 from tkinter import ttk
 from operator import itemgetter
 
-import data.settings as settings
-import exceptions as err
+import data.settings as settingse
 from pages.page_tools.ingredient import Ingredient
 from pages.page_tools.weigher import Weigher
 from pages.page_tools.augar import Augar
@@ -197,8 +196,6 @@ class RunPage(tk.Frame):
                 )
                 button.grid(column=1, row=3)
             weigher_pin = self.controller.config["WEIGHER_PINS"].get(str(weigher_id))
-            if weigher_pin is None:
-                raise err.ConfigError("WEIGHER_PINS", weigher_id)
             self.weight_inputs.append(WeightInput(self, self.controller, weigher, int(weigher_pin)))
             weigher.hopper = Hopper(
                 weigher.frame, self.controller, self.canvas_size, self.canvas_size

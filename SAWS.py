@@ -47,21 +47,30 @@ class SAWS(tk.Tk):
         warning_frame = self.create_frame(mpgs.WarningPage, self.container)
         self.warning_frames.append(warning_frame)
 
-        self.config = configparser.ConfigParser()
-        self.config.read("./data/config.ini")
-        self.usb_dir = self.config["DEFAULT"].get("usb_location")
-        self.weigher_increment = int(self.config["DEFAULT"].get("weigher_increment"))
-
 
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
-        if not os.path.ismount(self.usb_dir):
+        self.config = configparser.ConfigParser()
+        self.config.read("./data/config.ini")
+
+        option = "usb_location"
+        section = "DEFAULT"
+        if not self.config.has_option(section, option):
+            raise err.ConfigError(section, option)
+        usb_dir = self.config[section].get(option)
+
+        option = "weigher_increment"
+        if not self.config.has_option(section, option):
+            raise err.ConfigError(section, option)
+        self.weigher_increment = int(self.config[section].get(option))
+
+        if not os.path.ismount(usb_dir):
             raise err.USBError
         
         self.ration_db = db.DatabaseManager("./database", "rations.db")
-        self.ration_ex = ex.WorksheetManager(self.usb_dir, "rations")
-        self.ration_logs_ex = ex.WorksheetManager(self.usb_dir, "ration_logs")
+        self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
+        self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
 
         self.ration_ex.update_sheets("rations")
         self.ration_logs_ex.update_sheets("ration_logs")
@@ -126,9 +135,10 @@ class SAWS(tk.Tk):
                     (augar_pin or weigher_id or ordering)
                 ):
                 raise err.IngredientError(name)
-            weigher_pin = self.controller.config["WEIGHER_PINS"].get(str(weigher_id))
-            if weigher_pin is None:
-                raise err.ConfigError("WEIGHER_PINS", weigher_id)
+            option = str(weigher_id)
+            section = "WEIGHER_PINS"
+            if not self.config.has_option(section, option):
+                raise err.ConfigError(section, option)
             self.ration_db.insert_ingredient([name, augar_pin, weigher_id, ordering])
 
         ration_cell = self.ration_ex.find("Ration")

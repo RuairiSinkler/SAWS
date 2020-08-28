@@ -17,8 +17,8 @@ class USBError(SAWSError):
 
 class ConfigError(SAWSError):
 
-    def __init__(self, section, entry):
-        self.message = "Error reading config.ini file\n Expected entry {} under the {} section".format(entry, section)
+    def __init__(self, section, option):
+        self.message = "Error reading config.ini file\n Expected option {} under the {} section".format(option, section)
         super().__init__(self.message)
 
 
