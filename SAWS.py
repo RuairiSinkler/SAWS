@@ -156,6 +156,9 @@ class SAWS(tk.Tk):
             weigher_id = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
             if weigher_id:
                 weigher_id = int(weigher_id)
+                db_weigher = self.ration_db.get_weigher(weigher_id)
+                if db_weigher is None:
+                    raise err.IngredientWeigherError(name, weigher_id)
             ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 3, row))
             if ordering:
                 ordering = int(ordering)

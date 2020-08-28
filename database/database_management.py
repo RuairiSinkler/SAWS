@@ -107,7 +107,7 @@ class DatabaseManager:
         execution = "SELECT * FROM rations WHERE id = ?"
         cursor.execute(execution, (ration_id,))
 
-        result = cursor.fetchall()[0]
+        result = cursor.fetchone()
 
         connect.close()
 
@@ -121,7 +121,7 @@ class DatabaseManager:
         execution = "SELECT * FROM weighers WHERE id = ?"
         cursor.execute(execution, (weigher_id,))
 
-        result = cursor.fetchall()[0]
+        result = cursor.fetchone()
 
         connect.close()
 
