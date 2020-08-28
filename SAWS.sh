@@ -3,8 +3,8 @@
 SUCCESS=false
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $DIR
-for i in {1..5}; do
-    if [[ ! $SUCCESS ]]; then
+for i in {1..5} ; do
+    if [ $SUCCESS = false ] ; then
         sudo python3 SAWS.py &
         sleep 1
         if [[ $(ps aux | grep -q '[s]udo python3 SAWS.py') ]]; then
@@ -16,6 +16,6 @@ for i in {1..5}; do
     fi
 done
 
-if [[ ! $SUCCESS ]] ; then
+if [ $SUCCESS = false ] ; then
     zenity --error --text="Tried to start SAWS.py 5 times\!" --title="Warning\!"
 fi
