@@ -1,4 +1,6 @@
 import tkinter as tk
+import tkinter.font as tkfont
+from pages.page_tools.font_manager import *
 
 class WarningPage(tk.Frame):
 
@@ -14,18 +16,22 @@ class WarningPage(tk.Frame):
         self.active = False
         self.temp = temp
 
+        self.font = tkfont.Font(size=25)
+
         self.title = tk.StringVar()
         self.title.set("WARNING")
         w = tk.Label(self, textvariable=self.title, font=self.controller.mainFont)
         w.grid(row=1, column=1)
 
         self.message = tk.StringVar()
-        w = tk.Label(self, textvariable=self.message, font=self.controller.textFont)
+        w = tk.Label(self, textvariable=self.message, font=self.font)
         w.grid(row=2, column=1)
         button = tk.Button(
             self, text="Continue", font=self.controller.mainFont, command=lambda:self.hide_page()
         )
         button.grid(row=3, column=1, sticky="ew")
+
+        self.bind("<Configure>", self.resize)
 
     def display_page(self, warning, belowThis=None):
         self.active = True
@@ -39,3 +45,7 @@ class WarningPage(tk.Frame):
             del self.controller.frames[self.name]
             self.controller.warning_frames.remove(self)
             self.destroy()
+
+    def resize(self, event):
+        self.font['size'] = 25
+        resize_font(self.message.get(), self.font, event.width)

@@ -9,7 +9,7 @@ import argparse
 import tkinter as tk
 import RPi.GPIO as GPIO
 import traceback
-from tkinter.font import Font
+import tkinter.font as tkfont
 
 import data.settings as settings
 import database.database_management as db
@@ -29,8 +29,8 @@ class SAWS(tk.Tk):
         self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
         self.resizable(False, False)
         self.overrideredirect(True)
-        self.mainFont = Font(size=25)
-        self.textFont = Font(size=15)
+        self.mainFont = tkfont.Font(size=25)
+        self.textFont = tkfont.Font(size=15)
         self.option_add('*Dialog.msg.font', self.mainFont)
         self.option_add("*TCombobox*Listbox*Font", self.mainFont)
 

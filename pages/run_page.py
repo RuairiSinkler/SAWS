@@ -136,7 +136,7 @@ class RunPage(tk.Frame):
         self.controller.ration_logs_ex.log_run(time_run, ration, self.done, self.ingredients, batch_number)
         self.controller.ration_logs_ex.save()
 
-        for weigher_id, weigher in self.weighers.items():
+        for _, weigher in self.weighers.items():
             weigher.active = False
         self.weighers = {}
 

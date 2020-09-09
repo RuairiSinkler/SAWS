@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.font as tkfont
 import RPi.GPIO as GPIO
 
 import data.settings as settings
@@ -44,7 +45,7 @@ class Weigher:
         self.ingredients.sort(key=lambda ingredient: ingredient.ordering)
 
         label = tk.Label(
-            self.frame, textvariable=ingredient.label, font=self.controller.textFont
+            self.frame, textvariable=ingredient.label, font=tkfont.Font(size=1)
         )
         label.grid(column=(len(self.ingredients) * 2) - 1, row=0)
 
