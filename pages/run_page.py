@@ -35,20 +35,20 @@ class RunPage(tk.Frame):
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
         button = tk.Button(
-            self, textvariable=self.start_pause_text, font=self.controller.mainFont, command=self.start_pause
+            self, textvariable=self.start_pause_text, font=self.controller.main_font, command=self.start_pause
         )
         button.grid(column=1, row=3)
 
         houses = self.controller.ration_db.get_all_houses()
         house_names = [house[1] for house in houses]
-        self.house_dropdown = ttk.Combobox(self, values=house_names, state="readonly", font=self.controller.mainFont)
+        self.house_dropdown = ttk.Combobox(self, values=house_names, state="readonly", font=self.controller.main_font)
         self.house_dropdown.current(0)
         self.house_dropdown.grid(column=2, row=1)
 
         self.end_text = tk.StringVar()
         self.end_text.set("End\nRun\nEarly")
         self.quit_button = tk.Button(
-            self, textvariable=self.end_text, font=self.controller.mainFont,
+            self, textvariable=self.end_text, font=self.controller.main_font,
             command=lambda: self.controller.frames["AreYouSurePage"].display_page(self.done)
         )
         self.quit_button.grid(column=4, row=3)
@@ -166,7 +166,7 @@ class RunPage(tk.Frame):
             self.ingredients.append(ingredient)
             if ingredient.weigher_id is None:
                 button = tk.Button(
-                    self.footer, textvariable=ingredient.label, font=self.controller.textFont,
+                    self.footer, textvariable=ingredient.label, font=self.controller.text_font,
                     command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
                 )
                 button.grid(column=unmeasured_counter, row=0)

@@ -12,7 +12,7 @@ class PinPage(tk.Frame):
         self.grid_columnconfigure(2, weight=1)
         self.text = tk.StringVar()
         self.text.set("Please enter the PIN code:")
-        explanation = tk.Label(self, textvariable=self.text, font=self.controller.mainFont)
+        explanation = tk.Label(self, textvariable=self.text, font=self.controller.main_font)
         explanation.grid(row=1, column=1)
         pin_pad = NumPad(self, controller, lambda: self.check_pin(pin_pad))
         pin_pad.grid(row=2, column=1)

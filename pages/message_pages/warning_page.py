@@ -8,7 +8,7 @@ class WarningPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(4, weight=1)
+        self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
@@ -16,20 +16,23 @@ class WarningPage(tk.Frame):
         self.active = False
         self.temp = temp
 
-        self.font = tkfont.Font(size=25)
+        self.main = tk.Frame(self)
+        self.main.grid(row=1, column=1)
+
+        self.font = tkfont.Font(size=self.controller.main_font['size'])
 
         self.title = tk.StringVar()
         self.title.set("WARNING")
-        w = tk.Label(self, textvariable=self.title, font=self.controller.mainFont)
-        w.grid(row=1, column=1)
+        title_label = tk.Label(self.main, textvariable=self.title, font=self.controller.main_font)
+        title_label.pack()
 
         self.message = tk.StringVar()
-        w = tk.Label(self, textvariable=self.message, font=self.font)
-        w.grid(row=2, column=1)
+        message_label = tk.Label(self.main, textvariable=self.message, font=self.font, wraplength=self.controller.winfo_width - 100)
+        message_label.pack()
         button = tk.Button(
-            self, text="Continue", font=self.controller.mainFont, command=lambda:self.hide_page()
+            self.main, text="Continue", font=self.controller.main_font, command=lambda:self.hide_page()
         )
-        button.grid(row=3, column=1, sticky="ew")
+        button.pack()
 
         self.bind("<Configure>", self.resize)
 
@@ -47,5 +50,4 @@ class WarningPage(tk.Frame):
             self.destroy()
 
     def resize(self, event):
-        self.font['size'] = 25
-        resize_font(self.message.get(), self.font, event.width)
+        resize_font_height(self.font, self.controller.main_font['size'], self.main, event.height)

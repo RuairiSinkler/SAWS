@@ -15,7 +15,7 @@ class WarningPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(3, weight=1)
+        self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
@@ -23,16 +23,18 @@ class WarningPage(tk.Frame):
         self.active = False
         self.temp = temp
 
-        self.font = tkfont.Font(size=25)
+        self.inner_frame = tk.Frame(self)
+        self.inner_frame.grid(row=1, column=1)
+        self.font = tkfont.Font(size=self.controller.main_font['size'])
 
         self.message = tk.StringVar()
         self.message.set("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras ultrices condimentum lorem. Etiam condimentum, pede nec gravida tempor, enim ligula mollis elit, in venenatis tellus enim at lacus. Suspendisse vestibulum. Nullam tempus, lorem a hendrerit ultricies, risus risus fringilla magna, ac mollis ante lacus non purus. Nam ac diam nec diam gravida dictum. Suspendisse porttitor velit id arcu. Vestibulum pretium. Etiam cursus condimentum est. Morbi at mi.\nSed imperdiet vehicula justo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Sed enim dolor, aliquam et, pretium vel, dapibus ut, eros. Etiam a est. Donec nunc. Duis vel massa.\nNunc nec leo. Aliquam erat volutpat. Class aptent taciti soc")
-        self.w = tk.Label(self, textvariable=self.message, font=self.font)
-        self.w.grid(row=1, column=1)
-        button = tk.Button(
-            self, text="Continue", command=lambda:self.hide_page(), font=self.controller.mainFont
+        self.w = tk.Label(self.inner_frame, textvariable=self.message, font=self.font, wraplength=self.controller.screen_width)
+        self.w.pack()
+        self.button = tk.Button(
+            self.inner_frame, text="Continue", command=lambda:self.hide_page(), font=self.controller.main_font
         )
-        button.grid(row=2, column=1, sticky="ew")
+        self.button.pack()
 
         self.bind("<Configure>", self.resize)
 
@@ -58,8 +60,21 @@ class WarningPage(tk.Frame):
             self.resize_font(text, font, frame_width)
         
     def resize(self, event):
-        self.font['size'] = 100
-        self.resize_font(self.message.get(), self.font, event.width)
+        height = self.inner_frame.winfo_height()
+        if height > self.controller.winfo_height():
+            while self.font['size'] > 1 and height > self.controller.winfo_height():
+                self.font['size'] -= 1
+                self.update_idletasks()
+                height = self.inner_frame.winfo_height()
+        else:
+            while self.font['size'] < self.controller.main_font['size'] and height < self.controller.winfo_height():
+                self.font['size'] += 1
+                self.update_idletasks()
+                height = self.inner_frame.winfo_height()
+            if self.font['size'] > 1 and height > self.controller.winfo_height():
+                self.font['size'] -= 1
+
+            
 
 class Controller(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -76,10 +91,10 @@ class Controller(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_columnconfigure(2, weight=1)
 
-        self.mainFont = tkfont.Font(size=25)
-        self.textFont = tkfont.Font(size=15)
-        self.option_add('*Dialog.msg.font', self.mainFont)
-        self.option_add("*TCombobox*Listbox*Font", self.mainFont)
+        self.main_font = tkfont.Font(size=25)
+        self.text_font = tkfont.Font(size=15)
+        self.option_add('*Dialog.msg.font', self.main_font)
+        self.option_add("*TCombobox*Listbox*Font", self.main_font)
 
         self.frames = {}
         self.warning_frames = []
