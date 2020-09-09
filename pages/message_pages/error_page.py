@@ -47,7 +47,7 @@ class ErrorPage(tk.Frame):
         else:
             self.title.set("ERROR") 
             self.message.set(str(error))
-            self.message_label['wraplength'] = self.controller.winfo_width - 100
+            self.message_label['wraplength'] = self.controller.winfo_width() - 100
         self.controller.show_frame("ErrorPage")
 
     def resize(self, event):
