@@ -29,10 +29,10 @@ class WarningPage(tk.Frame):
 
         self.message = tk.StringVar()
         self.message.set("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras ultrices condimentum lorem. Etiam condimentum, pede nec gravida tempor, enim ligula mollis elit, in venenatis tellus enim at lacus. Suspendisse vestibulum. Nullam tempus, lorem a hendrerit ultricies, risus risus fringilla magna, ac mollis ante lacus non purus. Nam ac diam nec diam gravida dictum. Suspendisse porttitor velit id arcu. Vestibulum pretium. Etiam cursus condimentum est. Morbi at mi.\nSed imperdiet vehicula justo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Sed enim dolor, aliquam et, pretium vel, dapibus ut, eros. Etiam a est. Donec nunc. Duis vel massa.\nNunc nec leo. Aliquam erat volutpat. Class aptent taciti soc")
-        self.w = tk.Label(self.inner_frame, textvariable=self.message, font=self.font, wraplength=self.controller.screen_width)
+        self.w = tk.Label(self.inner_frame, textvariable=self.message, font=self.font)
         self.w.pack()
         self.button = tk.Button(
-            self.inner_frame, text="Continue", command=lambda:self.hide_page(), font=self.controller.main_font
+            self.inner_frame, text="Continue", command=lambda:self.w.config(wraplength=self.controller.screen_width), font=self.controller.main_font
         )
         self.button.pack()
 

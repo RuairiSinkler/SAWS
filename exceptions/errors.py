@@ -17,7 +17,7 @@ class ConfigError(SAWSError):
 
 class USBError(SAWSError):
 
-    def __init__(self, message="Couldn't read rations.xlsx. Is the USB plugged in and. the sheet formatted correctly?"):
+    def __init__(self, message="Couldn't read rations.xlsx. Is the USB plugged in and rations.xlsx formatted correctly?"):
         self.message = message
         super().__init__(self.message)
 
@@ -32,12 +32,12 @@ class CellError(SAWSError):
 class IngredientError(SAWSError):
 
     def __init__(self, ingredient_name):
-        self.message = "Error reading ingredient '{}'. It is missing a value for one of it's fields. Please resolve this in rations.xlsx.".format(ingredient_name)
+        self.message = "Error reading ingredient '{}'. It is missing a value for one of it's fields, please resolve this in rations.xlsx.".format(ingredient_name)
         super().__init__(self.message)
 
 
 class IngredientWeigherError(SAWSError):
 
     def __init__(self, ingredient_name, weigher_id):
-        self.message = "Error reading ingredient '{}'. It refers to a weigher with id '{}', but this is not present in the Weighers table. Please resolve this in rations.xlsx.".format(ingredient_name, weigher_id)
+        self.message = "Error reading ingredient '{}'. It refers to a weigher with id '{}', but this is not present in the Weighers table, please resolve this in rations.xlsx.".format(ingredient_name, weigher_id)
         super().__init__(self.message)

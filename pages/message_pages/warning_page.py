@@ -27,7 +27,7 @@ class WarningPage(tk.Frame):
         title_label.pack()
 
         self.message = tk.StringVar()
-        message_label = tk.Label(self.main, textvariable=self.message, font=self.font, wraplength=self.controller.winfo_width() - 100)
+        message_label = tk.Label(self.main, textvariable=self.message, font=self.font, wraplength=self.controller.screen_width)
         message_label.pack()
         button = tk.Button(
             self.main, text="Continue", font=self.controller.main_font, command=lambda:self.hide_page()

@@ -40,7 +40,6 @@ class ErrorPage(tk.Frame):
         self.bind("<Configure>", self.resize)
 
     def display_page(self, error, non_SAWS_error=False):
-        print("Is not SAWS Error: {}".format(non_SAWS_error))
         if non_SAWS_error:
             self.title.set("UNEXPECTED ERROR")
             self.message.set(traceback.format_exc())
@@ -48,7 +47,7 @@ class ErrorPage(tk.Frame):
         else:
             self.title.set("ERROR") 
             self.message.set(str(error))
-            self.message_label.config(wraplength=self.controller.winfo_width() - 100)
+            self.message_label.config(wraplength=self.controller.screen_width)
         self.controller.show_frame("ErrorPage")
 
     def resize(self, event):
