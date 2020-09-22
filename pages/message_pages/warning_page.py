@@ -39,6 +39,7 @@ class WarningPage(tk.Frame):
     def display_page(self, warning, belowThis=None):
         self.active = True
         self.message.set(warning.message)
+        self.resize()
         self.controller.show_frame(self.name, belowThis=belowThis)
     
     def hide_page(self):
@@ -49,5 +50,8 @@ class WarningPage(tk.Frame):
             self.controller.warning_frames.remove(self)
             self.destroy()
 
-    def resize(self, event):
-        resize_font_height(self.font, self.controller.main_font['size'], self.main, event.height)
+    def resize(self, event=None):
+        height = self.winfo_height()
+        if not event is None:
+            height = event.height
+        resize_font_height(self.font, self.controller.main_font['size'], self.main, height)
