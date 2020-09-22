@@ -29,7 +29,7 @@ class Weigher:
         self.ingredients_frame.pack()
 
         self.hopper = Hopper(
-            self.frame, self.controller, self.run_page.canvas_size, self.run_page.canvas_size
+            self.frame, self.controller
         )
         self.hopper.pack(fill=tk.BOTH, expand=tk.YES)
 
