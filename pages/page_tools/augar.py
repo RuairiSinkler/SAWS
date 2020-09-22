@@ -5,7 +5,7 @@ class Augar:
 
     def __init__(self, parent, augar_pin):
         self.augar_pin = augar_pin
-        self.canvas = tk.Canvas(parent)
+        self.canvas = tk.Canvas(parent, widht=10, height=10)
         self.canvas.pack(side=tk.LEFT)
         self.active = False
         GPIO.setup(augar_pin, GPIO.OUT)
