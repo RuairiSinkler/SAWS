@@ -4,6 +4,8 @@ import RPi.GPIO as GPIO
 
 import data.settings as settings
 from pages.page_tools.hopper import Hopper
+from pages.page_tools.augar import Augar
+from pages.page_tools.font_manager import *
 
 class Weigher:
 
@@ -18,19 +20,25 @@ class Weigher:
 
         self.ingredients = []
 
+        self.label_font = tkfont.Font(size=15)
+
         self.frame = tk.Frame(self.parent)
         self.frame.pack(side=tk.LEFT, expand=True)
+
+        self.ingredients_frame = tk.Frame(self.frame)
+        self.ingredients_frame.pack()
+
+        self.hopper = Hopper(
+            self.frame, self.controller, self.run_page.canvas_size, self.run_page.canvas_size
+        )
+        self.hopper.pack(fill=tk.BOTH, expand=tk.YES)
 
         if settings.dev_mode:
             button = tk.Button(
                 self.frame, text="More",
                 command=lambda weigher=self: self.run_page.increment_weight(weigher)
             )
-            button.grid(column=1, row=3)
-        self.hopper = Hopper(
-            self.frame, self.controller, self.run_page.canvas_size, self.run_page.canvas_size
-        )
-        self.hopper.grid(row=2, column=1, columnspan=4, sticky="nsew")
+            button.pack()
 
         self.active = True
         self.state = GPIO.input(self.weigher_pin)
@@ -45,9 +53,18 @@ class Weigher:
         self.ingredients.sort(key=lambda ingredient: ingredient.ordering)
 
         label = tk.Label(
-            self.frame, textvariable=ingredient.label, font=tkfont.Font(size=1)
+            self.ingredients_frame, textvariable=ingredient.label, font=self.label_font
         )
-        label.grid(column=(len(self.ingredients) * 2) - 1, row=0)
+        label.pack(side=tk.LEFT)
+
+        ingredient.augar = Augar(
+            self.ingredients_frame,
+            int(ingredient.augar_pin)
+        )
+        ingredient.augar.turn_off()
+
+        for ingredient in self.ingredients:
+            resize_font_width(ingredient.label, self.label_font, label.winfo_width)
 
     def get_active_ingredient(self):
         for ingredient in self.ingredients:

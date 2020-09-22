@@ -20,7 +20,7 @@ class Ingredient:
 
     def increment_amount(self, increment):
         self.current_amount += increment
-        self.label.set("{}\n{}\n/{}kg".format(self.name, str(self.current_amount), str(self.desired_amount)))
+        self.label.set("{}\n{}/{}kg".format(self.name, str(self.current_amount), str(self.desired_amount)))
 
     def percentage(self):
         if self.desired_amount == 0:

@@ -6,22 +6,21 @@ from operator import itemgetter
 
 from pages.page_tools.ingredient import Ingredient
 from pages.page_tools.weigher import Weigher
-from pages.page_tools.augar import Augar
-from pages.page_tools.weight_input import WeightInput
 
 class RunPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        # self.grid_rowconfigure(0, weight=1)
+        # self.grid_rowconfigure(4, weight=1)
+        # self.grid_columnconfigure(0, weight=1)
+        # self.grid_columnconfigure(4, weight=1)
+
         self.main = tk.Frame(self)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(7, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(5, weight=1)
-        self.main.grid(column=2, row=2, rowspan=4, sticky="nsew")
+        self.main.grid(column=1, row=1)
+
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=2, row=6, sticky="nsew")
-        self.grid_rowconfigure(0, weight=1)
+        self.footer.grid(column=1, row=2, rowspan=3)
 
         self.controller = controller
 
@@ -37,13 +36,13 @@ class RunPage(tk.Frame):
         button = tk.Button(
             self, textvariable=self.start_pause_text, font=self.controller.main_font, command=self.start_pause
         )
-        button.grid(column=1, row=3)
+        button.grid(column=0, row=1)
 
         houses = self.controller.ration_db.get_all_houses()
         house_names = [house[1] for house in houses]
         self.house_dropdown = ttk.Combobox(self, values=house_names, state="readonly", font=self.controller.main_font)
         self.house_dropdown.current(0)
-        self.house_dropdown.grid(column=2, row=1)
+        self.house_dropdown.grid(column=1, row=0)
 
         self.end_text = tk.StringVar()
         self.end_text.set("End\nRun\nEarly")
@@ -51,7 +50,7 @@ class RunPage(tk.Frame):
             self, textvariable=self.end_text, font=self.controller.main_font,
             command=lambda: self.controller.frames["AreYouSurePage"].display_page(self.done)
         )
-        self.quit_button.grid(column=4, row=3)
+        self.quit_button.grid(column=2, row=1)
 
     def increment_weight(self, weigher, increment=None):
         ingredient = weigher.get_active_ingredient()
@@ -146,10 +145,13 @@ class RunPage(tk.Frame):
     def display_page(self, ration_id):
         self.main.destroy()
         self.footer.destroy()
+
         self.main = tk.Frame(self)
-        self.main.grid(column=2, row=2, rowspan=4)
+        self.main.grid(column=1, row=1)
+
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=2, row=6)
+        self.footer.grid(column=1, row=2, rowspan=3)
+
         self.running = False
         self.start_pause_text.set("Start")
         self.done = False
@@ -159,7 +161,6 @@ class RunPage(tk.Frame):
         self.ingredients = []
 
         db_ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
-        unmeasured_counter = 0
 
         for db_ingredient in db_ingredients:
             ingredient = Ingredient.fromDbIngredient(db_ingredient)
@@ -169,21 +170,13 @@ class RunPage(tk.Frame):
                     self.footer, textvariable=ingredient.label, font=self.controller.text_font,
                     command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
                 )
-                button.grid(column=unmeasured_counter, row=0)
-                unmeasured_counter += 1
+                button.pack(side=tk.LEFT)
             else:
                 if ingredient.weigher_id not in self.weighers:
                     db_weigher = self.controller.ration_db.get_weigher(ingredient.weigher_id)
                     self.weighers[ingredient.weigher_id] = Weigher.fromDbWeigher(self, self.main, self.controller, db_weigher)
                 weigher = self.weighers[ingredient.weigher_id]
                 weigher.add_ingredient(ingredient)
-                ingredient.augar = Augar(
-                    int(ingredient.augar_pin), 
-                    tk.Canvas(weigher.frame, width=self.canvas_size / 10, height=self.canvas_size / 10),
-                    self.canvas_size
-                )
-                ingredient.augar.canvas.grid(column=len(weigher.ingredients) * 2, row=0)
-                ingredient.augar.turn_off()
 
         for _, weigher in self.weighers.items():
             new_width = weigher.frame.winfo_width()
