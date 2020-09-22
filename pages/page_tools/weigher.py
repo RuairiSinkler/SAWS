@@ -64,7 +64,7 @@ class Weigher:
         ingredient.augar.turn_off()
 
         for ingredient in self.ingredients:
-            resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width)
+            resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
 
     def get_active_ingredient(self):
         for ingredient in self.ingredients:
