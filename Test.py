@@ -9,28 +9,29 @@ class Hopper(tk.Canvas):
 
     def __init__(self, parent):
         tk.Canvas.__init__(self, parent)
-        self.triangle_y = 4 * self.winfo_height() / 10
-        self.triangle_height = self.winfo_height() - self.triangle_y
         self.draw_hopper()
 
     def draw_hopper(self):
         self.delete("all")
-        points = [0, 0, self.winfo_width(), 0, self.winfo_width(), self.triangle_y, self.winfo_width() / 2, self.winfo_height(), 0, self.triangle_y]
+        triangle_y = 4 * int(self['height']) / 10
+        points = [0, 0, int(self['width']), 0, int(self['width']), triangle_y, int(self['width']) / 2, int(self['height']), 0, triangle_y]
         self.hopper = self.create_polygon(points, fill='black', outline='black', width=3)
         self.update()
 
     def fill_hopper(self, percentage):
-        fill_height = int(self.winfo_height() * (percentage / 100.0))
-        fill_y = self.winfo_height() - fill_height
-        if fill_height >= self.triangle_height:
-            points = [0, fill_y, self.winfo_width(), fill_y, self.winfo_width(), self.triangle_y, self.winfo_width() / 2, self.winfo_height(), 0,
-                      self.triangle_y]
+        triangle_y = 4 * int(self['height']) / 10
+        triangle_height = int(self['height']) - triangle_y
+        fill_height = int(int(self['height']) * (percentage / 100.0))
+        fill_y = int(self['height']) - fill_height
+        if fill_height >= triangle_height:
+            points = [0, fill_y, int(self['width']), fill_y, int(self['width']), triangle_y, int(self['width']) / 2, int(self['height']), 0,
+                      triangle_y]
             self.fill = self.create_polygon(points, fill='yellow')
         else:
-            triangle_proportion = fill_height / (self.triangle_height)
-            fill_width = self.winfo_width() * triangle_proportion
-            gap = (self.winfo_width() - fill_width) / 2
-            points = [gap, fill_y, self.winfo_width() - gap, fill_y, self.winfo_width() / 2, self.winfo_height()]
+            triangle_proportion = fill_height / (triangle_height)
+            fill_width = int(self['width']) * triangle_proportion
+            gap = (int(self['width']) - fill_width) / 2
+            points = [gap, fill_y, int(self['width']) - gap, fill_y, int(self['width']) / 2, int(self['height'])]
             self.fill = self.create_polygon(points, fill='yellow')
         self.update()
 
@@ -51,7 +52,7 @@ for letter in list(string.ascii_lowercase):
     label = tk.Label(
         ingredients_frame, text=letter*random.randint(5, 10), font=label_font
     )
-    label.pack(side=tk.LEFT)
+    label.pack(side=tk.LEFT, fill="x")
     canvas = tk.Canvas(ingredients_frame, width=10, height=10)
     canvas.pack(side=tk.LEFT)
     print("a: {}".format(label.winfo_width()))
