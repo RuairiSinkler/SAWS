@@ -40,7 +40,7 @@ class RunPage(tk.Frame):
         house_names = [house[1] for house in houses]
         self.house_dropdown = ttk.Combobox(self, values=house_names, state="readonly", font=self.controller.main_font)
         self.house_dropdown.current(0)
-        self.house_dropdown.grid(column=1, row=0)
+        self.house_dropdown.grid(column=1, row=0, columnspan=3)
 
         self.end_text = tk.StringVar()
         self.end_text.set("End\nRun\nEarly")
@@ -148,7 +148,7 @@ class RunPage(tk.Frame):
         self.main.grid(column=1, row=1)
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=1, row=2, rowspan=3)
+        self.footer.grid(column=1, row=2, columnspan=3)
 
         self.running = False
         self.start_pause_text.set("Start")
