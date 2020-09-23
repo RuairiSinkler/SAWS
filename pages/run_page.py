@@ -146,7 +146,7 @@ class RunPage(tk.Frame):
         self.main.destroy()
         self.footer.destroy()
 
-        self.main = tk.Frame(self)
+        self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=2)
         self.main.grid(column=1, row=1)
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
