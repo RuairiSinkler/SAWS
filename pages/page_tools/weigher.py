@@ -25,9 +25,9 @@ class Weigher:
         frame_column = len(self.run_page.weighers)
 
         self.frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
-        self.frame.grid(row=0, column=frame_column, sticky="ew")
+        self.frame.grid(row=0, column=frame_column, sticky="nsew")
 
-        self.parent.columnconfigure(frame_column, weight=1)
+        self.parent.grid_columnconfigure(frame_column, weight=1)
 
         self.ingredients_frame = tk.Frame(self.frame)
         self.ingredients_frame.pack(fill="x")
@@ -62,7 +62,7 @@ class Weigher:
         )
         label.grid(row=0, column=label_column, sticky="ew")
 
-        self.ingredients_frame.columnconfigure(label_column, weight=1)
+        self.ingredients_frame.grid_columnconfigure(label_column, weight=1)
 
         ingredient.augar = Augar(
             self.ingredients_frame,

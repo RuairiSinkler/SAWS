@@ -18,11 +18,11 @@ class RunPage(tk.Frame):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-        self.main = tk.Frame(self)
-        self.main.grid(column=1, row=1)
+        self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=2)
+        self.main.grid(column=1, row=1, sticky="nsew")
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=1, row=2, rowspan=3)
+        self.footer.grid(column=0, row=2, columnspan=3, sticky="ew")
 
         self.controller = controller
 
@@ -147,10 +147,10 @@ class RunPage(tk.Frame):
         self.footer.destroy()
 
         self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=2)
-        self.main.grid(column=1, row=1)
+        self.main.grid(column=1, row=1, sticky="nsew")
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=0, row=2, columnspan=3)
+        self.footer.grid(column=0, row=2, columnspan=3, sticky="ew")
 
         self.running = False
         self.start_pause_text.set("Start")
@@ -162,6 +162,8 @@ class RunPage(tk.Frame):
 
         db_ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
 
+        button_ingredients_column = 0
+
         for db_ingredient in db_ingredients:
             ingredient = Ingredient.fromDbIngredient(db_ingredient)
             self.ingredients.append(ingredient)
@@ -170,7 +172,9 @@ class RunPage(tk.Frame):
                     self.footer, textvariable=ingredient.label, font=self.controller.text_font,
                     command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
                 )
-                button.pack(side=tk.LEFT)
+                button.grid(row=0, column=button_ingredients_column, sticky="ew")
+                self.footer.grid_columnconfigure(button_ingredients_column, weight=1)
+                button_ingredients_column += 1
             else:
                 if ingredient.weigher_id not in self.weighers:
                     db_weigher = self.controller.ration_db.get_weigher(ingredient.weigher_id)
