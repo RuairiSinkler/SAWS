@@ -62,7 +62,8 @@ class Weigher:
             int(ingredient.augar_pin)
         )
         ingredient.augar.turn_off()
-
+        print("adding: {}".format(ingredient.label.get()))
+        print("label width: {}".format(label.winfo_width()))
         for ingredient in self.ingredients:
             resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
 
