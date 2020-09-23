@@ -179,7 +179,7 @@ class RunPage(tk.Frame):
         for _, weigher in self.weighers.items():
             weigher.frame.update_idletasks()
             new_width = weigher.frame.winfo_width()
-            if new_width > int(weigher.hopper.canvas['width']):
+            if new_width > int(weigher.hopper['width']):
                 weigher.hopper.configure(width=new_width)
                 weigher.hopper.draw_hopper()
 
