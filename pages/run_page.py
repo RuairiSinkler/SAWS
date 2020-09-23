@@ -186,5 +186,10 @@ class RunPage(tk.Frame):
             #     weigher.hopper.configure(width=new_width)
             #     weigher.hopper.draw_hopper()
 
+        self.update_idletasks()
+        print("main size: {}x{}".format(self.main.winfo_width(), self.main.winfo_height()))
+        print("weigher frame size: {}x{}".format(self.weighers.items()[1].frame.winfo_width(), self.weighers.items()[1].frame.winfo_height()))
+        print("weigher ingredient_frame size: {}x{}".format(self.weighers.items()[1].ingredients_frame.winfo_width(), self.weighers.items()[1].ingredients_frame.winfo_height()))
+
         self.done = self.check_done()
         self.controller.show_frame("RunPage")
