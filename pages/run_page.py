@@ -17,11 +17,16 @@ class RunPage(tk.Frame):
         # self.grid_rowconfigure(4, weight=1)
         # self.grid_columnconfigure(0, weight=1)
         # self.grid_columnconfigure(4, weight=1)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-        self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=2)
-        self.main.grid(column=1, row=1, sticky="nsew")
+        self.header = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
+        self.header.grid(column=0, row=0, columnspan=3, sticky="ew")
+        self.header.grid_columnconfigure(0, weight=1)
+        self.header.grid_columnconfigure(1, weight=1)
+
+        self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
+        self.main.grid(column=0, row=1, sticky="nsew")
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
         self.footer.grid(column=0, row=2, columnspan=3, sticky="ew")
@@ -36,23 +41,17 @@ class RunPage(tk.Frame):
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
         button = tk.Button(
-            self, textvariable=self.start_pause_text, font=self.controller.main_font, command=self.start_pause
+            self.header, textvariable=self.start_pause_text, font=self.controller.main_font, command=self.start_pause
         )
-        button.grid(column=0, row=1)
-
-        houses = self.controller.ration_db.get_all_houses()
-        house_names = [house[1] for house in houses]
-        self.house_dropdown = ttk.Combobox(self, values=house_names, state="readonly", font=self.controller.main_font)
-        self.house_dropdown.current(0)
-        self.house_dropdown.grid(column=0, row=0, columnspan=3, sticky="ew")
+        button.grid(column=0, row=0, sticky="ew")
 
         self.end_text = tk.StringVar()
-        self.end_text.set("End\nRun\nEarly")
+        self.end_text.set("End Run Early")
         self.quit_button = tk.Button(
-            self, textvariable=self.end_text, font=self.controller.main_font,
+            self.header, textvariable=self.end_text, font=self.controller.main_font,
             command=lambda: self.controller.frames["AreYouSurePage"].display_page(self.done)
         )
-        self.quit_button.grid(column=2, row=1)
+        self.quit_button.grid(column=1, row=0, sticky="ew")
 
     def increment_weight(self, weigher, increment=None):
         ingredient = weigher.get_active_ingredient()
@@ -100,7 +99,7 @@ class RunPage(tk.Frame):
             self.end_text.set("Complete")
             self.quit_button.grid()
         else:
-            self.end_text.set("End\nRun\nEarly")
+            self.end_text.set("End Run Early")
         return done
 
     def start_pause(self):
@@ -119,9 +118,9 @@ class RunPage(tk.Frame):
             if not self.done:
                 self.quit_button.grid_remove()
 
-    def log_run(self, num_pad):
+    def log_run(self, house_dropdown, num_pad):
+        house = house_dropdown.get()
         batch_number = num_pad.entry.get()
-        house = self.house_dropdown.get()
         if house in self.controller.ration_logs_ex.workbook.sheetnames:
             sheet = self.controller.ration_logs_ex.get_sheet(house)
         else:
@@ -142,6 +141,7 @@ class RunPage(tk.Frame):
         self.weighers = {}
 
         self.controller.show_frame("MainMenuPage")
+        house_dropdown.current(0)
         num_pad.clear()
 
     def display_page(self, ration_id):
@@ -153,7 +153,7 @@ class RunPage(tk.Frame):
         self.main.grid_rowconfigure(0, weight=1)
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=0, row=2, columnspan=3, sticky="ew")
+        self.footer.grid(column=0, row=2, sticky="ew")
 
         self.running = False
         self.start_pause_text.set("Start")
@@ -201,11 +201,6 @@ class RunPage(tk.Frame):
             button.update_idletasks()
             text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
             resize_font_width(text, unweighed_button_font, button.winfo_width())
-
-        self.update_idletasks()
-        print("main size: {}x{}".format(self.main.winfo_width(), self.main.winfo_height()))
-        print("weigher frame size: {}x{}".format(self.weighers[1].frame.winfo_width(), self.weighers[1].frame.winfo_height()))
-        print("weigher ingredient_frame size: {}x{}".format(self.weighers[1].ingredients_frame.winfo_width(), self.weighers[1].ingredients_frame.winfo_height()))
 
         self.done = self.check_done()
         self.controller.show_frame("RunPage")
