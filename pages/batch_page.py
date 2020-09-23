@@ -22,5 +22,5 @@ class BatchPage(tk.Frame):
         self.house_dropdown.current(0)
         self.house_dropdown.grid(row=2, column=1)
 
-        self.num_pad = NumPad(self, controller, lambda: self.controller.frames["RunPage"].log_run(self.house_dropdown, self.num_pad)
+        self.num_pad = NumPad(self, controller, lambda: self.controller.frames["RunPage"].log_run(self.house_dropdown, self.num_pad))
         self.num_pad.grid(row=3, column=1)
