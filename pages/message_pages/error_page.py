@@ -37,8 +37,6 @@ class ErrorPage(tk.Frame):
         )
         self.shutdown_button.grid(row=2, column=1, sticky="ew")
 
-        self.bind("<Configure>", self.resize)
-
     def display_page(self, error, non_SAWS_error=False):
         if non_SAWS_error:
             self.title.set("UNEXPECTED ERROR")
@@ -51,12 +49,10 @@ class ErrorPage(tk.Frame):
         self.resize(resize_width=non_SAWS_error)
         self.controller.show_frame("ErrorPage")
 
-    def resize(self, event=None, resize_width=False):
+    def resize(self, resize_width=False):
+        print("resize_width: {}".format(resize_width))
         height = self.winfo_height()
         width = self.winfo_width()
-        if not event is None:
-            height = event.height
-            width = event.width
         resize_font_height(self.font, self.controller.main_font['size'], self.main, height - self.close_button.winfo_height())
         if resize_width:
             resize_font_width(self.message.get(), self.font, width)
