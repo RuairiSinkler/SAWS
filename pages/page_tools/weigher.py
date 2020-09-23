@@ -50,16 +50,20 @@ class Weigher:
         self.ingredients.append(ingredient)
         self.ingredients.sort(key=lambda ingredient: ingredient.ordering)
 
+        label_column = ((len(self.ingredients) * 2) - 2)
+
         label = tk.Label(
             self.ingredients_frame, textvariable=ingredient.label, font=self.label_font
         )
-        label.grid(row=0, column=((len(self.ingredients) * 2) - 2), sticky="ew")
+        label.grid(row=0, column=label_column, sticky="ew")
+
+        self.ingredients_frame.columnconfigure(label_column, weight=1)
 
         ingredient.augar = Augar(
             self.ingredients_frame,
             int(ingredient.augar_pin)
         )
-        ingredient.augar.canvas.grid(row=0, column=((len(self.ingredients) * 2) - 1), sticky="ew")
+        ingredient.augar.canvas.grid(row=0, column=label_column - 1, sticky="ew")
 
         self.ingredients_frame.update_idletasks()
 
