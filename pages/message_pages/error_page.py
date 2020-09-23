@@ -10,18 +10,20 @@ class ErrorPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
         self.main = tk.Frame(self)
-        self.main.grid(row=1, column=1)
+        self.main.grid(row=1, column=1, sticky="nsew")
 
         self.font = tkfont.Font(size=self.controller.main_font['size'])
 
         self.title = tk.StringVar()
-        title_label = tk.Label(self.main, textvariable=self.title, font=self.controller.main_font)
-        title_label.grid(row=0, column=0, columnspan=2)
+        self.title_label = tk.Label(self.main, textvariable=self.title, font=self.controller.main_font)
+        self.title_label.grid(row=0, column=0, columnspan=2)
 
         self.message = tk.StringVar()
         self.message_label = tk.Label(self.main, textvariable=self.message, font=self.font)
@@ -51,8 +53,9 @@ class ErrorPage(tk.Frame):
 
     def resize(self, resize_width=False):
         print("resize_width: {}".format(resize_width))
-        height = self.winfo_height()
+        height = self.winfo_height() - self.close_button.winfo_height() - self.title_label.winfo_height()
         width = self.winfo_width()
-        resize_font_height(self.font, self.controller.main_font['size'], self.main, height - self.close_button.winfo_height())
+        print("{}x{}".format(width, height))
+        resize_font_height(self.font, self.controller.main_font['size'], self.main, height
         if resize_width:
             resize_font_width(self.message.get(), self.font, width)

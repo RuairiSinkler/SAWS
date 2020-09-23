@@ -8,8 +8,10 @@ class WarningPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
         self.name = name
@@ -17,22 +19,22 @@ class WarningPage(tk.Frame):
         self.temp = temp
 
         self.main = tk.Frame(self)
-        self.main.grid(row=1, column=1)
+        self.main.grid(row=1, column=1, sticky="nsew")
 
         self.font = tkfont.Font(size=self.controller.main_font['size'])
 
         self.title = tk.StringVar()
         self.title.set("WARNING")
-        title_label = tk.Label(self.main, textvariable=self.title, font=self.controller.main_font)
-        title_label.pack()
+        self.title_label = tk.Label(self.main, textvariable=self.title, font=self.controller.main_font)
+        self.title_label.pack()
 
         self.message = tk.StringVar()
         message_label = tk.Label(self.main, textvariable=self.message, font=self.font, wraplength=self.controller.screen_width)
         message_label.pack()
-        button = tk.Button(
+        self.button = tk.Button(
             self.main, text="Continue", font=self.controller.main_font, command=lambda:self.hide_page()
         )
-        button.pack()
+        self.button.pack()
 
     def display_page(self, warning, belowThis=None):
         self.active = True
@@ -49,5 +51,5 @@ class WarningPage(tk.Frame):
             self.destroy()
 
     def resize(self):
-        height = self.winfo_height()
+        height = self.winfo_height() - self.title_label.winfo_height() - self.button.winfo_height()
         resize_font_height(self.font, self.controller.main_font['size'], self.main, height)
