@@ -176,12 +176,12 @@ class RunPage(tk.Frame):
                 weigher = self.weighers[ingredient.weigher_id]
                 weigher.add_ingredient(ingredient)
 
-        # for _, weigher in self.weighers.items():
-        #     new_width = weigher.frame.winfo_width()
-        #     if new_width > self.canvas_size:
-        #         weigher.hopper.configure(width=new_width)
-        #         weigher.hopper.width = new_width
-        #         weigher.hopper.draw_hopper()
+        for _, weigher in self.weighers.items():
+            weigher.frame.update_idletasks()
+            new_width = weigher.frame.winfo_width()
+            if new_width > int(weigher.hopper.canvas['width']):
+                weigher.hopper.configure(width=new_width)
+                weigher.hopper.draw_hopper()
 
         self.done = self.check_done()
         self.controller.show_frame("RunPage")
