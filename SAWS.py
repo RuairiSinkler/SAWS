@@ -35,7 +35,7 @@ class SAWS(tk.Tk):
         self.option_add("*TCombobox*Listbox*Font", self.main_font)
 
         self.container = tk.Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
+        self.container.pack(side="top", fill=tk.BOTH, expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_rowconfigure(2, weight=1)
         self.container.grid_columnconfigure(0, weight=1)

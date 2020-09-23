@@ -31,7 +31,7 @@ class Weigher:
         self.hopper = Hopper(
             self.frame, self.controller
         )
-        self.hopper.pack(fill=tk.BOTH, expand=tk.YES)
+        self.hopper.pack(fill=tk.BOTH)
 
         if settings.dev_mode:
             button = tk.Button(
