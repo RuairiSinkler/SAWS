@@ -87,7 +87,7 @@ class RunPage(tk.Frame):
             ingredient.current_amount = ingredient.desired_amount
         else:
             ingredient.current_amount = 0
-        ingredient.label.set("{}\n{}\n/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount)))
+        ingredient.label.set("{}\n{}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount)))
         self.done = self.check_done()
 
     def check_done(self):
@@ -109,6 +109,7 @@ class RunPage(tk.Frame):
             for _, weigher in self.weighers.items():
                 for ingredient in weigher.ingredients:
                     ingredient.augar.turn_off()
+            self.header.grid_columnconfigure(1, weight=1)
             self.quit_button.grid()
         else:
             self.running = True
@@ -117,6 +118,7 @@ class RunPage(tk.Frame):
                 self.increment_weight(weigher, 0)
             if not self.done:
                 self.quit_button.grid_remove()
+                self.header.grid_columnconfigure(1, weight=0)
 
     def log_run(self, house_dropdown, num_pad):
         house = house_dropdown.get()
