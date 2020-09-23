@@ -44,7 +44,7 @@ class RunPage(tk.Frame):
         house_names = [house[1] for house in houses]
         self.house_dropdown = ttk.Combobox(self, values=house_names, state="readonly", font=self.controller.main_font)
         self.house_dropdown.current(0)
-        self.house_dropdown.grid(column=0, row=0, columnspan=3)
+        self.house_dropdown.grid(column=0, row=0, columnspan=3, sticky="ew")
 
         self.end_text = tk.StringVar()
         self.end_text.set("End\nRun\nEarly")
@@ -187,6 +187,8 @@ class RunPage(tk.Frame):
                 weigher = self.weighers[ingredient.weigher_id]
                 weigher.add_ingredient(ingredient)
 
+
+        self.main.update_idletasks()
         for _, weigher in self.weighers.items():
             # weigher.frame.update_idletasks()
             weigher.add_hopper()
