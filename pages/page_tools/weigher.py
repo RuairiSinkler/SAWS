@@ -23,7 +23,7 @@ class Weigher:
         self.label_font = tkfont.Font(size=15)
 
         self.frame = tk.Frame(self.parent)
-        self.frame.grid(row=0, column=len(self.run_page.weighers) - 1, sticky="ew")
+        self.frame.grid(row=0, column=len(self.run_page.weighers), sticky="ew")
 
         self.ingredients_frame = tk.Frame(self.frame)
         self.ingredients_frame.pack(fill="x")
