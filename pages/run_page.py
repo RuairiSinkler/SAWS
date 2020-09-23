@@ -13,10 +13,6 @@ class RunPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        # self.grid_rowconfigure(0, weight=1)
-        # self.grid_rowconfigure(4, weight=1)
-        # self.grid_columnconfigure(0, weight=1)
-        # self.grid_columnconfigure(4, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
@@ -193,12 +189,7 @@ class RunPage(tk.Frame):
 
         self.main.update_idletasks()
         for _, weigher in self.weighers.items():
-            # weigher.frame.update_idletasks()
             weigher.add_hopper()
-            # new_width = weigher.frame.winfo_width()
-            # if new_width > int(weigher.hopper['width']):
-            #     weigher.hopper.configure(width=new_width)
-            #     weigher.hopper.draw_hopper()
 
         for ingredient, button in unweighed_ingredients:
             button.update_idletasks()

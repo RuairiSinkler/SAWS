@@ -46,11 +46,6 @@ class Weigher:
 
         if settings.dev_mode:
             self.hopper.bind("<Button-1>", lambda e, weigher=self: self.run_page.increment_weight(weigher))
-            # button = tk.Button(
-            #     self.frame, text="More",
-            #     command=lambda weigher=self: self.run_page.increment_weight(weigher)
-            # )
-            # button.pack()
 
     def add_ingredient(self, ingredient):
         self.ingredients.append(ingredient)
