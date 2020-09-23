@@ -97,6 +97,7 @@ class RunPage(tk.Frame):
                 done = False
         if done:
             self.end_text.set("Complete")
+            self.header.grid_columnconfigure(1, weight=1)
             self.quit_button.grid()
         else:
             self.end_text.set("End Run Early")
