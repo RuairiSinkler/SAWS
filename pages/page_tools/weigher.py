@@ -26,12 +26,12 @@ class Weigher:
         self.frame.pack(side=tk.LEFT, expand=True)
 
         self.ingredients_frame = tk.Frame(self.frame)
-        self.ingredients_frame.pack()
+        self.ingredients_frame.pack(fill="x")
 
         self.hopper = Hopper(
             self.frame, self.controller
         )
-        self.hopper.pack(fill=tk.BOTH)
+        self.hopper.pack(fill=tk.BOTH, expand=True)
 
         if settings.dev_mode:
             button = tk.Button(
