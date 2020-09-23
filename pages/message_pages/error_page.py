@@ -48,15 +48,15 @@ class ErrorPage(tk.Frame):
             self.title.set("ERROR") 
             self.message.set(str(error))
             self.message_label.config(wraplength=self.controller.screen_width)
-        self.resize(width=non_SAWS_error)
+        self.resize(resize_width=non_SAWS_error)
         self.controller.show_frame("ErrorPage")
 
-    def resize(self, event=None, width=False):
+    def resize(self, event=None, resize_width=False):
         height = self.winfo_height()
         width = self.winfo_width()
         if not event is None:
             height = event.height
             width = event.width
         resize_font_height(self.font, self.controller.main_font['size'], self.main, height - self.close_button.winfo_height())
-        if width:
+        if resize_width:
             resize_font_width(self.message.get(), self.font, width)
