@@ -29,7 +29,7 @@ class RunPage(tk.Frame):
         self.main.grid(column=0, row=1, sticky="nsew")
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.footer.grid(column=0, row=2, columnspan=3, sticky="ew")
+        self.footer.grid(column=0, row=2, sticky="ew")
 
         self.controller = controller
 
@@ -149,7 +149,7 @@ class RunPage(tk.Frame):
         self.footer.destroy()
 
         self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=2)
-        self.main.grid(column=1, row=1, sticky="nsew")
+        self.main.grid(column=0, row=1, sticky="nsew")
         self.main.grid_rowconfigure(0, weight=1)
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
