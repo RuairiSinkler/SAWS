@@ -40,12 +40,15 @@ class Weigher:
     def fromDbWeigher(cls, run_page, parent, controller, db_weigher):
         return cls(run_page, parent, controller, *db_weigher)
 
+    def dev_mode_callback(event):
+
+
     def add_hopper(self):
         self.hopper = Hopper(self.frame)
         self.hopper.pack(fill=tk.BOTH, expand=True)
 
         if settings.dev_mode:
-            self.hopper.bind("<Button-1>", lambda weigher=self: self.run_page.increment_weight(weigher))
+            self.hopper.bind("<Button-1>", lambda e, weigher=self: self.run_page.increment_weight(weigher))
             # button = tk.Button(
             #     self.frame, text="More",
             #     command=lambda weigher=self: self.run_page.increment_weight(weigher)
