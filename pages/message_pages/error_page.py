@@ -50,11 +50,9 @@ class ErrorPage(tk.Frame):
         self.controller.show_frame("ErrorPage")
 
     def resize(self, resize_width=False):
-        print("resize_width: {}".format(resize_width))
         self.update_idletasks()
         height = self.winfo_height() - self.close_button.winfo_height() - self.title_label.winfo_height()
         width = self.winfo_width()
-        print("{}x{}".format(width, height))
         resize_font_height(self.font, self.controller.main_font['size'], self.main, height)
         if resize_width:
             resize_font_width(self.message.get(), self.font, width)
