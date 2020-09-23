@@ -22,12 +22,25 @@ class Weigher:
 
         self.label_font = tkfont.Font(size=15)
 
+        frame_column = len(self.run_page.weighers)
+
         self.frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
-        self.frame.grid(row=0, column=len(self.run_page.weighers), sticky="ew")
+        self.frame.grid(row=0, column=frame_column, sticky="ew")
+
+        self.parent.columnconfigure(frame_column, weight=1)
 
         self.ingredients_frame = tk.Frame(self.frame)
         self.ingredients_frame.pack(fill="x")
 
+        self.active = True
+        self.state = GPIO.input(self.weigher_pin)
+        self.check_input()
+
+    @classmethod
+    def fromDbWeigher(cls, run_page, parent, controller, db_weigher):
+        return cls(run_page, parent, controller, *db_weigher)
+
+    def add_hopper(self):
         self.hopper = Hopper(self.frame)
         self.hopper.pack(fill=tk.BOTH, expand=True)
 
@@ -37,14 +50,6 @@ class Weigher:
                 command=lambda weigher=self: self.run_page.increment_weight(weigher)
             )
             button.pack()
-
-        self.active = True
-        self.state = GPIO.input(self.weigher_pin)
-        self.check_input()
-
-    @classmethod
-    def fromDbWeigher(cls, run_page, parent, controller, db_weigher):
-        return cls(run_page, parent, controller, *db_weigher)
 
     def add_ingredient(self, ingredient):
         self.ingredients.append(ingredient)
