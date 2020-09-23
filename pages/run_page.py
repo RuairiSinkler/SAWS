@@ -1,11 +1,13 @@
 import time
-import tkinter as tk
 import numpy as np
+import tkinter as tk
+import tkinter.font as tkfont
 from tkinter import ttk
 from operator import itemgetter
 
 from pages.page_tools.ingredient import Ingredient
 from pages.page_tools.weigher import Weigher
+from pages.page_tools.font_manager import *
 
 class RunPage(tk.Frame):
 
@@ -148,6 +150,7 @@ class RunPage(tk.Frame):
 
         self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=2)
         self.main.grid(column=1, row=1, sticky="nsew")
+        self.main.grid_rowconfigure(0, weight=1)
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
         self.footer.grid(column=0, row=2, columnspan=3, sticky="ew")
@@ -162,19 +165,21 @@ class RunPage(tk.Frame):
 
         db_ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
 
-        button_ingredients_column = 0
+        unweighed_ingredients = []
+        unweighed_button_font = tkfont.Font(size=self.controller.text_font['size'])
 
         for db_ingredient in db_ingredients:
             ingredient = Ingredient.fromDbIngredient(db_ingredient)
             self.ingredients.append(ingredient)
             if ingredient.weigher_id is None:
+                button_column = len(unweighed_ingredients)
                 button = tk.Button(
-                    self.footer, textvariable=ingredient.label, font=self.controller.text_font,
+                    self.footer, textvariable=ingredient.label, font=unweighed_button_font,
                     command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
                 )
-                button.grid(row=0, column=button_ingredients_column, sticky="ew")
-                self.footer.grid_columnconfigure(button_ingredients_column, weight=1)
-                button_ingredients_column += 1
+                button.grid(row=0, column=button_column, sticky="ew")
+                self.footer.grid_columnconfigure(button_column, weight=1)
+                unweighed_ingredients.append((ingredient, button))
             else:
                 if ingredient.weigher_id not in self.weighers:
                     db_weigher = self.controller.ration_db.get_weigher(ingredient.weigher_id)
@@ -182,13 +187,18 @@ class RunPage(tk.Frame):
                 weigher = self.weighers[ingredient.weigher_id]
                 weigher.add_ingredient(ingredient)
 
-        # for _, weigher in self.weighers.items():
+        for _, weigher in self.weighers.items():
             # weigher.frame.update_idletasks()
-            # weigher.add_hopper()
+            weigher.add_hopper()
             # new_width = weigher.frame.winfo_width()
             # if new_width > int(weigher.hopper['width']):
             #     weigher.hopper.configure(width=new_width)
             #     weigher.hopper.draw_hopper()
+
+        for ingredient, button in unweighed_ingredients:
+            button.update_idletasks()
+            text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
+            resize_font_width(text, unweighed_button_font, button.winfo_width())
 
         self.update_idletasks()
         print("main size: {}x{}".format(self.main.winfo_width(), self.main.winfo_height()))

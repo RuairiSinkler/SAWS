@@ -12,7 +12,7 @@ class Ingredient:
 
         self.current_amount = 0
         self.label = tk.StringVar()
-        self.label.set("{}\n{}\n/{}kg".format(name, str(self.current_amount), str(desired_amount)))
+        self.label.set("{}\n{}/{}kg".format(name, str(self.current_amount), str(desired_amount)))
 
     @classmethod
     def fromDbIngredient(cls, db_ingredient, augar=None):
