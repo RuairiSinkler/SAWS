@@ -10,10 +10,8 @@ class ErrorPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
         self.main = tk.Frame(self)
@@ -53,6 +51,7 @@ class ErrorPage(tk.Frame):
 
     def resize(self, resize_width=False):
         print("resize_width: {}".format(resize_width))
+        self.update_idletasks()
         height = self.winfo_height() - self.close_button.winfo_height() - self.title_label.winfo_height()
         width = self.winfo_width()
         print("{}x{}".format(width, height))

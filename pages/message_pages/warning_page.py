@@ -8,10 +8,8 @@ class WarningPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
 
         self.name = name
@@ -51,5 +49,6 @@ class WarningPage(tk.Frame):
             self.destroy()
 
     def resize(self):
+        self.update_idletasks()
         height = self.winfo_height() - self.title_label.winfo_height() - self.button.winfo_height()
         resize_font_height(self.font, self.controller.main_font['size'], self.main, height)
