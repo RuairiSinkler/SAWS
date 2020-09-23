@@ -16,6 +16,7 @@ class RunPage(tk.Frame):
         # self.grid_columnconfigure(0, weight=1)
         # self.grid_columnconfigure(4, weight=1)
         self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(1, weight=1)
 
         self.main = tk.Frame(self)
         self.main.grid(column=1, row=1)
