@@ -53,19 +53,17 @@ class Weigher:
         label = tk.Label(
             self.ingredients_frame, textvariable=ingredient.label, font=self.label_font
         )
-        label.pack(side=tk.LEFT, fill="x")
+        label.grid(row=0, column=((len(self.ingredients) * 2) - 2), sticky="ew")
 
         ingredient.augar = Augar(
             self.ingredients_frame,
             int(ingredient.augar_pin)
         )
+        ingredient.augar.canvas.grid(row=0, column=((len(self.ingredients) * 2) - 1), sticky="ew")
 
         self.ingredients_frame.update_idletasks()
 
         ingredient.augar.turn_off()
-
-        print("adding: {}".format(ingredient.label.get()))
-        print("label width: {}".format(label.winfo_width()))
         
         for ingredient in self.ingredients:
             resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
