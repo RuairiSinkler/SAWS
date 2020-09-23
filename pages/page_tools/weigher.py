@@ -28,9 +28,7 @@ class Weigher:
         self.ingredients_frame = tk.Frame(self.frame)
         self.ingredients_frame.pack(fill="x")
 
-        self.hopper = Hopper(
-            self.frame, self.controller
-        )
+        self.hopper = Hopper(self.frame)
         self.hopper.pack(fill=tk.BOTH, expand=True)
 
         if settings.dev_mode:
@@ -61,9 +59,14 @@ class Weigher:
             self.ingredients_frame,
             int(ingredient.augar_pin)
         )
+
+        self.ingredients_frame.update_idletasks()
+
         ingredient.augar.turn_off()
+        
         print("adding: {}".format(ingredient.label.get()))
         print("label width: {}".format(label.winfo_width()))
+        
         for ingredient in self.ingredients:
             resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
 

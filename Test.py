@@ -1,171 +1,62 @@
-import time
-import random
-import re
 import tkinter as tk
 import tkinter.font as tkfont
 from tkinter import ttk
 
-import exceptions as err
+import string
+import random
 
-import excel.excel_management as ex
+class Hopper(tk.Canvas):
 
-class WarningPage(tk.Frame):
+    def __init__(self, parent):
+        tk.Canvas.__init__(self, parent)
+        self.triangle_y = 4 * self.winfo_height() / 10
+        self.triangle_height = self.winfo_height() - self.triangle_y
+        self.draw_hopper()
 
-    def __init__(self, parent, controller, name="WarningPage", temp=False):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(2, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(2, weight=1)
+    def draw_hopper(self):
+        self.delete("all")
+        points = [0, 0, self.winfo_width(), 0, self.winfo_width(), self.triangle_y, self.winfo_width() / 2, self.winfo_height(), 0, self.triangle_y]
+        self.hopper = self.create_polygon(points, fill='black', outline='black', width=3)
+        self.update()
 
-        self.name = name
-        self.active = False
-        self.temp = temp
-
-        self.inner_frame = tk.Frame(self)
-        self.inner_frame.grid(row=1, column=1)
-        self.font = tkfont.Font(size=self.controller.main_font['size'])
-
-        self.message = tk.StringVar()
-        self.message.set("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Cras ultrices condimentum lorem. Etiam condimentum, pede nec gravida tempor, enim ligula mollis elit, in venenatis tellus enim at lacus. Suspendisse vestibulum. Nullam tempus, lorem a hendrerit ultricies, risus risus fringilla magna, ac mollis ante lacus non purus. Nam ac diam nec diam gravida dictum. Suspendisse porttitor velit id arcu. Vestibulum pretium. Etiam cursus condimentum est. Morbi at mi.\nSed imperdiet vehicula justo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Sed enim dolor, aliquam et, pretium vel, dapibus ut, eros. Etiam a est. Donec nunc. Duis vel massa.\nNunc nec leo. Aliquam erat volutpat. Class aptent taciti soc")
-        self.w = tk.Label(self.inner_frame, textvariable=self.message, font=self.font)
-        self.w.pack()
-        self.button = tk.Button(
-            self.inner_frame, text="Continue", command=lambda:self.w.config(wraplength=self.controller.screen_width), font=self.controller.main_font
-        )
-        self.button.pack()
-
-        self.bind("<Configure>", self.resize)
-
-    def display_page(self, warning, belowThis=None):
-        self.active = True
-        self.message.set(warning.message)
-        self.controller.show_frame(self.name, belowThis=belowThis)
-    
-    def hide_page(self):
-        self.active = False
-        self.controller.hide_frame(self.name)
-        if self.temp:
-            del self.controller.frames[self.name]
-            self.controller.warning_frames.remove(self)
-            self.destroy()
-
-    def resize_font(self, text, font, frame_width):
-        font_width = 0
-        for string in text.splitlines():
-            font_width = max(font_width, font.measure(string))
-        if font_width > frame_width - 100:
-            font['size'] -= 1
-            self.resize_font(text, font, frame_width)
-        
-    def resize(self, event):
-        height = self.inner_frame.winfo_height()
-        if height > self.controller.winfo_height():
-            while self.font['size'] > 1 and height > self.controller.winfo_height():
-                self.font['size'] -= 1
-                self.update_idletasks()
-                height = self.inner_frame.winfo_height()
+    def fill_hopper(self, percentage):
+        fill_height = int(self.winfo_height() * (percentage / 100.0))
+        fill_y = self.winfo_height() - fill_height
+        if fill_height >= self.triangle_height:
+            points = [0, fill_y, self.winfo_width(), fill_y, self.winfo_width(), self.triangle_y, self.winfo_width() / 2, self.winfo_height(), 0,
+                      self.triangle_y]
+            self.fill = self.create_polygon(points, fill='yellow')
         else:
-            while self.font['size'] < self.controller.main_font['size'] and height < self.controller.winfo_height():
-                self.font['size'] += 1
-                self.update_idletasks()
-                height = self.inner_frame.winfo_height()
-            if self.font['size'] > 1 and height > self.controller.winfo_height():
-                self.font['size'] -= 1
+            triangle_proportion = fill_height / (self.triangle_height)
+            fill_width = self.winfo_width() * triangle_proportion
+            gap = (self.winfo_width() - fill_width) / 2
+            points = [gap, fill_y, self.winfo_width() - gap, fill_y, self.winfo_width() / 2, self.winfo_height()]
+            self.fill = self.create_polygon(points, fill='yellow')
+        self.update()
 
-            
+root = tk.Tk()
 
-class Controller(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+label_font = tkfont.Font(size=15)
 
-        self.screen_width = self.winfo_screenwidth() // 2
-        self.screen_height = self.winfo_screenheight() // 2
-        self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
+frame = tk.Frame(root)
+frame.pack(side=tk.LEFT, expand=True)
 
-        self.container = tk.Frame(self)
-        self.container.pack(side="top", fill=tk.BOTH, expand=True)
-        self.container.grid_rowconfigure(0, weight=1)
-        self.container.grid_rowconfigure(2, weight=1)
-        self.container.grid_columnconfigure(0, weight=1)
-        self.container.grid_columnconfigure(2, weight=1)
+ingredients_frame = tk.Frame(frame)
+ingredients_frame.pack(fill="x")
 
-        self.main_font = tkfont.Font(size=25)
-        self.text_font = tkfont.Font(size=15)
-        self.option_add('*Dialog.msg.font', self.main_font)
-        self.option_add("*TCombobox*Listbox*Font", self.main_font)
+hopper = Hopper(frame)
+hopper.pack(fill=tk.BOTH, expand=True)
 
-        self.frames = {}
-        self.warning_frames = []
+for letter in list(string.ascii_lowercase):
+    label = tk.Label(
+        ingredients_frame, text=letter*random.randint(5, 10), font=label_font
+    )
+    label.pack(side=tk.LEFT)
+    canvas = tk.Canvas(ingredients_frame, width=10, height=10)
+    canvas.pack(side=tk.LEFT)
+    print("a: {}".format(label.winfo_width()))
+    frame.update_idletasks()
+    print("b: {}".format(label.winfo_width()))
+    canvas.create_rectangle(0, 0, canvas.winfo_width(), canvas.winfo_height(), fill="red")
 
-        page_name = "Base"
-        frame = tk.Frame(self.container)
-        self.frames[page_name] = frame
-
-        # put all of the pages in the same location;
-        # the one on the top of the stacking order
-        # will be the one that is visible.
-        #frame.grid(row=1, column=1, sticky="nsew")
-        frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
-        label = tk.Label(frame, text="Base Level")
-        label.pack()
-
-        warning_frame = self.create_frame(WarningPage, self.container)
-        self.warning_frames.append(warning_frame)
-        
-
-
-    def show_frame(self, page_name, aboveThis=None, belowThis=None):
-        '''Show a frame for the given page name'''
-        frame = self.frames[page_name]
-        if belowThis:
-            frame.lower(belowThis)
-        else:
-            frame.lift(aboveThis)
-            
-
-    def hide_frame(self, page_name):
-        '''Hide a frame for the given page name'''
-        frame = self.frames[page_name]
-        frame.lower()
-
-    def display_warning(self, warning):
-        if self.frames["WarningPage"].active:
-            current_timestamp = time.time_ns()
-            page_name = "TempWarningPage.{}".format(current_timestamp)
-
-            frame = WarningPage(parent=self.container, controller=self, name=page_name, temp=True)
-            self.frames[page_name] = frame
-
-            # put all of the pages in the same location;
-            # the one on the top of the stacking order
-            # will be the one that is visible.
-            #frame.grid(row=1, column=1, sticky="nsew")
-            frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
-
-            self.frames[page_name].display_page(warning, belowThis=self.warning_frames[-1])
-            self.warning_frames.append(frame)
-        else:
-            self.frames["WarningPage"].display_page(warning)
-            
-
-    def create_frame(self, F, container, name=None, *args):
-        page_name = F.__name__
-        if name is not None:
-            page_name = name
-        frame = F(parent=container, controller=self, *args)
-        self.frames[page_name] = frame
-
-        # put all of the pages in the same location;
-        # the one on the top of the stacking order
-        # will be the one that is visible.
-        #frame.grid(row=1, column=1, sticky="nsew")
-        frame.place(relx=0.5, rely=0.5, relwidth=1, relheight=1, anchor=tk.CENTER)
-        return frame
-        
-root = Controller()
 root.mainloop()
-
-# excel = ex.WorksheetManager("./", "rations")
-# excel.update_sheets("rations")

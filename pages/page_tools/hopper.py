@@ -2,9 +2,8 @@ import tkinter as tk
 
 class Hopper(tk.Canvas):
 
-    def __init__(self, parent, controller):
+    def __init__(self, parent):
         tk.Canvas.__init__(self, parent)
-        self.controller = controller
         self.triangle_y = 4 * self.winfo_height() / 10
         self.triangle_height = self.winfo_height() - self.triangle_y
         self.draw_hopper()
