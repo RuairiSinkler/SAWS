@@ -63,7 +63,7 @@ class Weigher:
             self.ingredients_frame,
             int(ingredient.augar_pin)
         )
-        ingredient.augar.canvas.grid(row=0, column=label_column - 1, sticky="ew")
+        ingredient.augar.canvas.grid(row=0, column=label_column + 1, sticky="ew")
 
         self.ingredients_frame.update_idletasks()
 
