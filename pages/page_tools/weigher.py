@@ -25,7 +25,7 @@ class Weigher:
         frame_column = len(self.run_page.weighers)
 
         self.frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
-        self.frame.grid(row=0, column=frame_column, sticky="nsew")
+        self.frame.grid(row=0, column=frame_column, sticky="nsew", uniform="weigher_frames")
 
         self.parent.grid_columnconfigure(frame_column, weight=1)
 
