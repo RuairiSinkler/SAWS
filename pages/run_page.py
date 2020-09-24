@@ -190,8 +190,8 @@ class RunPage(tk.Frame):
         self.main.update_idletasks()
         weigher_frame_width = self.controller.screen_width // len(self.weighers)
         for _, weigher in self.weighers.items():
-            weigher.frame.config(width=weigher_frame_width)
             weigher.frame.grid_propagate(False)
+            weigher.frame.config(width=weigher_frame_width)
             weigher.add_hopper()
 
         for ingredient, button in unweighed_ingredients:
