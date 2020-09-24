@@ -61,7 +61,7 @@ class Weigher:
         label_column = ((len(self.ingredients) * 2) - 2)
 
         label = tk.Label(
-            self.ingredients_frame, textvariable=ingredient.label, font=self.label_font
+            self.ingredients_frame, textvariable=ingredient.label, font=self.label_font, relief="sunken", borderwidth=2
         )
         label.grid(row=0, column=label_column, sticky="ew")
 
