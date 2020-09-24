@@ -48,6 +48,7 @@ class Weigher:
         for ingredient in self.ingredients:
             label = self.labels[ingredient.name]
             self.frame.update_idletasks()
+            print("Resizing {}".format(ingredient.label.get()))
             resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
 
     def add_hopper(self):
