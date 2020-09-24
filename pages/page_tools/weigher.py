@@ -45,9 +45,9 @@ class Weigher:
         return cls(run_page, parent, controller, *db_weigher)
 
     def resize(self):
-        self.frame.update_idletasks()
         for ingredient in self.ingredients:
             label = self.labels[ingredient.name]
+            self.frame.update_idletasks()
             resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
 
     def add_hopper(self):
@@ -66,7 +66,7 @@ class Weigher:
         label = tk.Label(
             self.ingredients_frame, textvariable=ingredient.label, font=self.label_font
         )
-        label.grid(row=0, column=label_column, sticky="ew")
+        label.grid(row=0, column=label_column, sticky="ew", uniform="weigher_{}_ingredient_labels".format(self.weigher_id))
 
         self.ingredients_frame.grid_columnconfigure(label_column, weight=1)
 
