@@ -194,6 +194,7 @@ class RunPage(tk.Frame):
         for _, weigher in self.weighers.items():
             # weigher.frame.grid_propagate(False)
             # weigher.frame.config(width=weigher_frame_width)
+            weigher.resize_labels()
             weigher.add_hopper()
 
         for ingredient, button in unweighed_ingredients:

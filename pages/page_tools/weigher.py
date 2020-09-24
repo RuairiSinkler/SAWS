@@ -42,10 +42,12 @@ class Weigher:
     def fromDbWeigher(cls, run_page, parent, controller, db_weigher):
         return cls(run_page, parent, controller, *db_weigher)
 
-    def resize(self, label, ingredient):
-        self.frame.update_idletasks()    
-        print("Resizing {}".format(ingredient.label.get()))
-        resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
+    def resize_labels(self):
+        self.frame.update_idletasks()
+        for ingredient in self.ingredients:
+            label = self.labels[ingredient.name]
+            print("Resizing {}".format(ingredient.label.get()))
+            resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
 
     def add_hopper(self):
         self.hopper = Hopper(self.frame)
@@ -65,7 +67,7 @@ class Weigher:
         )
         label.grid(row=0, column=label_column, sticky="ew")
 
-        label.bind("<Configure>", lambda e, label=label, ingredient=ingredient: self.resize(label, ingredient))
+        # label.bind("<Configure>", lambda e, label=label, ingredient=ingredient: self.resize(label, ingredient))
 
         self.ingredients_frame.grid_columnconfigure(label_column, weight=1, uniform="weigher_{}_ingredient_labels".format(self.weigher_id))
 
@@ -80,8 +82,6 @@ class Weigher:
         ingredient.augar.turn_off()
 
         self.labels[ingredient.name] = label
-        
-        self.resize(label, ingredient)
         
 
     def get_active_ingredient(self):
