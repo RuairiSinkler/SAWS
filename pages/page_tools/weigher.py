@@ -24,15 +24,15 @@ class Weigher:
 
         self.label_font = tkfont.Font(size=15)
 
-        frame_column = len(self.run_page.weighers)
+        self.frame_column = len(self.run_page.weighers)
 
         # self.frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
         # self.frame.grid(row=0, column=frame_column, sticky="nsew")
 
         self.ingredients_frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
-        self.ingredients_frame.grid(row=0, column=frame_column, sticky="nsew")
+        self.ingredients_frame.grid(row=0, column=self.frame_column, sticky="nsew")
 
-        self.parent.grid_columnconfigure(frame_column, weight=1, uniform="weigher_frames")
+        self.parent.grid_columnconfigure(self.frame_column, weight=1, uniform="weigher_frames")
 
         self.active = True
         self.state = GPIO.input(self.weigher_pin)
@@ -51,7 +51,7 @@ class Weigher:
 
     def add_hopper(self):
         self.hopper = Hopper(self.parent)
-        self.hopper.grid(row=1, column=frame_column, sticky="nsew")
+        self.hopper.grid(row=1, column=self.frame_column, sticky="nsew")
 
         if settings.dev_mode:
             self.hopper.bind("<Button-1>", lambda e, weigher=self: self.run_page.increment_weight(weigher))
