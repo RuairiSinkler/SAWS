@@ -45,6 +45,7 @@ class Weigher:
         return cls(run_page, parent, controller, *db_weigher)
 
     def resize(self):
+        self.frame.update_idletasks()
         for ingredient in self.ingredients:
             label = self.labels[ingredient.name]
             resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
