@@ -188,7 +188,9 @@ class RunPage(tk.Frame):
 
 
         self.main.update_idletasks()
+        print("UPDATING FRAME WIDTH")
         weigher_frame_width = self.controller.screen_width // len(self.weighers)
+        print("FINISHED UPDATING FRAME WIDTH")
         for _, weigher in self.weighers.items():
             # weigher.frame.grid_propagate(False)
             # weigher.frame.config(width=weigher_frame_width)
