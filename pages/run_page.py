@@ -17,9 +17,9 @@ class RunPage(tk.Frame):
         self.grid_rowconfigure(1, weight=1)
 
         self.header = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
-        self.header.grid(column=0, row=0, columnspan=3, sticky="ew")
-        self.header.grid_columnconfigure(0, weight=1)
-        self.header.grid_columnconfigure(1, weight=1)
+        self.header.grid(column=0, row=0, sticky="ew")
+        self.header.grid_columnconfigure(0, weight=1, uniform="controls")
+        self.header.grid_columnconfigure(1, weight=1, uniform="controls")
 
         self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
         self.main.grid(column=0, row=1, sticky="nsew")

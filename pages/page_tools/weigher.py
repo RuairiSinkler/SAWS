@@ -26,9 +26,6 @@ class Weigher:
 
         self.frame_column = len(self.run_page.weighers)
 
-        # self.frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
-        # self.frame.grid(row=0, column=frame_column, sticky="nsew")
-
         self.ingredients_frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
         self.ingredients_frame.grid(row=0, column=self.frame_column, sticky="nsew")
 
@@ -63,9 +60,9 @@ class Weigher:
         label_column = ((len(self.ingredients) * 2) - 2)
 
         label = tk.Label(
-            self.ingredients_frame, textvariable=ingredient.label, font=self.label_font, relief="sunken", borderwidth=2
+            self.ingredients_frame, textvariable=ingredient.label, font=self.label_font
         )
-        label.grid(row=0, column=label_column, sticky="ew")
+        label.grid(row=0, column=label_column, sticky="nsew")
 
         self.labels[ingredient.name] = label
 
