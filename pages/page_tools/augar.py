@@ -3,9 +3,9 @@ import RPi.GPIO as GPIO
 
 class Augar:
 
-    def __init__(self, parent, augar_pin):
+    def __init__(self, parent, augar_pin, size):
         self.augar_pin = augar_pin
-        self.canvas = tk.Canvas(parent, width=10, height=10)
+        self.canvas = tk.Canvas(parent, width=size, height=size)
         self.active = False
         GPIO.setup(augar_pin, GPIO.OUT)
 

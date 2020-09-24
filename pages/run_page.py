@@ -149,7 +149,7 @@ class RunPage(tk.Frame):
 
         self.main = tk.Frame(self, relief=tk.RAISED, borderwidth=2)
         self.main.grid(column=0, row=1, sticky="nsew")
-        self.main.grid_rowconfigure(0, weight=1)
+        self.main.grid_rowconfigure(1, weight=1)
 
         self.footer = tk.Frame(self, relief=tk.RAISED, borderwidth=1)
         self.footer.grid(column=0, row=2, sticky="ew")
@@ -177,7 +177,7 @@ class RunPage(tk.Frame):
                     command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
                 )
                 button.grid(row=0, column=button_column, sticky="ew")
-                self.footer.grid_columnconfigure(button_column, weight=1)
+                self.footer.grid_columnconfigure(button_column, weight=1, uniform="unweighed_ingredients_buttons")
                 unweighed_ingredients.append((ingredient, button))
             else:
                 if ingredient.weigher_id not in self.weighers:
@@ -188,12 +188,8 @@ class RunPage(tk.Frame):
 
 
         self.main.update_idletasks()
-        # print("UPDATING FRAME WIDTH")
-        # weigher_frame_width = self.controller.screen_width // len(self.weighers)
-        # print("FINISHED UPDATING FRAME WIDTH")
+
         for _, weigher in self.weighers.items():
-            # weigher.frame.grid_propagate(False)
-            # weigher.frame.config(width=weigher_frame_width)
             weigher.resize_labels()
             weigher.add_hopper()
 

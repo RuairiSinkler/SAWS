@@ -26,13 +26,13 @@ class Weigher:
 
         frame_column = len(self.run_page.weighers)
 
-        self.frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
-        self.frame.grid(row=0, column=frame_column, sticky="nsew")
+        # self.frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
+        # self.frame.grid(row=0, column=frame_column, sticky="nsew")
+
+        self.ingredients_frame = tk.Frame(self.parent, relief=tk.RAISED, borderwidth=1)
+        self.ingredients_frame.grid(row=0, column=frame_column, sticky="nsew")
 
         self.parent.grid_columnconfigure(frame_column, weight=1, uniform="weigher_frames")
-
-        self.ingredients_frame = tk.Frame(self.frame)
-        self.ingredients_frame.pack(fill="x")
 
         self.active = True
         self.state = GPIO.input(self.weigher_pin)
@@ -43,15 +43,15 @@ class Weigher:
         return cls(run_page, parent, controller, *db_weigher)
 
     def resize_labels(self):
-        self.frame.update_idletasks()
+        self.parent.update_idletasks()
         for ingredient in self.ingredients:
             label = self.labels[ingredient.name]
-            print("Resizing {}".format(ingredient.label.get()))
-            resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
+            text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
+            resize_font_width(text, self.label_font, label.winfo_width())
 
     def add_hopper(self):
-        self.hopper = Hopper(self.frame)
-        self.hopper.pack(fill=tk.BOTH, expand=True)
+        self.hopper = Hopper(self.parent)
+        self.hopper.grid(row=1, column=frame_column, sticky="nsew")
 
         if settings.dev_mode:
             self.hopper.bind("<Button-1>", lambda e, weigher=self: self.run_page.increment_weight(weigher))
@@ -67,22 +67,22 @@ class Weigher:
         )
         label.grid(row=0, column=label_column, sticky="ew")
 
-        # label.bind("<Configure>", lambda e, label=label, ingredient=ingredient: self.resize(label, ingredient))
+        self.labels[ingredient.name] = label
 
         self.ingredients_frame.grid_columnconfigure(label_column, weight=1, uniform="weigher_{}_ingredient_labels".format(self.weigher_id))
 
+        augar_square_size = self.controller.text_font.metrics('linespace')
+
         ingredient.augar = Augar(
             self.ingredients_frame,
-            int(ingredient.augar_pin)
+            int(ingredient.augar_pin),
+            augar_square_size
         )
         ingredient.augar.canvas.grid(row=0, column=label_column + 1, sticky="ew")
 
         self.ingredients_frame.update_idletasks()
 
         ingredient.augar.turn_off()
-
-        self.labels[ingredient.name] = label
-        
 
     def get_active_ingredient(self):
         for ingredient in self.ingredients:
