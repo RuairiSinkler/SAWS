@@ -66,9 +66,9 @@ class Weigher:
         label = tk.Label(
             self.ingredients_frame, textvariable=ingredient.label, font=self.label_font
         )
-        label.grid(row=0, column=label_column, sticky="ew", uniform="weigher_{}_ingredient_labels".format(self.weigher_id))
+        label.grid(row=0, column=label_column, sticky="ew")
 
-        self.ingredients_frame.grid_columnconfigure(label_column, weight=1)
+        self.ingredients_frame.grid_columnconfigure(label_column, weight=1, uniform="weigher_{}_ingredient_labels".format(self.weigher_id))
 
         ingredient.augar = Augar(
             self.ingredients_frame,
