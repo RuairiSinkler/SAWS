@@ -65,7 +65,7 @@ class Weigher:
         )
         label.grid(row=0, column=label_column, sticky="ew")
 
-        label.bind("<Configure>", lambda e, label, ingredient: self.resize(label, ingredient))
+        label.bind("<Configure>", lambda e, label=label, ingredient=ingredient: self.resize(label, ingredient))
 
         self.ingredients_frame.grid_columnconfigure(label_column, weight=1, uniform="weigher_{}_ingredient_labels".format(self.weigher_id))
 
