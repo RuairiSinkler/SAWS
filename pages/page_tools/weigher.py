@@ -34,8 +34,6 @@ class Weigher:
         self.ingredients_frame = tk.Frame(self.frame)
         self.ingredients_frame.pack(fill="x")
 
-        self.frame.bind("<Configure>", self.resize())
-
         self.active = True
         self.state = GPIO.input(self.weigher_pin)
         self.check_input()
@@ -44,12 +42,10 @@ class Weigher:
     def fromDbWeigher(cls, run_page, parent, controller, db_weigher):
         return cls(run_page, parent, controller, *db_weigher)
 
-    def resize(self):
-        for ingredient in self.ingredients:
-            label = self.labels[ingredient.name]
-            self.frame.update_idletasks()
-            print("Resizing {}".format(ingredient.label.get()))
-            resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
+    def resize(self, label, ingredient):
+        self.frame.update_idletasks()    
+        print("Resizing {}".format(ingredient.label.get()))
+        resize_font_width(ingredient.label.get(), self.label_font, label.winfo_width())
 
     def add_hopper(self):
         self.hopper = Hopper(self.frame)
@@ -69,6 +65,8 @@ class Weigher:
         )
         label.grid(row=0, column=label_column, sticky="ew")
 
+        label.bind("<Configure>", self.resize(label, ingredient))
+
         self.ingredients_frame.grid_columnconfigure(label_column, weight=1, uniform="weigher_{}_ingredient_labels".format(self.weigher_id))
 
         ingredient.augar = Augar(
@@ -83,7 +81,7 @@ class Weigher:
 
         self.labels[ingredient.name] = label
         
-        self.resize()
+        self.resize(label, ingredient)
         
 
     def get_active_ingredient(self):
