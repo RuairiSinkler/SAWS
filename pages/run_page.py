@@ -93,7 +93,7 @@ class RunPage(tk.Frame):
                 done = False
         if done:
             self.end_text.set("Complete")
-            self.header.grid_columnconfigure(1, weight=1)
+            self.header.grid_columnconfigure(1, weight=1, uniform="controls")
             self.quit_button.grid()
         else:
             self.end_text.set("End Run Early")
@@ -106,7 +106,7 @@ class RunPage(tk.Frame):
             for _, weigher in self.weighers.items():
                 for ingredient in weigher.ingredients:
                     ingredient.augar.turn_off()
-            self.header.grid_columnconfigure(1, weight=1)
+            self.header.grid_columnconfigure(1, weight=1, uniform="controls")
             self.quit_button.grid()
         else:
             self.running = True
@@ -115,7 +115,7 @@ class RunPage(tk.Frame):
                 self.increment_weight(weigher, 0)
             if not self.done:
                 self.quit_button.grid_remove()
-                self.header.grid_columnconfigure(1, weight=0)
+                self.header.grid_columnconfigure(1, weight=0, uniform="")
 
     def log_run(self, house_dropdown, num_pad):
         house = house_dropdown.get()
