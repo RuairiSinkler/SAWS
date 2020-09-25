@@ -2,8 +2,8 @@ import tkinter as tk
 
 class Hopper(tk.Canvas):
 
-    def __init__(self, parent):
-        tk.Canvas.__init__(self, parent, width=parent.ingredients_frame.winfo_width())
+    def __init__(self, parent, width):
+        tk.Canvas.__init__(self, parent, width=width)
         self.draw_hopper()
 
     def draw_hopper(self):

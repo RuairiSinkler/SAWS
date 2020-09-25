@@ -48,7 +48,7 @@ class Weigher:
             fm.resize_font_width(text, self.label_font, label.winfo_width())
 
     def add_hopper(self):
-        self.hopper = Hopper(self.parent)
+        self.hopper = Hopper(self.parent, self.ingredients_frame.winfo_width())
         self.hopper.grid(row=1, column=self.frame_column, sticky="nsew")
 
         if settings.dev_mode:
