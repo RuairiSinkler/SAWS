@@ -3,9 +3,9 @@ import tkinter.font as tkfont
 import RPi.GPIO as GPIO
 
 import data.settings as settings
+import pages.page_tools.font_manager as fm
 from pages.page_tools.hopper import Hopper
 from pages.page_tools.augar import Augar
-from pages.page_tools.font_manager import *
 
 class Weigher:
 
@@ -45,7 +45,7 @@ class Weigher:
         for ingredient in self.ingredients:
             label = self.labels[ingredient.name]
             text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
-            resize_font_width(text, self.label_font, label.winfo_width())
+            fm.resize_font_width(text, self.label_font, label.winfo_width())
 
     def add_hopper(self):
         self.hopper = Hopper(self.parent)

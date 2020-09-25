@@ -5,9 +5,9 @@ import tkinter.font as tkfont
 from tkinter import ttk
 from operator import itemgetter
 
+import pages.page_tools.font_manager as fm
 from pages.page_tools.ingredient import Ingredient
 from pages.page_tools.weigher import Weigher
-from pages.page_tools.font_manager import *
 
 class RunPage(tk.Frame):
 
@@ -196,7 +196,7 @@ class RunPage(tk.Frame):
         for ingredient, button in unweighed_ingredients:
             button.update_idletasks()
             text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
-            resize_font_width(text, unweighed_button_font, button.winfo_width())
+            fm.resize_font_width(text, unweighed_button_font, button.winfo_width())
 
         self.done = self.check_done()
         self.controller.show_frame("RunPage")

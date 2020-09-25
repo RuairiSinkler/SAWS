@@ -2,7 +2,7 @@ import tkinter as tk
 import sys
 import traceback
 import tkinter.font as tkfont
-from pages.page_tools.font_manager import *
+import pages.page_tools.font_manager as fm
 
 class ErrorPage(tk.Frame):
 
@@ -53,6 +53,6 @@ class ErrorPage(tk.Frame):
         self.update_idletasks()
         height = self.winfo_height() - self.close_button.winfo_height() - self.title_label.winfo_height()
         width = self.winfo_width()
-        resize_font_height(self.font, self.controller.main_font['size'], self.main, height)
+        fm.resize_font_height(self.font, self.controller.main_font['size'], self.main, height)
         if resize_width:
-            resize_font_width(self.message.get(), self.font, width)
+            fm.resize_font_width(self.message.get(), self.font, width)

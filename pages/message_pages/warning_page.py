@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkfont
-from pages.page_tools.font_manager import *
+import pages.page_tools.font_manager as fm
 
 class WarningPage(tk.Frame):
 
@@ -51,4 +51,4 @@ class WarningPage(tk.Frame):
     def resize(self):
         self.update_idletasks()
         height = self.winfo_height() - self.title_label.winfo_height() - self.button.winfo_height()
-        resize_font_height(self.font, self.controller.main_font['size'], self.main, height)
+        fm.resize_font_height(self.font, self.controller.main_font['size'], self.main, height)
