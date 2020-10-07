@@ -16,14 +16,14 @@ class RationPage(tk.Frame):
         self.name = None
 
         button = tk.Button(
-            self.footer, text="Back", font=self.controller.mainFont,
+            self.footer, text="Back", font=self.controller.main_font,
             command=lambda: self.controller.show_frame("MainMenuPage")
         )
 
         button.pack(side=tk.LEFT)
 
         button = tk.Button(
-            self.footer, text="Run", font=self.controller.mainFont,
+            self.footer, text="Run", font=self.controller.main_font,
             command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id)
         )
 
@@ -40,7 +40,7 @@ class RationPage(tk.Frame):
         self.name = self.controller.ration_db.get_ration(self.ration_id)[1]
         ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
         label = tk.Label(
-            self.main, text=self.name, font=self.controller.mainFont
+            self.main, text=self.name, font=self.controller.main_font
         )
         label.pack()
 
@@ -48,7 +48,7 @@ class RationPage(tk.Frame):
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in ingredients:
             label = tk.Label(
-                ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.mainFont
+                ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.main_font
             )
             label.pack()
 

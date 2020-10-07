@@ -8,7 +8,8 @@ import configparser
 import argparse
 import tkinter as tk
 import RPi.GPIO as GPIO
-from tkinter.font import Font
+import traceback
+import tkinter.font as tkfont
 
 import data.settings as settings
 import database.database_management as db
@@ -28,26 +29,17 @@ class SAWS(tk.Tk):
         self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
         self.resizable(False, False)
         self.overrideredirect(True)
-        self.mainFont = Font(size=25)
-        self.textFont = Font(size=15)
-        self.option_add('*Dialog.msg.font', self.mainFont)
-        self.option_add("*TCombobox*Listbox*Font", self.mainFont)
+        self.main_font = tkfont.Font(size=25)
+        self.text_font = tkfont.Font(size=15)
+        self.option_add('*Dialog.msg.font', self.main_font)
+        self.option_add("*TCombobox*Listbox*Font", self.main_font)
 
         self.container = tk.Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
+        self.container.pack(side="top", fill=tk.BOTH, expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_rowconfigure(2, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_columnconfigure(2, weight=1)
-
-        self.config = configparser.ConfigParser()
-        self.config.read("./data/config.ini")
-        usb_dir = self.config["DEFAULT"].get("usb_location")
-        self.weigher_increment = int(self.config["DEFAULT"].get("weigher_increment"))
-        
-        self.ration_db = db.DatabaseManager("./database", "rations.db")
-        self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
-        self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
 
         self.frames = {}
         self.warning_frames = []
@@ -55,10 +47,35 @@ class SAWS(tk.Tk):
         self.create_frame(mpgs.ErrorPage, self.container)
         warning_frame = self.create_frame(mpgs.WarningPage, self.container)
         self.warning_frames.append(warning_frame)
+        self.report_callback_exception = self.display_callback_error
+
 
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
+        self.config = configparser.ConfigParser()
+        self.config.read("./data/config.ini")
+
+        option = "usb_location"
+        section = "DEFAULT"
+        if not self.config.has_option(section, option):
+            raise err.ConfigError(section, option)
+        usb_dir = self.config[section].get(option)
+
+        option = "default_weigher_increment"
+        if not self.config.has_option(section, option):
+            raise err.ConfigError(section, option)
+        self.default_weigher_increment = int(self.config[section].get(option))
+
+        if not os.path.ismount(usb_dir):
+            raise err.USBError
+        
+        self.ration_db = db.DatabaseManager("./database", "rations.db")
+        self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
+        self.ration_logs_ex = ex.WorksheetManager(usb_dir, "ration_logs")
+
+        self.ration_ex.update_sheets("rations")
+        self.ration_logs_ex.update_sheets("ration_logs")
         self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
@@ -102,22 +119,54 @@ class SAWS(tk.Tk):
         self.ration_db.clear()
         self.ration_db.build()
 
+        weigher_cell = self.ration_ex.find("Weighers")
+        if weigher_cell is None:
+            raise err.CellError("Weighers")
+        top_row = weigher_cell.row
+        column = weigher_cell.column
+        for row in itertools.count(top_row + 1):
+            weigher_id = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
+            if weigher_id is None:
+                break
+            weigher_id = int(weigher_id)
+            weigher_pin = int(self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row)))
+            increment = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
+            if increment is None:
+                increment = self.default_weigher_increment
+            self.ration_db.insert_weigher([weigher_id, weigher_pin, increment])
+
         ingredient_cell = self.ration_ex.find("Ingredient")
         if ingredient_cell is None:
-            raise err.USBError
+            raise err.CellError("Ingredient")
         top_row = ingredient_cell.row
         column = ingredient_cell.column
         for row in itertools.count(top_row + 1):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
-            weigher = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
-            ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
             if name is None:
                 break
-            self.ration_db.insert_ingredient([name, weigher, ordering])
+            augar_pin = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 1, row))
+            if augar_pin:
+                augar_pin = int(augar_pin)
+            weigher_id = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 2, row))
+            if weigher_id:
+                weigher_id = int(weigher_id)
+                db_weigher = self.ration_db.get_weigher(weigher_id)
+                if db_weigher is None:
+                    raise err.IngredientWeigherError(name, weigher_id)
+            ordering = self.ration_ex.read_cell(self.ration_ex.get_cell(column + 3, row))
+            if ordering:
+                ordering = int(ordering)
+            if (
+                    (not augar_pin or not weigher_id or not ordering)
+                    and
+                    (augar_pin or weigher_id or ordering)
+                ):
+                raise err.IngredientError(name)
+            self.ration_db.insert_ingredient([name, augar_pin, weigher_id, ordering])
 
         ration_cell = self.ration_ex.find("Ration")
         if ration_cell is None:
-            raise err.USBError
+            raise err.CellError("Ration")
         top_row = ration_cell.row
         column = ration_cell.column
         for row in itertools.count(top_row + 1):
@@ -148,6 +197,8 @@ class SAWS(tk.Tk):
                 
 
         house_cell = self.ration_ex.find("Houses")
+        if house_cell is None:
+            raise err.CellError("Houses")
         top_row = house_cell.row
         column = house_cell.column
         for row in itertools.count(top_row + 1):
@@ -156,8 +207,14 @@ class SAWS(tk.Tk):
                 break
             self.ration_db.insert_house([name])
 
-    def display_error(self, error):
-        self.frames["ErrorPage"].display_page(error)
+    def display_error(self, error, non_SAWS_error=False):
+        traceback.print_exc()
+        self.frames["ErrorPage"].display_page(error, non_SAWS_error)
+
+    def display_callback_error(self, exc, val, tb):
+        non_SAWS_error = not isinstance(exc, err.SAWSError)
+        traceback.print_exc()
+        self.frames["ErrorPage"].display_page(exc, non_SAWS_error)
 
     def display_warning(self, warning):
         if self.frames["WarningPage"].active:
@@ -199,14 +256,16 @@ def main():
             saws.setup()
         except err.SAWSError as e:
             saws.display_error(e)
+        except Exception as e:
+            saws.display_error(e, non_SAWS_error=True)
+            raise e
         finally:
             saws.mainloop()
+    except Exception as e:
+        traceback.print_exc()
     finally:
         GPIO.cleanup()
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except:
-        raise
+    main()

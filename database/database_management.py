@@ -21,6 +21,15 @@ class DatabaseManager:
     def build(self):
         self.run_sql_file("rations.sql")
 
+    def insert_weigher(self, values):
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+        execution = "INSERT INTO weighers VALUES (?, ?, ?)"
+        cursor.execute(execution, values)
+        connect.commit()
+
+        connect.close()
+
     def insert_ingredient(self, values):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
@@ -29,7 +38,7 @@ class DatabaseManager:
         if ingredient_id is None:
             ingredient_id = 0
         values.insert(0, ingredient_id)
-        execution = "INSERT INTO ingredients VALUES (?, ?, ?, ?)"
+        execution = "INSERT INTO ingredients VALUES (?, ?, ?, ?, ?)"
         cursor.execute(execution, values)
         connect.commit()
 
@@ -91,36 +100,6 @@ class DatabaseManager:
 
         return result
 
-    def update_ration(self, values):
-        # Perform Validation on the values inserted to go into the rations database
-        all_ok = isinstance(values[1], str) and values[1]
-        for i in range(2, 10):
-            if (i == 8):
-                all_ok = all_ok and isinstance(values[i], float)
-            else:
-                all_ok = all_ok and isinstance(values[i], int)
-
-        # If all is ok then insert otherwise raise an exception
-        if all_ok:
-            ration_id = values.pop(0)
-            values.append(ration_id)
-
-            connect = sqlite3.connect(self.database_name)
-            cursor = connect.cursor()
-
-            execution = "UPDATE rations SET ration_name = ?, " \
-                        "wheat = ?, barley = ?, soya = ?, " \
-                        "limestone = ?, soya_oil = ?, arbocell = ?," \
-                        "methionine = ?, premix = ? " \
-                        "WHERE ration_id = ?"
-
-            cursor.execute(execution, values)
-            connect.commit()
-
-            connect.close()
-        else:
-            raise (IOError)
-
     def get_ration(self, ration_id):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
@@ -128,7 +107,20 @@ class DatabaseManager:
         execution = "SELECT * FROM rations WHERE id = ?"
         cursor.execute(execution, (ration_id,))
 
-        result = cursor.fetchall()[0]
+        result = cursor.fetchone()
+
+        connect.close()
+
+        return result
+
+    def get_weigher(self, weigher_id):
+        connect = sqlite3.connect(self.database_name)
+        cursor = connect.cursor()
+
+        execution = "SELECT * FROM weighers WHERE id = ?"
+        cursor.execute(execution, (weigher_id,))
+
+        result = cursor.fetchone()
 
         connect.close()
 
@@ -138,7 +130,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT *  FROM rations"
+        execution = "SELECT * FROM rations"
         cursor.execute(execution)
 
         result = cursor.fetchall()
@@ -151,7 +143,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT ingredients.name, amount, weigher, ordering FROM ration_ingredients " \
+        execution = "SELECT ingredients.name, amount, augar_pin, weigher_id, ordering FROM ration_ingredients " \
                     "JOIN ingredients ON ingredients.id = ration_ingredients.ingredient_id " \
                     "WHERE ration_id = ?"
         cursor.execute(execution, (str(ration_id),))
