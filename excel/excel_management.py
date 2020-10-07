@@ -75,6 +75,7 @@ class WorksheetManager:
         return None
 
     def log_run(self, time_run, ration, complete, ingredients, batch_number):
+        top_row = self.find("Date Run").row
         row = self.sheet.max_row + 1
         column = self.find("Date Run").column
         self.write_cell(time_run, self.get_cell(column, row))
@@ -87,6 +88,10 @@ class WorksheetManager:
         total = 0
         for ingredient in ingredients:
             column = self.find(ingredient.name).column
+            if column is None:
+                column = self.find("Total").column
+                self.insert_cols(column)
+                self.write_cell(ingredient.name, self.get_cell(column, top_row))
             self.write_cell(ingredient.current_amount, self.get_cell(column, row))
             total += ingredient.current_amount
         column = self.find("Total").column
