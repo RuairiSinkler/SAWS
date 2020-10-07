@@ -87,7 +87,7 @@ class WorksheetManager:
         self.write_cell(complete, self.get_cell(column + 2, row))
         total = 0
         for ingredient in ingredients:
-            try
+            try:
                 column = self.find(ingredient.name).column
             except AttributeError:
                 column = self.find("Total").column
