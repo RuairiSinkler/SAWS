@@ -92,6 +92,7 @@ class WorksheetManager:
             except AttributeError:
                 column = self.find("Total").column
                 self.sheet.insert_cols(column)
+                self.write_cell("-", self.get_cell(column, top_row - 1))
                 self.write_cell(ingredient.name, self.get_cell(column, top_row))
             self.write_cell(ingredient.current_amount, self.get_cell(column, row))
             total += ingredient.current_amount
