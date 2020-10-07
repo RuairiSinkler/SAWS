@@ -90,7 +90,7 @@ class WorksheetManager:
             column = self.find(ingredient.name).column
             if column is None:
                 column = self.find("Total").column
-                self.insert_cols(column)
+                self.sheet.insert_cols(column)
                 self.write_cell(ingredient.name, self.get_cell(column, top_row))
             self.write_cell(ingredient.current_amount, self.get_cell(column, row))
             total += ingredient.current_amount
