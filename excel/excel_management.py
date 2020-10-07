@@ -87,8 +87,9 @@ class WorksheetManager:
         self.write_cell(complete, self.get_cell(column + 2, row))
         total = 0
         for ingredient in ingredients:
-            column = self.find(ingredient.name).column
-            if column is None:
+            try
+                column = self.find(ingredient.name).column
+            except AttributeError:
                 column = self.find("Total").column
                 self.sheet.insert_cols(column)
                 self.write_cell(ingredient.name, self.get_cell(column, top_row))
