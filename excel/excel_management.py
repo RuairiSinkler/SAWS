@@ -110,12 +110,6 @@ class WorksheetManager:
         self.write_cell(batch_number, self.get_cell(column, row))
 
     def update_sheets(self, sheet_type):
-        for sheet_name in self.get_sheets():
-            sheet = self.get_sheet(sheet_name)
-            if sheet_name == "Sheet":
-                self.workbook.remove_sheet(sheet)
-                
-        self.save()
 
         for sheet_name in self.get_sheets():
             sheet = self.get_sheet(sheet_name)
@@ -205,6 +199,9 @@ class WorksheetManager:
                     
 
             elif sheet_type == "ration_logs":
+                if sheet_name == "Sheet":
+                    self.workbook.remove_sheet(sheet)
+                    self.save()
                 if sheet_version < 2.0:
                     date_run_cell = self.find("Date Run")
                     new_column = date_run_cell.column + 1
