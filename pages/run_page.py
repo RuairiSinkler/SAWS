@@ -33,6 +33,7 @@ class RunPage(tk.Frame):
         self.max_weigher = 0
         self.done = False
         self.ration_id = None
+        self.house = None
 
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
@@ -117,6 +118,38 @@ class RunPage(tk.Frame):
                 self.quit_button.grid_remove()
                 self.header.grid_columnconfigure(1, weight=0, uniform="")
 
+    def create_log(self, house):
+        sheet = None
+        if house in self.controller.ration_logs_ex.workbook.sheetnames:
+            sheet = self.controller.ration_logs_ex.get_sheet(house)
+        else:
+            self.controller.ration_logs_ex.create_sheet(house)
+            sheet = self.controller.ration_logs_ex.get_sheet(house)
+            self.controller.ration_logs_ex.change_sheet(sheet)
+            headings = ["Date Run", "Ration", "Complete"] + [ingredient.name for ingredient in self.ingredients] + ["Total", "Batch Number"]
+            self.controller.ration_logs_ex.setup_sheet(house, headings)
+            sheet = self.controller.ration_logs_ex.get_sheet(house)
+        self.controller.ration_logs_ex.change_sheet(sheet)
+        time_run = time.strftime("%d/%m/%y")
+        ration = self.controller.ration_db.get_ration(self.ration_id)[1]
+        self.controller.ration_logs_ex.create_log(time_run, ration)
+        self.controller.ration_logs_ex.save()
+
+
+    def update_log(self, house):
+        sheet = self.controller.ration_logs_ex.get_sheet(house)
+        ration = self.controller.ration_db.get_ration(self.ration_id)[1]
+        self.controller.ration_logs_ex.log_run(time_run, ration, self.done, self.ingredients, batch_number)
+        self.controller.ration_logs_ex.save()
+
+        for _, weigher in self.weighers.items():
+            weigher.active = False
+        self.weighers = {}
+
+        self.controller.show_frame("MainMenuPage")
+        house_dropdown.current(0)
+        num_pad.clear()
+
     def log_run(self, house_dropdown, num_pad):
         house = house_dropdown.get()
         batch_number = num_pad.entry.get()
@@ -143,7 +176,7 @@ class RunPage(tk.Frame):
         house_dropdown.current(0)
         num_pad.clear()
 
-    def display_page(self, ration_id):
+    def display_page(self, ration_id, house_dropdown):
         self.main.destroy()
         self.footer.destroy()
 
@@ -158,6 +191,7 @@ class RunPage(tk.Frame):
         self.start_pause_text.set("Start")
         self.done = False
         self.ration_id = ration_id
+        self.house = house_dropdown.get()
 
         self.weighers = {}
         self.ingredients = []

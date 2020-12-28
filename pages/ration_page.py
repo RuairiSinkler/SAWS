@@ -27,7 +27,7 @@ class RationPage(tk.Frame):
 
         button = tk.Button(
             self.footer, text="Next", font=self.controller.main_font,
-            command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id)
+            command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id, self.house_dropdown)
         )
 
         button.pack(side=tk.LEFT)
@@ -38,8 +38,6 @@ class RationPage(tk.Frame):
         self.main = tk.Frame(self)
         self.main.pack(fill=tk.BOTH, expand=tk.TRUE)
 
-        self.main.grid_rowconfigure(2, weight=1)
-
         self.ration_id = ration_id
 
         self.name = self.controller.ration_db.get_ration(self.ration_id)[1]
@@ -47,21 +45,20 @@ class RationPage(tk.Frame):
         label = tk.Label(
             self.main, text=self.name, font=self.controller.main_font
         )
-        label.grid(row=0, column=0)
-
-        houses = self.controller.ration_db.get_all_houses()
-        house_names = [house[1] for house in houses]
-        self.house_dropdown = ttk.Combobox(self.main, values=house_names, state="readonly", font=self.controller.main_font)
-        self.house_dropdown.current(0)
-        self.house_dropdown.grid(row=1, column=0)
+        label.pack()
 
         ingredients_list = VerticalScrolledFrame(self.main)
-        ingredients_list.grid(row=2, column=0)
+        ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in ingredients:
             label = tk.Label(
                 ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.main_font
             )
             label.pack()
 
+        houses = self.controller.ration_db.get_all_houses()
+        house_names = [house[1] for house in houses]
+        self.house_dropdown = ttk.Combobox(self.main, values=house_names, state="readonly", font=self.controller.main_font, height=6)
+        self.house_dropdown.current(0)
+        self.house_dropdown.pack()
 
         self.controller.show_frame("RationPage")

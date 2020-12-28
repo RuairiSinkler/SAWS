@@ -74,6 +74,14 @@ class WorksheetManager:
                     return cell
         return None
 
+    def create_log(self, time_run, ration):
+        row = self.sheet.max_row + 1
+        column = self.find("Date Run").column
+        self.write_cell(time_run, self.get_cell(column, row))
+        column = self.find("Ration").column
+        self.write_cell(ration, self.get_cell(column, row))
+
+
     def log_run(self, time_run, ration, complete, ingredients, batch_number):
         top_row = self.find("Date Run").row
         row = self.sheet.max_row + 1
@@ -190,7 +198,20 @@ class WorksheetManager:
                     
 
             elif sheet_type == "ration_logs":
-                pass
+                if sheet_version < 2.0:
+                    date_run_cell = self.find("Date Run")
+                    new_column = date_run_cell.column + 1
+                    self.sheet.insert_cols(new_column)
+                    for row in range(date_run_cell.row, sheet.max_row + 1):
+                        date = self.read_cell(self.get_cell(date_run_cell.column, row))
+                        self.write_cell(date, self.get_cell(date_run_cell.column + 1, row))
+                    self.write_cell("Start Time", date_run_cell)
+                    self.write_cell("End Time", self.get_cell(date_run_cell.column + 1, date_run_cell.row))
+
+                    sheet_version = 2.0
+                    self._update_version_cell(sheet_version, version_cell)
+                    self.save()
+
     
     def _create_version_cell(self, version):
         num_rows_to_insert = 0
