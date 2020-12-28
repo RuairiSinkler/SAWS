@@ -202,7 +202,7 @@ class WorksheetManager:
                 if sheet_name == "Sheet":
                     self.workbook.remove_sheet(sheet)
                     self.save()
-                if sheet_version < 2.0:
+                elif sheet_version < 2.0:
                     date_run_cell = self.find("Date Run")
                     new_column = date_run_cell.column + 1
                     self.sheet.insert_cols(new_column)
