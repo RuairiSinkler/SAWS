@@ -199,10 +199,13 @@ class WorksheetManager:
                     
 
             elif sheet_type == "ration_logs":
+
                 if sheet_name == "Sheet":
                     self.workbook.remove_sheet(sheet)
                     self.save()
+
                 elif sheet_version < 2.0:
+                    print("Sheet Version " + sheet_version)
                     date_run_cell = self.find("Date Run")
                     new_column = date_run_cell.column + 1
                     self.sheet.insert_cols(new_column)
