@@ -205,16 +205,16 @@ class WorksheetManager:
                     self.save()
 
                 elif sheet_version < 2.0:
-                    print("Sheet Version " + sheet_version)
                     date_run_cell = self.find("Date Run")
-                    new_column = date_run_cell.column + 1
-                    self.sheet.insert_cols(new_column)
-                    for row in range(date_run_cell.row, sheet.max_row + 1):
-                        date = self.read_cell(self.get_cell(date_run_cell.column, row))
-                        self.write_cell(date, self.get_cell(date_run_cell.column + 1, row))
-                    self.write_cell("Start Time", date_run_cell)
-                    self.write_cell("End Time", self.get_cell(date_run_cell.column + 1, date_run_cell.row))
-                    self.write_cell("-", self.get_cell(date_run_cell.column + 1, date_run_cell.row - 1))
+                    if date_run_cell is not None:
+                        new_column = date_run_cell.column + 1
+                        self.sheet.insert_cols(new_column)
+                        for row in range(date_run_cell.row, sheet.max_row + 1):
+                            date = self.read_cell(self.get_cell(date_run_cell.column, row))
+                            self.write_cell(date, self.get_cell(date_run_cell.column + 1, row))
+                        self.write_cell("Start Time", date_run_cell)
+                        self.write_cell("End Time", self.get_cell(date_run_cell.column + 1, date_run_cell.row))
+                        self.write_cell("-", self.get_cell(date_run_cell.column + 1, date_run_cell.row - 1))
 
                     sheet_version = 2.0
                     self._update_version_cell(sheet_version, version_cell)
