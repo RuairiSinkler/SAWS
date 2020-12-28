@@ -58,9 +58,11 @@ class WorksheetManager:
         cell.value = value
 
     # Setups sheet i.e. creates layout of file
-    def setup_sheet(self, title, headings):
+    def setup_sheet(self, title):
         self.sheet.title = title
         self.write_cell(title, self.sheet["B2"])
+
+        headings = ["Start Time", "End Time", "Ration", "Complete", "Total", "Batch Number"]
         for i, heading in enumerate(headings):
             self.write_cell(heading, self.get_cell(i+2, 4))
             self.write_cell("-", self.get_cell(i+2, 3))
@@ -74,25 +76,17 @@ class WorksheetManager:
                     return cell
         return None
 
-    def create_log(self, time_run, ration):
+    def create_log(self, start_time, ration):
         row = self.sheet.max_row + 1
-        column = self.find("Date Run").column
-        self.write_cell(time_run, self.get_cell(column, row))
+        column = self.find("Start Time").column
+        self.write_cell(start_time, self.get_cell(column, row))
         column = self.find("Ration").column
         self.write_cell(ration, self.get_cell(column, row))
+        return row
 
+    def update_log(self, row, ingredients):
+        top_row = self.find("Start Time").row
 
-    def log_run(self, time_run, ration, complete, ingredients, batch_number):
-        top_row = self.find("Date Run").row
-        row = self.sheet.max_row + 1
-        column = self.find("Date Run").column
-        self.write_cell(time_run, self.get_cell(column, row))
-        self.write_cell(ration, self.get_cell(column + 1, row))
-        if complete:
-            complete = "Yes"
-        else:
-            complete = "No"
-        self.write_cell(complete, self.get_cell(column + 2, row))
         total = 0
         for ingredient in ingredients:
             try:
@@ -104,8 +98,23 @@ class WorksheetManager:
                 self.write_cell(ingredient.name, self.get_cell(column, top_row))
             self.write_cell(ingredient.current_amount, self.get_cell(column, row))
             total += ingredient.current_amount
+
         column = self.find("Total").column
         self.write_cell(total, self.get_cell(column, row))
+
+    def finish_log(self, row, end_time, complete, ingredients, batch_number):
+        column = self.find("End Time").column
+        self.write_cell(end_time, self.get_cell(column, row))
+
+        if complete:
+            complete = "Yes"
+        else:
+            complete = "No"
+        column = self.find("Complete").column
+        self.write_cell(complete, self.get_cell(column, row))
+
+        self.update_log(row, ingredients)
+
         column = self.find("Batch Number").column
         self.write_cell(batch_number, self.get_cell(column, row))
 
