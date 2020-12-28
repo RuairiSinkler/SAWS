@@ -47,12 +47,6 @@ class RationPage(tk.Frame):
         )
         label.pack()
 
-        houses = self.controller.ration_db.get_all_houses()
-        house_names = [house[1] for house in houses]
-        self.house_dropdown = ttk.Combobox(self.main, values=house_names, state="readonly", font=self.controller.main_font)
-        self.house_dropdown.current(0)
-        self.house_dropdown.pack()
-
         ingredients_list = VerticalScrolledFrame(self.main)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in ingredients:
@@ -60,5 +54,11 @@ class RationPage(tk.Frame):
                 ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.main_font
             )
             label.pack()
+
+        houses = self.controller.ration_db.get_all_houses()
+        house_names = [house[1] for house in houses]
+        self.house_dropdown = ttk.Combobox(self.main, values=house_names, state="readonly", font=self.controller.main_font)
+        self.house_dropdown.current(0)
+        self.house_dropdown.pack()
 
         self.controller.show_frame("RationPage")
