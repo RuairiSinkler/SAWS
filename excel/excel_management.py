@@ -112,6 +112,13 @@ class WorksheetManager:
     def update_sheets(self, sheet_type):
         for sheet_name in self.get_sheets():
             sheet = self.get_sheet(sheet_name)
+            if sheet_name == "Sheet":
+                self.workbook.remove_sheet(sheet)
+                
+        self.save()
+
+        for sheet_name in self.get_sheets():
+            sheet = self.get_sheet(sheet_name)
             self.change_sheet(sheet)
 
             sheet_version = 0
@@ -207,6 +214,7 @@ class WorksheetManager:
                         self.write_cell(date, self.get_cell(date_run_cell.column + 1, row))
                     self.write_cell("Start Time", date_run_cell)
                     self.write_cell("End Time", self.get_cell(date_run_cell.column + 1, date_run_cell.row))
+                    self.write_cell("-", self.get_cell(date_run_cell.column + 1, date_run_cell.row - 1))
 
                     sheet_version = 2.0
                     self._update_version_cell(sheet_version, version_cell)
