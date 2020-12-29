@@ -127,7 +127,9 @@ class WorksheetManager:
             most_recent_run_cell = self.get_cell(end_time_cell.column,  sheet.max_row)
 
             if self.read_cell(most_recent_run_cell) == None:
-                warnings.append(err.IncompleteLog(sheet_name))
+                ration_cell = self.find("Ration")
+                ration = self.read_cell(ration_cell.column, sheet.max_row)
+                warnings.append((ration, sheet_name, err.IncompleteLog(sheet_name)))
 
         return warnings
 

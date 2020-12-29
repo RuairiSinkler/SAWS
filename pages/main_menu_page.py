@@ -32,12 +32,10 @@ class MainMenuPage(tk.Frame):
         )
         button.pack(side=tk.BOTTOM, fill="x")
 
-    def add_ration(self):
-        ration = "hello"
-        id = ration[0]
-        name = ration[1]
+    def add_incomplete_ration(self, name, house):
+        button_text = "Incomplete {} for {}".format(name, house)
         button = tk.Button(
-            self.extra_rations_space, text=name, font=self.controller.main_font,
+            self.extra_rations_space, text=button_text, font=self.controller.main_font,
             command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
         )
         button.pack(padx=10, pady=5, side=tk.TOP)
