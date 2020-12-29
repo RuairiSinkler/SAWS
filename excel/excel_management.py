@@ -128,7 +128,7 @@ class WorksheetManager:
 
             if self.read_cell(most_recent_run_cell) == None:
                 ration_cell = self.find("Ration")
-                ration = self.read_cell(ration_cell.column, sheet.max_row)
+                ration = self.read_cell(self.get_cell(ration_cell.column, sheet.max_row))
                 warnings.append((ration, sheet_name, err.IncompleteLog(sheet_name)))
 
         return warnings
