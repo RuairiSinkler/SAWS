@@ -1,8 +1,6 @@
-import os
 import openpyxl
 import itertools
 import configparser
-import numpy as np
 from pathlib import Path
 
 import exceptions as err
@@ -117,6 +115,44 @@ class WorksheetManager:
 
         column = self.find("Batch Number").column
         self.write_cell(batch_number, self.get_cell(column, row))
+
+    def check_logs(self):
+        warnings = []
+        for sheet_name in self.get_sheets():
+            sheet = self.get_sheet(sheet_name)
+            self.change_sheet(sheet)
+
+            end_time_cell = self.find("End Time")
+
+            most_recent_run_cell = self.get_cell(end_time_cell.column,  sheet.max_row)
+
+            if self.read_cell(most_recent_run_cell) == None:
+                warnings.append(err.IncompleteLog(sheet_name))
+
+        return warnings
+
+    def get_log_data(self, row):
+        start_time_cell = self.find("Start Time")
+
+        top_row = start_time_cell.row
+        start_time = self.read_cell(self.get_cell(start_time_cell.column, row))
+
+        end_time = self.read_cell(self.get_cell(self.find("End Time").column, row))
+
+        ration = self.read_cell(self.get_cell(self.find("Ration").column, row))
+
+        complete_column = self.find("Complete").column
+        complete = self.read_cell(self.get_cell(complete_column, row))
+
+        total_column = self.find("Total").column
+        total = self.read_cell(self.get_cell(total_column, row))
+
+        batch_number = self.read_cell(self.get_cell(self.find("Batch Number").column, row))
+
+        for column in range(complete_column + 1, total_column):
+            ingredient_name = self.read_cell(self.get_cell(column, top_row))
+            ingredient_amount = self.read_cell(self.get_cell(column, row))
+
 
     def update_sheets(self, sheet_type):
 

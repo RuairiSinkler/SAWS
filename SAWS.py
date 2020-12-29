@@ -76,6 +76,11 @@ class SAWS(tk.Tk):
 
         self.ration_ex.update_sheets("rations")
         self.ration_logs_ex.update_sheets("ration_logs")
+
+        log_warnings = self.ration_logs_ex.check_logs()
+        for log_warning in log_warnings:
+            self.display_warning(log_warning)
+
         self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
