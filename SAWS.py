@@ -111,6 +111,7 @@ class SAWS(tk.Tk):
 
     def show_frame(self, page_name, aboveThis=None, belowThis=None):
         '''Show a frame for the given page name'''
+        print(belowThis)
         frame = self.frames[page_name]
         if belowThis:
             frame.lower(belowThis)
