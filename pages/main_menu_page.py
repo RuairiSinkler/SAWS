@@ -22,7 +22,7 @@ class MainMenuPage(tk.Frame):
                 self.ration_options.interior, text=name, font=self.controller.main_font,
                 command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
             )
-            button.pack(padx=10, pady=5, side=tk.TOP)
+            button.pack(padx=10, pady=5)
 
         button = tk.Button(
             self, text="Quit", font=self.controller.main_font, command=lambda: self.controller.show_frame("SplashPage")
