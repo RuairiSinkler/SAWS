@@ -89,7 +89,9 @@ class SAWS(tk.Tk):
 
         display_below = None
         if self.frames["WarningPage"].active:
+            print("Warning Page Active")
             display_below = self.warning_frames[-1]
+        print(display_below)
         
         self.show_frame("SplashPage", display_below)
 
