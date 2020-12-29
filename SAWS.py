@@ -77,21 +77,20 @@ class SAWS(tk.Tk):
         self.ration_ex.update_sheets("rations")
         self.ration_logs_ex.update_sheets("ration_logs")
 
-        log_warnings = self.ration_logs_ex.check_logs()
-        for log_warning in log_warnings:
-            self.display_warning(log_warning)
-
         self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             self.create_frame(F, self.container)
             self.hide_frame(F.__name__)
 
+        log_warnings = self.ration_logs_ex.check_logs()
+        for log_warning in log_warnings:
+            self.display_warning(log_warning)
+            self.frames["MainMenuPage"].add_ration()
+
         display_below = None
         if self.frames["WarningPage"].active:
-            print("Warning Page Active")
             display_below = self.warning_frames[-1]
-        print(display_below)
         
         self.show_frame("SplashPage", belowThis=display_below)
 
@@ -111,7 +110,6 @@ class SAWS(tk.Tk):
 
     def show_frame(self, page_name, aboveThis=None, belowThis=None):
         '''Show a frame for the given page name'''
-        print(belowThis)
         frame = self.frames[page_name]
         if belowThis:
             frame.lower(belowThis)
