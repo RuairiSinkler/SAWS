@@ -93,7 +93,7 @@ class SAWS(tk.Tk):
             display_below = self.warning_frames[-1]
         print(display_below)
         
-        self.show_frame("SplashPage", display_below)
+        self.show_frame("SplashPage", belowThis=display_below)
 
     def create_frame(self, F, container, name=None, *args):
         page_name = F.__name__
