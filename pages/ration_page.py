@@ -53,7 +53,7 @@ class RationPage(tk.Frame):
             ingredient = Ingredient.fromDbIngredient(db_ingredient)
             for ration_ingredient in ration_ingredients:
                 if ingredient.name == ration_ingredient.name:
-                    ingredient.current_amount = ration_ingredient.current_amount
+                    ingredient.current_amount.increment_amount(ration_ingredient.current_amount)
 
             self.ration.add_ingredient(ingredient)
 
