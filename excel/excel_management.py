@@ -155,6 +155,7 @@ class WorksheetManager:
         for column in range(complete_column + 1, total_column):
             ingredient_name = self.read_cell(self.get_cell(column, top_row))
             ingredient_amount = self.read_cell(self.get_cell(column, row))
+            print("{}: {}".format(ingredient_name, ingredient_amount))
             ingredient = Ingredient(ingredient_name, None, None, None, None, current_amount=ingredient_amount)
             ration.add_ingredient(ingredient)
 
