@@ -6,7 +6,6 @@ from tkinter import ttk
 from operator import itemgetter
 
 import pages.page_tools.font_manager as fm
-from pages.page_tools.ingredient import Ingredient
 from pages.page_tools.weigher import Weigher
 
 class RunPage(tk.Frame):
@@ -32,7 +31,7 @@ class RunPage(tk.Frame):
         self.running = False
         self.max_weigher = 0
         self.done = False
-        self.ration_id = None
+        self.ration = None
         self.house = None
         self.sheet_row = None
 
@@ -90,7 +89,7 @@ class RunPage(tk.Frame):
 
     def check_done(self):
         done = True
-        for ingredient in self.ingredients:
+        for ingredient in self.ration.ingredients:
             if not ingredient.done():
                 done = False
         if done:
@@ -133,9 +132,8 @@ class RunPage(tk.Frame):
             self.controller.ration_logs_ex.setup_sheet(self.house)
             sheet = self.controller.ration_logs_ex.get_sheet(self.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
-        start_time = time.strftime("%T %d/%m/%y")
-        ration = self.controller.ration_db.get_ration(self.ration_id)[1]
-        self.sheet_row = self.controller.ration_logs_ex.create_log(start_time, ration)
+        self.ration.start_time = time.strftime("%T %d/%m/%y")
+        self.sheet_row = self.controller.ration_logs_ex.create_log(self.ration)
         self.controller.ration_logs_ex.save()
 
 
@@ -143,18 +141,18 @@ class RunPage(tk.Frame):
         sheet = self.controller.ration_logs_ex.get_sheet(self.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
 
-        self.controller.ration_logs_ex.update_log(self.sheet_row, self.ingredients)
+        self.controller.ration_logs_ex.update_log(self.sheet_row, self.ration)
         self.controller.ration_logs_ex.save()
 
     def finish_log(self, num_pad):
         sheet = self.controller.ration_logs_ex.get_sheet(self.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
 
-        batch_number = num_pad.entry.get()
+        self.ration.batch_number = num_pad.entry.get()
 
-        end_time = time.strftime("%T %d/%m/%y")
+        self.ration.end_time = time.strftime("%T %d/%m/%y")
 
-        self.controller.ration_logs_ex.finish_log(self.sheet_row, end_time, self.done, self.ingredients, batch_number)
+        self.controller.ration_logs_ex.finish_log(self.sheet_row, self.ration)
         self.controller.ration_logs_ex.save()
 
         for _, weigher in self.weighers.items():
@@ -164,7 +162,7 @@ class RunPage(tk.Frame):
         self.controller.show_frame("MainMenuPage")
         num_pad.clear()
 
-    def display_page(self, ration_id, house_dropdown):
+    def display_page(self, ration, house_dropdown):
         self.main.destroy()
         self.footer.destroy()
 
@@ -178,22 +176,17 @@ class RunPage(tk.Frame):
         self.running = False
         self.start_pause_text.set("Start")
         self.done = False
-        self.ration_id = ration_id
+        self.ration = ration
         self.house = house_dropdown.get()
 
         self.create_log()
 
         self.weighers = {}
-        self.ingredients = []
-
-        db_ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
 
         unweighed_ingredients = []
         unweighed_button_font = tkfont.Font(size=self.controller.text_font['size'])
 
-        for db_ingredient in db_ingredients:
-            ingredient = Ingredient.fromDbIngredient(db_ingredient)
-            self.ingredients.append(ingredient)
+        for ingredient in self.ration.ingredients:
             if ingredient.weigher_id is None:
                 button_column = len(unweighed_ingredients)
                 button = tk.Button(

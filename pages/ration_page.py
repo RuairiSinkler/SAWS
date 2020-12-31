@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from pages.page_tools.vertical_scrolled_frame import VerticalScrolledFrame
+from pages.page_tools.ingredient import Ingredient
 
 class RationPage(tk.Frame):
 
@@ -13,7 +14,7 @@ class RationPage(tk.Frame):
 
         self.controller = controller
 
-        self.ration_id = None
+        self.ration = None
         self.name = None
 
         self.house_dropdown = None
@@ -27,31 +28,40 @@ class RationPage(tk.Frame):
 
         button = tk.Button(
             self.footer, text="Next", font=self.controller.main_font,
-            command=lambda: self.controller.frames["RunPage"].display_page(self.ration_id, self.house_dropdown)
+            command=lambda: self.controller.frames["RunPage"].display_page(self.ration, self.house_dropdown)
         )
 
         button.pack(side=tk.LEFT)
 
-    def display_page(self, ration_id):
+    def display_page(self, ration):
 
         self.main.destroy()
         self.main = tk.Frame(self)
         self.main.pack(fill=tk.BOTH, expand=tk.TRUE)
 
-        self.ration_id = ration_id
+        self.ration = ration
 
-        self.name = self.controller.ration_db.get_ration(self.ration_id)[1]
-        ingredients = self.controller.ration_db.get_ration_ingredients(ration_id)
+        db_ingredients = self.controller.ration_db.get_ration_ingredients(self.ration.id)
+        ration_ingredients = self.ration.ingredients
+        ration.ingredients = []
+        for db_ingredient in db_ingredients:
+            ingredient = Ingredient.fromDbIngredient(db_ingredient)
+            for ration_ingredient in ration_ingredients:
+                if ingredient.name == ration_ingredient.name:
+                    ingredient.current_amount = ration_ingredient.current_amount
+                    
+            self.ration.add_ingredient(ingredient)
+
         label = tk.Label(
-            self.main, text=self.name, font=self.controller.main_font
+            self.main, text=self.ration.name, font=self.controller.main_font
         )
         label.pack()
 
         ingredients_list = VerticalScrolledFrame(self.main)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
-        for ingredient in ingredients:
+        for ingredient in self.ration.ingredients:
             label = tk.Label(
-                ingredients_list.interior, text="{}, {}kg".format(ingredient[0], str(ingredient[1])), font=self.controller.main_font
+                ingredients_list.interior, text="{}, {}kg".format(ingredient.current_amount, str(ingredient.desired_amount)), font=self.controller.main_font
             )
             label.pack()
 

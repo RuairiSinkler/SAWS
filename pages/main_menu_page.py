@@ -1,5 +1,6 @@
 import tkinter as tk
 from pages.page_tools.vertical_scrolled_frame import VerticalScrolledFrame
+from pages.page_tools.ration import Ration
 
 class MainMenuPage(tk.Frame):
 
@@ -7,7 +8,7 @@ class MainMenuPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         
-        rations = self.controller.ration_db.get_all_rations()
+        db_rations = self.controller.ration_db.get_all_rations()
 
         title_label = tk.Label(self, text="Main Menu", font=self.controller.main_font)
         title_label.pack()
@@ -18,12 +19,11 @@ class MainMenuPage(tk.Frame):
         self.extra_rations_space = tk.Frame(ration_options.interior)
         self.extra_rations_space.pack(side=tk.TOP)
 
-        for ration in rations:
-            id = ration[0]
-            name = ration[1]
+        for db_ration in db_rations:
+            ration = Ration.fromDbRation(db_ration)
             button = tk.Button(
-                ration_options.interior, text=name, font=self.controller.main_font,
-                command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
+                ration_options.interior, text=ration.name, font=self.controller.main_font,
+                command=lambda ration=ration: self.controller.frames["RationPage"].display_page(ration)
             )
             button.pack(padx=10, pady=5, side=tk.TOP)
 
@@ -32,10 +32,10 @@ class MainMenuPage(tk.Frame):
         )
         button.pack(side=tk.BOTTOM, fill="x")
 
-    def add_incomplete_ration(self, name, house):
-        button_text = "Incomplete {} for {}".format(name, house)
+    def add_incomplete_ration(self, ration):
+        button_text = "Incomplete {} for {}".format(ration.name, ration.house)
         button = tk.Button(
             self.extra_rations_space, text=button_text, font=self.controller.main_font,
-            command=lambda id=id: self.controller.frames["RationPage"].display_page(id)
+            command=lambda id=id: self.controller.frames["RationPage"].display_page(ration)
         )
         button.pack(padx=10, pady=5, side=tk.TOP)

@@ -2,17 +2,17 @@ import tkinter as tk
 
 class Ingredient:
 
-    def __init__(self, name, desired_amount, augar_pin, weigher_id, ordering, augar=None):
+    def __init__(self, name, desired_amount, augar_pin, weigher_id, ordering, augar=None, current_amount=0):
         self.name = name
         self.desired_amount = desired_amount
         self.augar_pin = augar_pin
         self.weigher_id = weigher_id
         self.ordering = ordering
         self.augar = augar
+        self.current_amount = current_amount
 
-        self.current_amount = 0
         self.label = tk.StringVar()
-        self.label.set("{}\n{}/{}kg".format(name, str(self.current_amount), str(desired_amount)))
+        self.label.set("{}\n{}/{}kg".format(self.name, str(self.current_amount), str(self.desired_amount)))
 
     @classmethod
     def fromDbIngredient(cls, db_ingredient, augar=None):

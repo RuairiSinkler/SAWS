@@ -83,10 +83,10 @@ class SAWS(tk.Tk):
             self.create_frame(F, self.container)
             self.hide_frame(F.__name__)
 
-        log_warnings = self.ration_logs_ex.check_logs()
-        for ration, house, log_warning in log_warnings:
+        incomplete_rations = self.ration_logs_ex.check_logs()
+        for ration, log_warning in incomplete_rations:
             self.display_warning(log_warning)
-            self.frames["MainMenuPage"].add_incomplete_ration(ration, house)
+            self.frames["MainMenuPage"].add_incomplete_ration(ration)
 
         display_below = None
         if self.frames["WarningPage"].active:

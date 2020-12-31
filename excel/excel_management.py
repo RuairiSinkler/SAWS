@@ -4,6 +4,8 @@ import configparser
 from pathlib import Path
 
 import exceptions as err
+from pages.page_tools.ingredient import Ingredient
+from pages.page_tools.ration import Ration
 
 class WorksheetManager:
     def __init__(self, directory, name):
@@ -117,7 +119,7 @@ class WorksheetManager:
         self.write_cell(batch_number, self.get_cell(column, row))
 
     def check_logs(self):
-        warnings = []
+        incomplete_rations = []
         for sheet_name in self.get_sheets():
             sheet = self.get_sheet(sheet_name)
             self.change_sheet(sheet)
@@ -127,13 +129,12 @@ class WorksheetManager:
             most_recent_run_cell = self.get_cell(end_time_cell.column,  sheet.max_row)
 
             if self.read_cell(most_recent_run_cell) == None:
-                ration_cell = self.find("Ration")
-                ration = self.read_cell(self.get_cell(ration_cell.column, sheet.max_row))
-                warnings.append((ration, sheet_name, err.IncompleteLog(sheet_name)))
+                ration = self.get_ration_data(sheet.max_row, sheet_name)
+                incomplete_rations.append((ration, err.IncompleteLog(sheet_name)))
 
-        return warnings
+        return incomplete_rations
 
-    def get_log_data(self, row):
+    def get_ration_data(self, row, house):
         start_time_cell = self.find("Start Time")
 
         top_row = start_time_cell.row
@@ -141,19 +142,25 @@ class WorksheetManager:
 
         end_time = self.read_cell(self.get_cell(self.find("End Time").column, row))
 
-        ration = self.read_cell(self.get_cell(self.find("Ration").column, row))
+        name = self.read_cell(self.get_cell(self.find("Ration").column, row))
 
         complete_column = self.find("Complete").column
         complete = self.read_cell(self.get_cell(complete_column, row))
 
-        total_column = self.find("Total").column
-        total = self.read_cell(self.get_cell(total_column, row))
-
         batch_number = self.read_cell(self.get_cell(self.find("Batch Number").column, row))
 
+        ration = Ration(None, name, house, start_time, end_time, complete, batch_number)
+
+        total_column = self.find("Total").column
         for column in range(complete_column + 1, total_column):
             ingredient_name = self.read_cell(self.get_cell(column, top_row))
             ingredient_amount = self.read_cell(self.get_cell(column, row))
+            ingredient = Ingredient(ingredient_name, None, None, None, None, current_amount=ingredient_amount)
+            ration.add_ingredient(ingredient)
+
+        return ration
+
+        
 
 
     def update_sheets(self, sheet_type):
