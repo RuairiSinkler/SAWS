@@ -113,7 +113,7 @@ class WorksheetManager:
         column = self.find("Complete").column
         self.write_cell(complete, self.get_cell(column, row))
 
-        self.update_log(row, ration.ingredients)
+        self.update_log(row, ration)
 
         column = self.find("Batch Number").column
         self.write_cell(ration.batch_number, self.get_cell(column, row))

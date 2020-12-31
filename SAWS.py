@@ -86,6 +86,7 @@ class SAWS(tk.Tk):
         incomplete_rations = self.ration_logs_ex.check_logs()
         for ration, log_warning in incomplete_rations:
             self.display_warning(log_warning)
+            ration.id = self.ration_db.get_id_by_name("rations", ration.name)
             self.frames["MainMenuPage"].add_incomplete_ration(ration)
 
         display_below = None
