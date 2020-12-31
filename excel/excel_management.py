@@ -76,19 +76,19 @@ class WorksheetManager:
                     return cell
         return None
 
-    def create_log(self, start_time, ration):
+    def create_log(self, ration):
         row = self.sheet.max_row + 1
         column = self.find("Start Time").column
-        self.write_cell(start_time, self.get_cell(column, row))
+        self.write_cell(ration.start_time, self.get_cell(column, row))
         column = self.find("Ration").column
-        self.write_cell(ration, self.get_cell(column, row))
+        self.write_cell(ration.name, self.get_cell(column, row))
         return row
 
-    def update_log(self, row, ingredients):
+    def update_log(self, row, ration):
         top_row = self.find("Start Time").row
 
         total = 0
-        for ingredient in ingredients:
+        for ingredient in ration.ingredients:
             try:
                 column = self.find(ingredient.name).column
             except AttributeError:
@@ -102,21 +102,21 @@ class WorksheetManager:
         column = self.find("Total").column
         self.write_cell(total, self.get_cell(column, row))
 
-    def finish_log(self, row, end_time, complete, ingredients, batch_number):
+    def finish_log(self, row, ration):
         column = self.find("End Time").column
-        self.write_cell(end_time, self.get_cell(column, row))
+        self.write_cell(ration.end_time, self.get_cell(column, row))
 
-        if complete:
+        if ration.complete:
             complete = "Yes"
         else:
             complete = "No"
         column = self.find("Complete").column
         self.write_cell(complete, self.get_cell(column, row))
 
-        self.update_log(row, ingredients)
+        self.update_log(row, ration.ingredients)
 
         column = self.find("Batch Number").column
-        self.write_cell(batch_number, self.get_cell(column, row))
+        self.write_cell(ration.batch_number, self.get_cell(column, row))
 
     def check_logs(self):
         incomplete_rations = []

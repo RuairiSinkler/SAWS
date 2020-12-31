@@ -49,7 +49,7 @@ class RationPage(tk.Frame):
             for ration_ingredient in ration_ingredients:
                 if ingredient.name == ration_ingredient.name:
                     ingredient.current_amount = ration_ingredient.current_amount
-                    
+
             self.ration.add_ingredient(ingredient)
 
         label = tk.Label(
@@ -61,7 +61,7 @@ class RationPage(tk.Frame):
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in self.ration.ingredients:
             label = tk.Label(
-                ingredients_list.interior, text="{}, {}kg".format(ingredient.current_amount, str(ingredient.desired_amount)), font=self.controller.main_font
+                ingredients_list.interior, text="{}, {}kg".format(ingredient.name, str(ingredient.desired_amount)), font=self.controller.main_font
             )
             label.pack()
 
