@@ -28,10 +28,15 @@ class RationPage(tk.Frame):
 
         button = tk.Button(
             self.footer, text="Next", font=self.controller.main_font,
-            command=lambda: self.controller.frames["RunPage"].display_page(self.ration, self.house_dropdown)
+            command=self.button_callback
         )
 
         button.pack(side=tk.LEFT)
+
+    def button_callback(self):
+        if self.ration.house is None:
+            self.ration.house = self.house_dropdown.get()
+        self.controller.frames["RunPage"].display_page(self.ration)
 
     def display_page(self, ration):
 
@@ -65,10 +70,11 @@ class RationPage(tk.Frame):
             )
             label.pack()
 
-        houses = self.controller.ration_db.get_all_houses()
-        house_names = [house[1] for house in houses]
-        self.house_dropdown = ttk.Combobox(self.main, values=house_names, state="readonly", font=self.controller.main_font, height=6)
-        self.house_dropdown.current(0)
-        self.house_dropdown.pack()
+        if self.ration.house is None:
+            houses = self.controller.ration_db.get_all_houses()
+            house_names = [house[1] for house in houses]
+            self.house_dropdown = ttk.Combobox(self.main, values=house_names, state="readonly", font=self.controller.main_font, height=6)
+            self.house_dropdown.current(0)
+            self.house_dropdown.pack()
 
         self.controller.show_frame("RationPage")

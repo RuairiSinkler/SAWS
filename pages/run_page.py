@@ -32,7 +32,6 @@ class RunPage(tk.Frame):
         self.max_weigher = 0
         self.done = False
         self.ration = None
-        self.house = None
         self.sheet_row = None
 
         self.start_pause_text = tk.StringVar()
@@ -123,14 +122,14 @@ class RunPage(tk.Frame):
 
     def create_log(self):
         sheet = None
-        if self.house in self.controller.ration_logs_ex.workbook.sheetnames:
-            sheet = self.controller.ration_logs_ex.get_sheet(self.house)
+        if self.ration.house in self.controller.ration_logs_ex.workbook.sheetnames:
+            sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         else:
-            self.controller.ration_logs_ex.create_sheet(self.house)
-            sheet = self.controller.ration_logs_ex.get_sheet(self.house)
+            self.controller.ration_logs_ex.create_sheet(self.ration.house)
+            sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
             self.controller.ration_logs_ex.change_sheet(sheet)
-            self.controller.ration_logs_ex.setup_sheet(self.house)
-            sheet = self.controller.ration_logs_ex.get_sheet(self.house)
+            self.controller.ration_logs_ex.setup_sheet(self.ration.house)
+            sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
         self.ration.start_time = time.strftime("%T %d/%m/%y")
         self.sheet_row = self.controller.ration_logs_ex.create_log(self.ration)
@@ -138,14 +137,14 @@ class RunPage(tk.Frame):
 
 
     def update_log(self):
-        sheet = self.controller.ration_logs_ex.get_sheet(self.house)
+        sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
 
         self.controller.ration_logs_ex.update_log(self.sheet_row, self.ration)
         self.controller.ration_logs_ex.save()
 
     def finish_log(self, num_pad):
-        sheet = self.controller.ration_logs_ex.get_sheet(self.house)
+        sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
 
         self.ration.batch_number = num_pad.entry.get()
@@ -162,7 +161,7 @@ class RunPage(tk.Frame):
         self.controller.show_frame("MainMenuPage")
         num_pad.clear()
 
-    def display_page(self, ration, house_dropdown):
+    def display_page(self, ration):
         self.main.destroy()
         self.footer.destroy()
 
@@ -177,7 +176,6 @@ class RunPage(tk.Frame):
         self.start_pause_text.set("Start")
         self.done = False
         self.ration = ration
-        self.house = house_dropdown.get()
 
         self.create_log()
 
