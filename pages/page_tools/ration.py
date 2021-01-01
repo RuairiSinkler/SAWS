@@ -20,16 +20,12 @@ class Ration:
         return cls(*db_ration)
         
     @classmethod
-    def from_json(cls, ration_json):
-        ration_dict = json.loads(ration_json)
+    def from_dict(cls, ration_dict):
         ingredients = []
         for ingredient_dict in ration_dict["ingredients"]:
             ingredients.append(Ingredient(**ingredient_dict))
         ration_dict["ingredients"] = ingredients
         return cls(**ration_dict)
-
-    def to_json(self):
-        return json.dumps(self, indent=2, cls=RationEncoder)
 
     def add_ingredient(self, ingredient):
         self.ingredients.append(ingredient)
