@@ -25,7 +25,6 @@ class MainMenuPage(tk.Frame):
         resize_dummy.pack()
 
         self.update_idletasks()
-
         for db_ration in db_rations:
             ration = Ration.fromDbRation(db_ration)
             button_font = tkfont.Font(size=self.controller.main_font['size'])
@@ -35,7 +34,8 @@ class MainMenuPage(tk.Frame):
             )
             padx = 10
             button.pack(padx=padx, pady=5, side=tk.TOP, fill=tk.X)
-            button.update_idletasks()
+            self.update_idletasks
+            # button.update_idletasks()
             fm.resize_font_width(button["text"], button_font, button.winfo_width(), padding=padx)
 
         button = tk.Button(
@@ -62,7 +62,8 @@ class MainMenuPage(tk.Frame):
         # button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
         padx = 10
         button.pack(padx=padx, pady=5, side=tk.TOP, fill=tk.X)
-        button.update_idletasks()
+        self.update_idletasks
+        # button.update_idletasks()
         print(button["text"])
         fm.resize_font_width(button["text"], button_font, button.winfo_width(), padding=padx)
         print()
