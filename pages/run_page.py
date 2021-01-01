@@ -137,7 +137,7 @@ class RunPage(tk.Frame):
 
 
     def update_log(self):
-        with (self.json_log_file, "w") as json_file:
+        with open(self.json_log_file, "w") as json_file:
             json.dump(self.ration, json_file)
         # sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         # self.controller.ration_logs_ex.change_sheet(sheet)
