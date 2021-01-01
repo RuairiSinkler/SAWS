@@ -33,3 +33,9 @@ class IncompleteLog(SAWSWarning):
     def __init__(self, house):
         self.message = "The most recent mix for house '{}' was ended unexpectedly. It will be available to continue at the main menu. It will disappear if another ration is run for house '{}'.".format(house, house)
         super().__init__(self.message)
+
+class BadJSONFile(SAWSWarning):
+
+    def __init__(self, json_file):
+        self.message = "The json file '{}' cannot be read. If you were expecting to recover from an incomplete ration contact supplier, otherwise ignore this.".format(json_file)
+        super().__init__(self.message)

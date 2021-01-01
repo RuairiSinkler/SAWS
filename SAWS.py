@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from json.decoder import JSONDecodeError
 import os
 import time
 import glob
@@ -128,11 +129,14 @@ class SAWS(tk.Tk):
         incomplete_rations = []
         json_logs = glob.glob("*_temp_log.json")
         for json_log in json_logs:
-            with open(json_log, "r") as json_file:
-                ration_json = json.load(json_file)
-                ration = Ration.from_json(ration_json)
-                incomplete_rations.append((ration, err.IncompleteLog(ration.house)))
-
+            try:
+                with open(json_log, "r") as json_file:
+                    ration_json = json.load(json_file)
+                    ration = Ration.from_json(ration_json)
+                    incomplete_rations.append((ration, err.IncompleteLog(ration.house)))
+            except JSONDecodeError as e:
+                self.display_warning(err.BadJSONFile(json_log))
+                os.rename(json_log, "{}.bad.json".format(json_log.split('.')[0]))
         return incomplete_rations
 
     def setup_database(self):
