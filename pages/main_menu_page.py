@@ -41,14 +41,6 @@ class MainMenuPage(tk.Frame):
         )
         button.pack(side=tk.BOTTOM, fill=tk.X)
 
-        temp_ration = Ration(1, "Test name", "Test house")
-        self.add_incomplete_ration(temp_ration)
-        temp_ration = Ration(2, "Test name 2", "Test house 2")
-        self.add_incomplete_ration(temp_ration)
-        temp_ration = Ration(3, "Test namfewqfeqwfwfewqefwqefweqefeqwfee 3", "Test house hiujohjdioewhdfowfbhuweqofbhqewjofbhqewiofbeqjwihoebfeqwf")
-        self.add_incomplete_ration(temp_ration)
-
-
     def add_incomplete_ration(self, ration):
         button_text = "Incomplete {} for {}".format(ration.name, ration.house)
         button_font = tkfont.Font(size=self.controller.main_font['size'])
@@ -56,8 +48,7 @@ class MainMenuPage(tk.Frame):
             self.ration_options.interior, text=button_text, font=button_font,
             bg="red2", fg="white", activebackground="red", activeforeground="white"
         )
-        button.configure(command=lambda button=button: self.remove_button(button))
-        # button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
+        button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
         self.buttons.insert(0, button)
         self.reset_buttons()
         fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
