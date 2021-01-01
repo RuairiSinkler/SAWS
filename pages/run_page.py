@@ -6,6 +6,7 @@ import tkinter.font as tkfont
 
 import pages.page_tools.font_manager as fm
 from pages.page_tools.weigher import Weigher
+from pages.page_tools.ration import RationEncoder
 
 class RunPage(tk.Frame):
 
@@ -138,7 +139,7 @@ class RunPage(tk.Frame):
 
     def update_log(self):
         with open(self.json_log_file, "w") as json_file:
-            json.dump(self.ration, json_file)
+            json.dump(self.ration, json_file, cls=RationEncoder)
         # sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         # self.controller.ration_logs_ex.change_sheet(sheet)
 
