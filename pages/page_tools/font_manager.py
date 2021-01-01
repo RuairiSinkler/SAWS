@@ -21,4 +21,4 @@ def resize_font_width(text, font, frame_width, padding=0):
     print("{} - {}".format(font_width, frame_width - padding))
     if font['size'] > 1 and font_width > frame_width - padding:
         font['size'] -= 1
-        resize_font_width(text, font, frame_width)
+        resize_font_width(text, font, frame_width, padding)

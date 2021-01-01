@@ -34,9 +34,7 @@ class MainMenuPage(tk.Frame):
             )
             padx = 10
             button.pack(padx=padx, pady=5, side=tk.TOP, fill=tk.X)
-            self.update_idletasks
-            # button.update_idletasks()
-            fm.resize_font_width(button["text"], button_font, button.winfo_width(), padding=padx)
+            fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=padx)
 
         button = tk.Button(
             self, text="Quit", font=self.controller.main_font, command=lambda: self.controller.show_frame("SplashPage")
@@ -62,12 +60,9 @@ class MainMenuPage(tk.Frame):
         # button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
         padx = 10
         button.pack(padx=padx, pady=5, side=tk.TOP, fill=tk.X)
-        self.update_idletasks
-        # button.update_idletasks()
         print(button["text"])
-        fm.resize_font_width(button["text"], button_font, button.winfo_width(), padding=padx)
+        fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=padx)
         print()
 
     def remove_button(self, button):
         button.pack_forget()
-        # self.extra_rations_space.pack()
