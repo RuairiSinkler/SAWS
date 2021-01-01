@@ -24,14 +24,14 @@ class RationPage(tk.Frame):
             command=lambda: self.controller.show_frame("MainMenuPage")
         )
 
-        button.pack(side=tk.LEFT)
+        button.pack(side=tk.LEFT, fill=tk.X, expand=tk.TRUE)
 
         button = tk.Button(
             self.footer, text="Next", font=self.controller.main_font,
             command=self.button_callback
         )
 
-        button.pack(side=tk.LEFT)
+        button.pack(side=tk.LEFT, fill=tk.X, expand=tk.TRUE)
 
     def button_callback(self):
         if self.ration.house is None:
@@ -84,7 +84,7 @@ class RationPage(tk.Frame):
                 self.main, text="House: {}".format(self.ration.house), font=self.controller.main_font,
                 relief=tk.RAISED, borderwidth=1
             )
-            label.pack()
+            label.pack(fill=tk.BOTH, expand=tk.TRUE)
 
 
         self.controller.show_frame("RationPage")
