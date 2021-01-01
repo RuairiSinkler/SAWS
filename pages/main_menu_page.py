@@ -35,7 +35,7 @@ class MainMenuPage(tk.Frame):
     def add_incomplete_ration(self, ration):
         button_text = "Incomplete {} for {}".format(ration.name, ration.house)
         button = tk.Button(
-            self.extra_rations_space, text=button_text, font=self.controller.main_font,
-            command=lambda ration, button: self.controller.frames["RationPage"].display_page(ration, button)
+            self.extra_rations_space, text=button_text, font=self.controller.main_font
         )
+        button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
         button.pack(padx=10, pady=5, side=tk.TOP)
