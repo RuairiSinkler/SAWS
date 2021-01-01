@@ -57,7 +57,7 @@ class MainMenuPage(tk.Frame):
         )
         button.configure(command=lambda button=button: self.remove_button(button))
         # button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
-        self.buttons.append(button)
+        self.buttons.insert(0, button)
         for button in self.buttons:
             button.grid_forget()
         for i, button in enumerate(self.buttons):
@@ -69,3 +69,5 @@ class MainMenuPage(tk.Frame):
 
     def remove_button(self, button):
         button.grid_forget()
+        self.ration_options.interior.grid_rowconfigure(button.grid_info()["row"], weight=0)
+        
