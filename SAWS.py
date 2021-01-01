@@ -69,7 +69,7 @@ class SAWS(tk.Tk):
         option = "temp_log_location"
         if not self.config.has_option(section, option):
             raise err.ConfigError(section, option)
-        self.temp_log_location = int(self.config[section].get(option))
+        self.temp_log_location = self.config[section].get(option)
 
         option = "default_weigher_increment"
         if not self.config.has_option(section, option):
