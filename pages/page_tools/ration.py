@@ -38,4 +38,12 @@ class Ration:
 class RationEncoder(JSONEncoder):
 
     def default(self, o):
-        return o.__dict__
+        ration_dict = dict(o.__dict__)
+        ingredients = []
+        for ingredient in ration_dict["ingredients"]:
+            ingredient_dict = ingredient.__dict__
+            del ingredient_dict["label"]
+            ingredients.append(ingredient_dict)
+        ration_dict["ingredients"] = ingredients
+
+        return ration_dict
