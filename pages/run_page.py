@@ -121,10 +121,12 @@ class RunPage(tk.Frame):
 
     def create_log(self):
         self.ration.start_time = time.strftime("%T %d/%m/%y")
+        if not os.path.exists(self.controller.temp_logs_location):
+            os.makedirs(self.controller.temp_logs_location)
         self.update_log()
 
     def update_log(self):
-        with open(self.json_log_file, "w") as json_file:
+        with open("{}/{}".format(self.controller.temp_logs_location, self.json_log_file), "w") as json_file:
             json.dump(self.ration, json_file, cls=RationEncoder)
 
     def log_run(self, num_pad):

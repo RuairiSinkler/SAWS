@@ -66,6 +66,11 @@ class SAWS(tk.Tk):
             raise err.ConfigError(section, option)
         usb_dir = self.config[section].get(option)
 
+        option = "temp_log_location"
+        if not self.config.has_option(section, option):
+            raise err.ConfigError(section, option)
+        self.temp_log_location = int(self.config[section].get(option))
+
         option = "default_weigher_increment"
         if not self.config.has_option(section, option):
             raise err.ConfigError(section, option)
@@ -127,7 +132,7 @@ class SAWS(tk.Tk):
 
     def check_incomplete_rations(self):
         incomplete_rations = []
-        json_logs = glob.glob("*_temp_log.json")
+        json_logs = glob.glob("{}/*_temp_log.json".format(self.controller.temp_logs_location))
         for json_log in json_logs:
             try:
                 with open(json_log, "r") as json_file:
