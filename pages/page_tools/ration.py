@@ -40,6 +40,7 @@ class RationEncoder(JSONEncoder):
         for ingredient in ration_dict["ingredients"]:
             ingredient_dict = dict(ingredient.__dict__)
             del ingredient_dict["label"]
+            del ingredient_dict["augar"]
             ingredients.append(ingredient_dict)
         ration_dict["ingredients"] = ingredients
 
