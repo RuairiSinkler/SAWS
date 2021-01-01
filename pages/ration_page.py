@@ -49,16 +49,11 @@ class RationPage(tk.Frame):
         self.ration = ration
         self.button_to_remove = button_to_remove
 
-        # db_ingredients = self.controller.ration_db.get_ration_ingredients(self.ration.id)
-        # ration_ingredients = self.ration.ingredients
-        # ration.ingredients = []
-        # for db_ingredient in db_ingredients:
-        #     ingredient = Ingredient.from_db_ingredient(db_ingredient)
-        #     for ration_ingredient in ration_ingredients:
-        #         if ingredient.name == ration_ingredient.name:
-        #             ingredient.increment_amount(ration_ingredient.current_amount)
-
-        #     self.ration.add_ingredient(ingredient)
+        if not self.ration.ingredients:
+            db_ingredients = self.controller.ration_db.get_ration_ingredients(self.ration.id)
+            for db_ingredient in db_ingredients:
+                ingredient = Ingredient.from_db_ingredient(db_ingredient)
+                self.ration.add_ingredient(ingredient)
 
         label = tk.Label(
             self.main, text=self.ration.name, font=self.controller.main_font
