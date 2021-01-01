@@ -207,6 +207,10 @@ class RunPage(tk.Frame):
         for _, weigher in self.weighers.items():
             weigher.resize_labels()
             weigher.add_hopper()
+            for ingredient in weigher.ingredients:
+                increment = ingredient.current_amount 
+                ingredient.current_amount = 0
+                self.increment_weight(weigher, increment)
 
         for ingredient, button in unweighed_ingredients:
             button.update_idletasks()
