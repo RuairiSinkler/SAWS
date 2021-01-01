@@ -3,10 +3,6 @@ import itertools
 import configparser
 from pathlib import Path
 
-import exceptions as err
-from pages.page_tools.ingredient import Ingredient
-from pages.page_tools.ration import Ration
-
 class WorksheetManager:
     def __init__(self, directory, name):
         dir = directory
@@ -115,50 +111,6 @@ class WorksheetManager:
 
         column = self.find("Batch Number").column
         self.write_cell(ration.batch_number, self.get_cell(column, row))
-
-    def check_logs(self):
-        incomplete_rations = []
-        for sheet_name in self.get_sheets():
-            sheet = self.get_sheet(sheet_name)
-            self.change_sheet(sheet)
-
-            end_time_cell = self.find("End Time")
-
-            most_recent_run_cell = self.get_cell(end_time_cell.column,  sheet.max_row)
-
-            if self.read_cell(most_recent_run_cell) == None:
-                ration = self.get_ration_data(sheet.max_row, sheet_name)
-                incomplete_rations.append((ration, err.IncompleteLog(sheet_name)))
-
-        return incomplete_rations
-
-    def get_ration_data(self, row, house):
-        start_time_cell = self.find("Start Time")
-
-        top_row = start_time_cell.row
-        start_time = self.read_cell(self.get_cell(start_time_cell.column, row))
-
-        end_time = self.read_cell(self.get_cell(self.find("End Time").column, row))
-
-        name = self.read_cell(self.get_cell(self.find("Ration").column, row))
-
-        complete_column = self.find("Complete").column
-        complete = self.read_cell(self.get_cell(complete_column, row))
-
-        batch_number = self.read_cell(self.get_cell(self.find("Batch Number").column, row))
-
-        ration = Ration(None, name, house, start_time, end_time, complete, batch_number)
-
-        total_column = self.find("Total").column
-        for column in range(complete_column + 1, total_column):
-            ingredient_name = self.read_cell(self.get_cell(column, top_row))
-            ingredient_amount = self.read_cell(self.get_cell(column, row))
-            if ingredient_amount is None:
-                ingredient_amount = 0
-            ingredient = Ingredient(ingredient_name, None, None, None, None, current_amount=ingredient_amount)
-            ration.add_ingredient(ingredient)
-
-        return ration
 
     def update_sheets(self, sheet_type):
 
