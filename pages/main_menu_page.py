@@ -25,17 +25,18 @@ class MainMenuPage(tk.Frame):
                 ration_options.interior, text=ration.name, font=self.controller.main_font,
                 command=lambda ration=ration: self.controller.frames["RationPage"].display_page(ration)
             )
-            button.pack(padx=10, pady=5, side=tk.TOP)
+            button.pack(padx=10, pady=5, side=tk.TOP, fill=tk.X)
 
         button = tk.Button(
             self, text="Quit", font=self.controller.main_font, command=lambda: self.controller.show_frame("SplashPage")
         )
-        button.pack(side=tk.BOTTOM, fill="x")
+        button.pack(side=tk.BOTTOM, fill=tk.X)
 
     def add_incomplete_ration(self, ration):
         button_text = "Incomplete {} for {}".format(ration.name, ration.house)
         button = tk.Button(
-            self.extra_rations_space, text=button_text, font=self.controller.main_font
+            self.extra_rations_space, text=button_text, font=self.controller.main_font,
+            bg="red", fg="white"
         )
         button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
-        button.pack(padx=10, pady=5, side=tk.TOP)
+        button.pack(padx=10, pady=5, side=tk.TOP, fill=tk.X)
