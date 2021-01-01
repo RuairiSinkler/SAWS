@@ -17,7 +17,7 @@ class MainMenuPage(tk.Frame):
         ration_options.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         self.extra_rations_space = tk.Frame(ration_options.interior)
-        self.extra_rations_space.pack(side=tk.TOP)
+        self.extra_rations_space.pack(side=tk.TOP, fill=tk.X)
 
         for db_ration in db_rations:
             ration = Ration.fromDbRation(db_ration)

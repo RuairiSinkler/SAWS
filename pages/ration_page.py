@@ -47,6 +47,7 @@ class RationPage(tk.Frame):
         self.main.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         self.ration = ration
+        self.button_to_remove = button_to_remove
 
         db_ingredients = self.controller.ration_db.get_ration_ingredients(self.ration.id)
         ration_ingredients = self.ration.ingredients
