@@ -24,6 +24,8 @@ class MainMenuPage(tk.Frame):
         resize_dummy = tk.Frame(self.extra_rations_space, width=1, height=1)
         resize_dummy.pack()
 
+        self.update_idletasks()
+
         for db_ration in db_rations:
             ration = Ration.fromDbRation(db_ration)
             button_font = tkfont.Font(size=self.controller.main_font['size'])
@@ -67,4 +69,4 @@ class MainMenuPage(tk.Frame):
 
     def remove_button(self, button):
         button.pack_forget()
-        self.extra_rations_space.pack()
+        # self.extra_rations_space.pack()
