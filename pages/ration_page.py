@@ -81,7 +81,8 @@ class RationPage(tk.Frame):
             self.house_dropdown.pack()
         else:
             label = tk.Label(
-                self.main, text="House: {}".format(self.ration.house), font=self.controller.main_font
+                self.main, text="House: {}".format(self.ration.house), font=self.controller.main_font,
+                relief=tk.RAISED, borderwidth=1
             )
             label.pack()
 

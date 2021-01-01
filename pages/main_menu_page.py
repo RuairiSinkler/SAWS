@@ -32,13 +32,21 @@ class MainMenuPage(tk.Frame):
         )
         button.pack(side=tk.BOTTOM, fill=tk.X)
 
+        temp_ration = Ration(1, "Test name", "Test house")
+        self.add_incomplete_ration(temp_ration)
+        temp_ration = Ration(2, "Test name 2", "Test house 2")
+        self.add_incomplete_ration(temp_ration)
+        temp_ration = Ration(3, "Test namfewqfeqwfwfewqefwqefweqefeqwfee 3", "Test house hiujohjdioewhdfowfbhuweqofbhqewjofbhqewiofbeqjwihoebfeqwf")
+        self.add_incomplete_ration(temp_ration)
+
     def add_incomplete_ration(self, ration):
         button_text = "Incomplete {} for {}".format(ration.name, ration.house)
         button = tk.Button(
             self.extra_rations_space, text=button_text, font=self.controller.main_font,
             bg="red", fg="white"
         )
-        button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
+        button.configure(command=lambda button=button: self.remove_button(button))
+        # button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
         button.pack(padx=10, pady=5, side=tk.TOP, fill=tk.X)
 
     def remove_button(self, button):

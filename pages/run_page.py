@@ -191,6 +191,8 @@ class RunPage(tk.Frame):
                     self.footer, textvariable=ingredient.label, font=unweighed_button_font,
                     command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
                 )
+                if ingredient.done():
+                    button.configure(state=tk.DISABLED)
                 button.grid(row=0, column=button_column, sticky="ew")
                 self.footer.grid_columnconfigure(button_column, weight=1, uniform="unweighed_ingredients_buttons")
                 unweighed_ingredients.append((ingredient, button))
