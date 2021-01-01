@@ -158,10 +158,6 @@ class RunPage(tk.Frame):
             sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
 
-        self.controller.ration_logs_ex.create_log(self.ration)
-        sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
-        self.controller.ration_logs_ex.change_sheet(sheet)
-
         self.ration.batch_number = num_pad.entry.get()
 
         self.ration.end_time = time.strftime("%T %d/%m/%y")
