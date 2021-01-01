@@ -16,6 +16,10 @@ class Ration:
         self.ingredients = ingredients
 
     @classmethod
+    def copy(cls, ration):
+        return cls(**ration.__dict__)
+
+    @classmethod
     def from_db_ration(cls, db_ration):
         return cls(*db_ration)
         
