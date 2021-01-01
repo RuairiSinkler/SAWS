@@ -31,7 +31,7 @@ class MainMenuPage(tk.Frame):
             )
             self.buttons.append(button)
             button_row = len(self.buttons)
-            button.grid(row=button_row, column=0, padx=10, pady=5, stick="nsew")
+            button.grid(row=button_row, column=0, padx=10, pady=5, stick="ew")
             self.ration_options.interior.grid_rowconfigure(button_row, weight=1, uniform="ration_buttons")
             fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
 
@@ -61,7 +61,7 @@ class MainMenuPage(tk.Frame):
         for button in self.buttons:
             button.grid_forget()
         for i, button in enumerate(self.buttons):
-            button.grid(row=i, column=0, padx=10, pady=5, stick="nsew")
+            button.grid(row=i, column=0, padx=10, pady=5, stick="ew")
             self.ration_options.interior.grid_rowconfigure(i, weight=1, uniform="ration_buttons")
         fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
 
