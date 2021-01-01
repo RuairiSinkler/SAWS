@@ -131,8 +131,8 @@ class SAWS(tk.Tk):
         for json_log in json_logs:
             try:
                 with open(json_log, "r") as json_file:
-                    ration_json = json.load(json_file)
-                    ration = Ration.from_json(ration_json)
+                    ration_dict = json.load(json_file)
+                    ration = Ration.from_dict(ration_dict)
                     incomplete_rations.append((ration, err.IncompleteLog(ration.house)))
             except JSONDecodeError as e:
                 self.display_warning(err.BadJSONFile(json_log))
