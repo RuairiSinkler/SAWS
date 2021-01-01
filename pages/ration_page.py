@@ -15,7 +15,7 @@ class RationPage(tk.Frame):
         self.controller = controller
 
         self.ration = None
-        self.name = None
+        self.button_to_remove = None
 
         self.house_dropdown = None
 
@@ -36,9 +36,11 @@ class RationPage(tk.Frame):
     def button_callback(self):
         if self.ration.house is None:
             self.ration.house = self.house_dropdown.get()
+        if self.button_to_remove is not None:
+            self.button_to_remove.pack_forget()
         self.controller.frames["RunPage"].display_page(self.ration)
 
-    def display_page(self, ration):
+    def display_page(self, ration, button_to_remove=None):
 
         self.main.destroy()
         self.main = tk.Frame(self)
@@ -81,5 +83,6 @@ class RationPage(tk.Frame):
                 self.main, text="House: {}".format(self.ration.house), font=self.controller.main_font
             )
             label.pack()
+
 
         self.controller.show_frame("RationPage")
