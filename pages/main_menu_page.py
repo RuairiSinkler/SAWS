@@ -40,3 +40,7 @@ class MainMenuPage(tk.Frame):
         )
         button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
         button.pack(padx=10, pady=5, side=tk.TOP, fill=tk.X)
+
+    def remove_button(self, button):
+        button.pack_forget()
+        self.extra_rations_space.pack()
