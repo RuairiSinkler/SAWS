@@ -53,13 +53,15 @@ class MainMenuPage(tk.Frame):
         button_font = tkfont.Font(size=self.controller.main_font['size'])
         button = tk.Button(
             self.extra_rations_space, text=button_text, font=button_font,
-            bg="red", fg="white"
+            bg="red2", fg="white", activebackground="red", activeforeground="white"
         )
         button.configure(command=lambda button=button: self.remove_button(button))
         # button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
         button.pack(padx=10, pady=5, side=tk.TOP, fill=tk.X)
         button.update_idletasks()
+        print(button["text"])
         fm.resize_font_width(button["text"], button_font, button.winfo_width())
+        print()
 
     def remove_button(self, button):
         button.pack_forget()
