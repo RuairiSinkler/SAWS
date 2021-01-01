@@ -63,11 +63,10 @@ class MainMenuPage(tk.Frame):
         for i, button in enumerate(self.buttons):
             button.grid(row=i, column=0, padx=10, pady=5, stick="nsew")
             self.ration_options.interior.grid_rowconfigure(i, weight=1, uniform="ration_buttons")
-        print(button["text"])
         fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
-        print()
 
     def remove_button(self, button):
-        button.grid_forget()
+        print(button.grid_info())
         self.ration_options.interior.grid_rowconfigure(button.grid_info()["row"], weight=0)
+        button.grid_forget()
         

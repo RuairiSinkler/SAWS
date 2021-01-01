@@ -14,11 +14,9 @@ def resize_font_height(font, max_font_size, height_widget, height_max):
             font['size'] -= 1
 
 def resize_font_width(text, font, frame_width, padding=0):
-    print(font['size'])
     font_width = 0
     for string in text.splitlines():
         font_width = max(font_width, font.measure(string))
-    print("{} - {}".format(font_width, frame_width - padding))
     if font['size'] > 1 and font_width > frame_width - padding:
         font['size'] -= 1
         resize_font_width(text, font, frame_width, padding)
