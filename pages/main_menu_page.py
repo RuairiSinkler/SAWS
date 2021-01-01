@@ -24,7 +24,7 @@ class MainMenuPage(tk.Frame):
 
         self.update_idletasks()
         for db_ration in db_rations:
-            ration = Ration.fromDbRation(db_ration)
+            ration = Ration.from_db_ration(db_ration)
             button_font = tkfont.Font(size=self.controller.main_font['size'])
             button = tk.Button(
                 self.ration_options.interior, text=ration.name, font=button_font,

@@ -15,7 +15,7 @@ class Ingredient:
         self.label.set("{}\n{}/{}kg".format(self.name, str(self.current_amount), str(self.desired_amount)))
 
     @classmethod
-    def fromDbIngredient(cls, db_ingredient, augar=None):
+    def from_db_ingredient(cls, db_ingredient, augar=None):
         return cls(*db_ingredient, augar)
 
     def increment_amount(self, increment):

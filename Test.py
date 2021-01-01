@@ -33,36 +33,51 @@
 #   i += 1
 #   time.sleep(1)
 
-class ClassA:
+# class ClassA:
 
-  def __init__(self):
-    self.test = 0
+#   def __init__(self):
+#     self.test = 0
 
-class ClassB:
+# class ClassB:
 
-  def __init__(self, a):
-    self.a = a
+#   def __init__(self, a):
+#     self.a = a
 
-class ClassC:
+# class ClassC:
 
-  def __init__(self, a):
-    self.a = a
+#   def __init__(self, a):
+#     self.a = a
 
-a0 = ClassA()
-a1 = ClassA()
-a2 = ClassA()
-a3 = ClassA()
-a4 = ClassA()
+# a0 = ClassA()
+# a1 = ClassA()
+# a2 = ClassA()
+# a3 = ClassA()
+# a4 = ClassA()
 
-a_s = [a0, a1, a2, a3, a4]
+# a_s = [a0, a1, a2, a3, a4]
 
-b = ClassB(a_s)
-c = ClassC([a0, a3, a4])
+# b = ClassB(a_s)
+# c = ClassC([a0, a3, a4])
 
-i = 0
-for a in b.a:
-  a.test = i
-  i += 1
+# i = 0
+# for a in b.a:
+#   a.test = i
+#   i += 1
 
-for a in c.a:
-  print(a.test)
+# for a in c.a:
+#   print(a.test)
+
+# from pages.page_tools.ingredient import Ingredient
+# from pages.page_tools.ration import Ration
+
+# ingredient1 = Ingredient("Wheat", 200, 1, 1, 1, 1, 100)
+# ingredient2 = Ingredient("Barley", 300, 1, 1, 1, 1, 1010)
+
+# ration = Ration(1, "Ration 1", "House 1", 1, 2, True, 890321, [ingredient1, ingredient2])
+
+# ration_json = ration.to_json()
+# print(ration_json)
+
+# recon_ration = Ration.from_json(ration_json)
+
+# print(recon_ration.to_json())

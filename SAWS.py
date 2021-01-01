@@ -2,7 +2,8 @@
 
 import os
 import time
-import re
+import glob
+import json
 import itertools
 import configparser
 import argparse
@@ -17,6 +18,8 @@ import excel.excel_management as ex
 import exceptions as err
 import pages as pgs
 import pages.message_pages as mpgs
+
+from pages.page_tools.ration import Ration
 
 
 class SAWS(tk.Tk):
@@ -83,10 +86,9 @@ class SAWS(tk.Tk):
             self.create_frame(F, self.container)
             self.hide_frame(F.__name__)
 
-        incomplete_rations = self.ration_logs_ex.check_logs()
+        incomplete_rations = self.check_incomplete_rations()
         for ration, log_warning in incomplete_rations:
             self.display_warning(log_warning)
-            ration.id = self.ration_db.get_id_by_name("rations", ration.name)
             self.frames["MainMenuPage"].add_incomplete_ration(ration)
 
         display_below = None
@@ -121,6 +123,17 @@ class SAWS(tk.Tk):
         '''Hide a frame for the given page name'''
         frame = self.frames[page_name]
         frame.lower()
+
+    def check_incomplete_rations(self):
+        incomplete_rations = []
+        json_logs = glob.glob("*_temp_log.json")
+        for json_log in json_logs:
+            with open(json_log, "r") as json_file:
+                ration_json = json.load(json_file)
+                ration = Ration.from_json(ration_json)
+                incomplete_rations.append((ration, err.IncompleteLog(ration.house)))
+
+        return incomplete_rations
 
     def setup_database(self):
         self.ration_db.clear()

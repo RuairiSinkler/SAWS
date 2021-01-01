@@ -1,4 +1,6 @@
+import os
 import time
+import json
 import tkinter as tk
 import tkinter.font as tkfont
 
@@ -29,7 +31,7 @@ class RunPage(tk.Frame):
         self.max_weigher = 0
         self.done = False
         self.ration = None
-        self.sheet_row = None
+        self.json_log_file = None
 
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
@@ -118,6 +120,32 @@ class RunPage(tk.Frame):
                 self.header.grid_columnconfigure(1, weight=0, uniform="")
 
     def create_log(self):
+        # sheet = None
+        # if self.ration.house in self.controller.ration_logs_ex.workbook.sheetnames:
+        #     sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
+        # else:
+        #     self.controller.ration_logs_ex.create_sheet(self.ration.house)
+        #     sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
+        #     self.controller.ration_logs_ex.change_sheet(sheet)
+        #     self.controller.ration_logs_ex.setup_sheet(self.ration.house)
+        #     sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
+        # self.controller.ration_logs_ex.change_sheet(sheet)
+        self.ration.start_time = time.strftime("%T %d/%m/%y")
+        self.update_log()
+        # self.sheet_row = self.controller.ration_logs_ex.create_log(self.ration)
+        # self.controller.ration_logs_ex.save()
+
+
+    def update_log(self):
+        with (self.json_log_file, "w") as json_file:
+            json.dump(self.ration, json_file)
+        # sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
+        # self.controller.ration_logs_ex.change_sheet(sheet)
+
+        # self.controller.ration_logs_ex.update_log(self.sheet_row, self.ration)
+        # self.controller.ration_logs_ex.save()
+
+    def log_run(self, num_pad):
         sheet = None
         if self.ration.house in self.controller.ration_logs_ex.workbook.sheetnames:
             sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
@@ -128,19 +156,8 @@ class RunPage(tk.Frame):
             self.controller.ration_logs_ex.setup_sheet(self.ration.house)
             sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
-        self.ration.start_time = time.strftime("%T %d/%m/%y")
-        self.sheet_row = self.controller.ration_logs_ex.create_log(self.ration)
-        self.controller.ration_logs_ex.save()
 
-
-    def update_log(self):
-        sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
-        self.controller.ration_logs_ex.change_sheet(sheet)
-
-        self.controller.ration_logs_ex.update_log(self.sheet_row, self.ration)
-        self.controller.ration_logs_ex.save()
-
-    def finish_log(self, num_pad):
+        self.controller.ration_logs_ex.create_log(self.ration)
         sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
         self.controller.ration_logs_ex.change_sheet(sheet)
 
@@ -148,8 +165,11 @@ class RunPage(tk.Frame):
 
         self.ration.end_time = time.strftime("%T %d/%m/%y")
 
-        self.controller.ration_logs_ex.finish_log(self.sheet_row, self.ration)
+        self.controller.ration_logs_ex.log_run(self.ration)
         self.controller.ration_logs_ex.save()
+
+        if os.path.exists(self.json_log_file):
+            os.remove(self.json_log_file)
 
         for _, weigher in self.weighers.items():
             weigher.active = False
@@ -173,6 +193,7 @@ class RunPage(tk.Frame):
         self.start_pause_text.set("Start")
         self.done = False
         self.ration = ration
+        self.json_log_file = "{}_{}_temp_log.json".format(self.ration.name, self.ration.house).replace(" ", "_")
 
         self.create_log()
 
