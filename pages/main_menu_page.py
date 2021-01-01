@@ -20,6 +20,7 @@ class MainMenuPage(tk.Frame):
 
         self.ration_options = VerticalScrolledFrame(self)
         self.ration_options.pack(fill=tk.BOTH, expand=tk.TRUE)
+        self.ration_options.interior.columnconfigure(0, weight=1)
 
         self.update_idletasks()
         for db_ration in db_rations:
@@ -67,6 +68,6 @@ class MainMenuPage(tk.Frame):
 
     def remove_button(self, button):
         print(button.grid_info())
-        self.ration_options.interior.grid_rowconfigure(button.grid_info()["row"], weight=0)
+        self.ration_options.interior.grid_rowconfigure(button.grid_info()["row"], weight=0, uniform=None)
         button.grid_forget()
         
