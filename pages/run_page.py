@@ -1,9 +1,6 @@
 import time
-import numpy as np
 import tkinter as tk
 import tkinter.font as tkfont
-from tkinter import ttk
-from operator import itemgetter
 
 import pages.page_tools.font_manager as fm
 from pages.page_tools.weigher import Weigher

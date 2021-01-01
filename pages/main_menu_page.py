@@ -1,4 +1,7 @@
 import tkinter as tk
+import tkinter.font as tkfont
+
+import pages.page_tools.font_manager as fm
 from pages.page_tools.vertical_scrolled_frame import VerticalScrolledFrame
 from pages.page_tools.ration import Ration
 
@@ -18,14 +21,19 @@ class MainMenuPage(tk.Frame):
 
         self.extra_rations_space = tk.Frame(ration_options.interior)
         self.extra_rations_space.pack(side=tk.TOP, fill=tk.X)
+        resize_dummy = tk.Frame(self.extra_rations_space, width=1, height=1)
+        resize_dummy.pack()
 
         for db_ration in db_rations:
             ration = Ration.fromDbRation(db_ration)
+            button_font = tkfont.Font(size=self.controller.main_font['size'])
             button = tk.Button(
-                ration_options.interior, text=ration.name, font=self.controller.main_font,
+                ration_options.interior, text=ration.name, font=button_font,
                 command=lambda ration=ration: self.controller.frames["RationPage"].display_page(ration)
             )
             button.pack(padx=10, pady=5, side=tk.TOP, fill=tk.X)
+            button.update_idletasks()
+            fm.resize_font_width(button["text"], button_font, button.winfo_width())
 
         button = tk.Button(
             self, text="Quit", font=self.controller.main_font, command=lambda: self.controller.show_frame("SplashPage")
@@ -39,15 +47,19 @@ class MainMenuPage(tk.Frame):
         temp_ration = Ration(3, "Test namfewqfeqwfwfewqefwqefweqefeqwfee 3", "Test house hiujohjdioewhdfowfbhuweqofbhqewjofbhqewiofbeqjwihoebfeqwf")
         self.add_incomplete_ration(temp_ration)
 
+
     def add_incomplete_ration(self, ration):
         button_text = "Incomplete {} for {}".format(ration.name, ration.house)
+        button_font = tkfont.Font(size=self.controller.main_font['size'])
         button = tk.Button(
-            self.extra_rations_space, text=button_text, font=self.controller.main_font,
+            self.extra_rations_space, text=button_text, font=button_font,
             bg="red", fg="white"
         )
         button.configure(command=lambda button=button: self.remove_button(button))
         # button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
         button.pack(padx=10, pady=5, side=tk.TOP, fill=tk.X)
+        button.update_idletasks()
+        fm.resize_font_width(button["text"], button_font, button.winfo_width())
 
     def remove_button(self, button):
         button.pack_forget()
