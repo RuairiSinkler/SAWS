@@ -38,6 +38,7 @@ class RationPage(tk.Frame):
             self.ration.house = self.house_dropdown.get()
         if self.button_to_remove is not None:
             self.button_to_remove.pack_forget()
+            self.controller.frames["MainMenuPage"].update_idletasks()
         self.controller.frames["RunPage"].display_page(self.ration)
 
     def display_page(self, ration, button_to_remove=None):
