@@ -16,25 +16,24 @@ class MainMenuPage(tk.Frame):
         title_label = tk.Label(self, text="Main Menu", font=self.controller.main_font)
         title_label.pack()
 
-        ration_options = VerticalScrolledFrame(self)
-        ration_options.pack(fill=tk.BOTH, expand=tk.TRUE)
+        self.buttons = []
 
-        self.extra_rations_space = tk.Frame(ration_options.interior)
-        self.extra_rations_space.pack(side=tk.TOP, fill=tk.X)
-        resize_dummy = tk.Frame(self.extra_rations_space, width=1, height=1)
-        resize_dummy.pack()
+        self.ration_options = VerticalScrolledFrame(self)
+        self.ration_options.pack(fill=tk.BOTH, expand=tk.TRUE)
 
         self.update_idletasks()
         for db_ration in db_rations:
             ration = Ration.fromDbRation(db_ration)
             button_font = tkfont.Font(size=self.controller.main_font['size'])
             button = tk.Button(
-                ration_options.interior, text=ration.name, font=button_font,
+                self.ration_options.interior, text=ration.name, font=button_font,
                 command=lambda ration=ration: self.controller.frames["RationPage"].display_page(ration)
             )
-            padx = 10
-            button.pack(padx=padx, pady=5, side=tk.TOP, fill=tk.X)
-            fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=padx)
+            self.buttons.append(button)
+            button_row = len(self.buttons)
+            button.grid(row=button_row, column=0, padx=10, pady=5, stick="nsew")
+            self.ration_options.interior.grid_rowconfigure(button_row, weight=1, uniform="ration_buttons")
+            fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
 
         button = tk.Button(
             self, text="Quit", font=self.controller.main_font, command=lambda: self.controller.show_frame("SplashPage")
@@ -53,16 +52,20 @@ class MainMenuPage(tk.Frame):
         button_text = "Incomplete {} for {}".format(ration.name, ration.house)
         button_font = tkfont.Font(size=self.controller.main_font['size'])
         button = tk.Button(
-            self.extra_rations_space, text=button_text, font=button_font,
+            self.ration_options.interior, text=button_text, font=button_font,
             bg="red2", fg="white", activebackground="red", activeforeground="white"
         )
         button.configure(command=lambda button=button: self.remove_button(button))
         # button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(ration, button))
-        padx = 10
-        button.pack(padx=padx, pady=5, side=tk.TOP, fill=tk.X)
+        self.buttons.append(button)
+        for button in self.buttons:
+            button.grid_forget()
+        for i, button in enumerate(self.buttons):
+            button.grid(row=i, column=0, padx=10, pady=5, stick="nsew")
+            self.ration_options.interior.grid_rowconfigure(i, weight=1, uniform="ration_buttons")
         print(button["text"])
-        fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=padx)
+        fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
         print()
 
     def remove_button(self, button):
-        button.pack_forget()
+        button.grid_forget()
