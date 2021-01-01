@@ -132,7 +132,7 @@ class SAWS(tk.Tk):
 
     def check_incomplete_rations(self):
         incomplete_rations = []
-        json_logs = glob.glob("{}/*_temp_log.json".format(self.controller.temp_logs_location))
+        json_logs = glob.glob("{}/*_temp_log.json".format(self.temp_logs_location))
         for json_log in json_logs:
             try:
                 with open(json_log, "r") as json_file:
