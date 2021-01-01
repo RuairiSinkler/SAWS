@@ -121,30 +121,12 @@ class RunPage(tk.Frame):
                 self.header.grid_columnconfigure(1, weight=0, uniform="")
 
     def create_log(self):
-        # sheet = None
-        # if self.ration.house in self.controller.ration_logs_ex.workbook.sheetnames:
-        #     sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
-        # else:
-        #     self.controller.ration_logs_ex.create_sheet(self.ration.house)
-        #     sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
-        #     self.controller.ration_logs_ex.change_sheet(sheet)
-        #     self.controller.ration_logs_ex.setup_sheet(self.ration.house)
-        #     sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
-        # self.controller.ration_logs_ex.change_sheet(sheet)
         self.ration.start_time = time.strftime("%T %d/%m/%y")
         self.update_log()
-        # self.sheet_row = self.controller.ration_logs_ex.create_log(self.ration)
-        # self.controller.ration_logs_ex.save()
-
 
     def update_log(self):
         with open(self.json_log_file, "w") as json_file:
             json.dump(self.ration, json_file, cls=RationEncoder)
-        # sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
-        # self.controller.ration_logs_ex.change_sheet(sheet)
-
-        # self.controller.ration_logs_ex.update_log(self.sheet_row, self.ration)
-        # self.controller.ration_logs_ex.save()
 
     def log_run(self, num_pad):
         sheet = None
