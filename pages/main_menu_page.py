@@ -28,7 +28,7 @@ class MainMenuPage(tk.Frame):
             button_font = tkfont.Font(size=self.controller.main_font['size'])
             button = tk.Button(
                 self.ration_options.interior, text=ration.name, font=button_font,
-                command=lambda ration=ration: self.controller.frames["RationPage"].display_page(Ration.copy(ration))
+                command=lambda ration=Ration.copy(ration): self.controller.frames["RationPage"].display_page(ration)
             )
             self.buttons.append(button)
             button_row = len(self.buttons)
@@ -48,7 +48,7 @@ class MainMenuPage(tk.Frame):
             self.ration_options.interior, text=button_text, font=button_font,
             bg="red2", fg="white", activebackground="red", activeforeground="white"
         )
-        button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(Ration.copy(ration), button))
+        button.configure(command=lambda ration=Ration.copy(ration), button=button: self.controller.frames["RationPage"].display_page(ration, button))
         self.buttons.insert(0, button)
         self.reset_buttons()
         fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
