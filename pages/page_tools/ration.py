@@ -1,6 +1,4 @@
 from pages.page_tools.ingredient import Ingredient
-import tkinter as tk
-import json
 from json import JSONEncoder
 
 class Ration:
