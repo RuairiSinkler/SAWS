@@ -48,11 +48,6 @@ class SAWS(tk.Tk):
         self.frames = {}
         self.warning_frames = []
 
-        self.create_frame(mpgs.ErrorPage, self.container)
-        warning_frame = self.create_frame(mpgs.WarningPage, self.container)
-        self.hide_frame("ErrorPage")
-        self.hide_frame("WarningPage")
-        self.warning_frames.append(warning_frame)
         self.report_callback_exception = self.display_callback_error
 
 
@@ -93,8 +88,13 @@ class SAWS(tk.Tk):
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             self.create_frame(F, self.container)
             self.hide_frame(F.__name__)
-        self.hide_frame("ErrorPage")
-        self.hide_frame("WarningPage")
+        if "ErrorPage" not in self.frames:
+            self.create_frame(mpgs.ErrorPage, self.container)
+            self.hide_frame("ErrorPage")
+        if "WarningPage" not in self.frames:
+            warning_frame = self.create_frame(mpgs.WarningPage, self.container)
+            self.hide_frame("WarningPage")
+            self.warning_frames.append(warning_frame)
 
         incomplete_rations = self.check_incomplete_rations()
         for ration, log_warning in incomplete_rations:
@@ -106,8 +106,6 @@ class SAWS(tk.Tk):
             display_below = self.warning_frames[-1]
         
         self.show_frame("SplashPage", belowThis=display_below)
-
-        time.sleep(1)
 
     def create_frame(self, F, container, name=None, *args):
         page_name = F.__name__
@@ -252,14 +250,18 @@ class SAWS(tk.Tk):
 
     def display_error(self, error, non_SAWS_error=False):
         traceback.print_exc()
+        if "ErrorPage" not in self.frames:
+            self.create_frame(mpgs.ErrorPage, self.container)
         self.frames["ErrorPage"].display_page(error, non_SAWS_error)
 
     def display_callback_error(self, exc, val, tb):
         non_SAWS_error = not isinstance(exc, err.SAWSError)
-        traceback.print_exc()
-        self.frames["ErrorPage"].display_page(exc, non_SAWS_error)
+        self.display_error(exc, non_SAWS_error)
 
     def display_warning(self, warning):
+        if "WarningPage" not in self.frames:
+            warning_frame = self.create_frame(mpgs.WarningPage, self.container)
+            self.warning_frames.append(warning_frame)
         if self.frames["WarningPage"].active:
             timestamp = time.time_ns()
             page_name = "TempWarningPage.{}".format(timestamp)
