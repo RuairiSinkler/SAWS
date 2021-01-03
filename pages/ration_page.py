@@ -41,7 +41,6 @@ class RationPage(tk.Frame):
         self.controller.frames["RunPage"].display_page(self.ration)
 
     def display_page(self, ration, button_to_remove=None):
-
         self.main.destroy()
         self.main = tk.Frame(self)
         self.main.pack(fill=tk.BOTH, expand=tk.TRUE)

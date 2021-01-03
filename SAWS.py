@@ -220,9 +220,9 @@ class SAWS(tk.Tk):
                         self.ration_ex.write_cell(0, amount_cell)
                         self.ration_ex.save()
                         amount = 0
+                    if amount > 0:
                         self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
-                    else:
-                        self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                        
                 
 
         house_cell = self.ration_ex.find("Houses")

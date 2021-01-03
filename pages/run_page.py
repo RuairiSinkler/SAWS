@@ -159,6 +159,7 @@ class RunPage(tk.Frame):
         num_pad.clear()
 
     def display_page(self, ration):
+        print(ration.__dict__)
         self.main.destroy()
         self.footer.destroy()
 
