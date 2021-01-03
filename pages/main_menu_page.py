@@ -37,7 +37,7 @@ class MainMenuPage(tk.Frame):
             button.grid(row=button_row, column=0, padx=10, pady=5, stick="nsew")
             self.ration_options.interior.grid_rowconfigure(button_row, weight=1, uniform="ration_buttons")
             fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
-            self.controller.after(1000, lambda ration=ration: print(ration.__dict__))
+            self.controller.after(1000, lambda ration=ration: self.temp_loop_print(ration))
 
         button = tk.Button(
             self, text="Quit", font=self.controller.main_font, command=lambda: self.controller.show_frame("SplashPage")
@@ -60,6 +60,10 @@ class MainMenuPage(tk.Frame):
         button.grid_forget()
         self.buttons.remove(button)
         self.reset_buttons()
+
+    def temp_loop_print(self, ration):
+        print(ration.__dict__)
+        self.controller.after(1000, lambda ration=ration: self.temp_loop_print(ration))
 
     def reset_buttons(self):
         for button in self.buttons:
