@@ -107,6 +107,8 @@ class SAWS(tk.Tk):
         
         self.show_frame("SplashPage", belowThis=display_below)
 
+        time.sleep(1)
+
     def create_frame(self, F, container, name=None, *args):
         page_name = F.__name__
         if name is not None:
