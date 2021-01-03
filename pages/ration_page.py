@@ -13,7 +13,7 @@ class RationPage(tk.Frame):
         self.main = tk.Frame(self)
         self.main.pack()
         self.footer = tk.Frame(self)
-        self.footer.pack(side=tk.BOTTOM)
+        self.footer.pack(side=tk.BOTTOM, fill=tk.X, expand=tk.TRUE)
 
         self.controller = controller
 

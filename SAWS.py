@@ -49,7 +49,9 @@ class SAWS(tk.Tk):
         self.warning_frames = []
 
         self.create_frame(mpgs.ErrorPage, self.container)
+        self.hide_frame("ErrorPage")
         warning_frame = self.create_frame(mpgs.WarningPage, self.container)
+        self.hide_frame("WarningPage")
         self.warning_frames.append(warning_frame)
         self.report_callback_exception = self.display_callback_error
 
@@ -138,7 +140,7 @@ class SAWS(tk.Tk):
                 with open(json_log, "r") as json_file:
                     ration_dict = json.load(json_file)
                     ration = Ration.from_dict(ration_dict)
-                    incomplete_rations.append((ration, err.IncompleteLog(ration.house)))
+                    incomplete_rations.append((ration, err.IncompleteLog(ration.name, ration.house)))
             except JSONDecodeError as e:
                 self.display_warning(err.BadJSONFile(json_log))
                 os.rename(json_log, "{}.bad.json".format(json_log.split('.')[0]))
