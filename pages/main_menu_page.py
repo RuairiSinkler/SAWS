@@ -18,7 +18,7 @@ class MainMenuPage(tk.Frame):
 
         self.buttons = []
 
-        self.ration_options = VerticalScrolledFrame(self)
+        self.ration_options = VerticalScrolledFrame(self, relief=tk.SUNKEN)
         self.ration_options.pack(fill=tk.BOTH, expand=tk.TRUE)
         self.ration_options.interior.columnconfigure(0, weight=1)
 
