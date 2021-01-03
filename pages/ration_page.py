@@ -65,7 +65,7 @@ class RationPage(tk.Frame):
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in self.ration.ingredients:
             label_text = "{}, {}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount))
-            label_font = tkfont.Font(size=self.controller.main_font)
+            label_font = tkfont.Font(size=self.controller.main_font['size'])
             fm.resize_font_width(label_text, label_font, self.controller.screen_width, padding=50)
             label = tk.Label(
                 ingredients_list.interior, text=label_text, font=label_font
