@@ -130,6 +130,7 @@ class RunPage(tk.Frame):
             json.dump(self.ration, json_file, cls=RationEncoder)
 
     def log_run(self, num_pad):
+        time0 = time.time()
         sheet = None
         if self.ration.house in self.controller.ration_logs_ex.workbook.sheetnames:
             sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
@@ -139,17 +140,22 @@ class RunPage(tk.Frame):
             self.controller.ration_logs_ex.change_sheet(sheet)
             self.controller.ration_logs_ex.setup_sheet(self.ration.house)
             sheet = self.controller.ration_logs_ex.get_sheet(self.ration.house)
+        print("Got sheet {}".format(time.time() - time0))
         self.controller.ration_logs_ex.change_sheet(sheet)
+        print("Changed sheet {}".format(time.time() - time0))
 
         self.ration.batch_number = num_pad.entry.get()
 
         self.ration.end_time = time.strftime("%T %d/%m/%y")
 
         self.controller.ration_logs_ex.log_run(self.ration)
+        print("Logged run {}".format(time.time() - time0))
         self.controller.ration_logs_ex.save()
+        print("Saved {}".format(time.time() - time0))
 
         if os.path.exists("{}/{}".format(self.controller.temp_log_location, self.json_log_file)):
             os.remove("{}/{}".format(self.controller.temp_log_location, self.json_log_file))
+        print("Deleted temp file {}".format(time.time() - time0))
 
         for _, weigher in self.weighers.items():
             weigher.active = False
