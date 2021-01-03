@@ -3,7 +3,7 @@ from json import JSONEncoder
 
 class Ration:
 
-    def __init__(self, id, name, house=None, start_time=None, end_time=None, complete=False, batch_number=None, ingredients=[]):
+    def __init__(self, id, name, house=None, start_time=None, end_time=None, complete=False, batch_number=None, ingredients=None):
         self.id = id
         self.name = name
         self.house = house
@@ -11,7 +11,10 @@ class Ration:
         self.end_time = end_time
         self.complete = complete
         self.batch_number = batch_number
-        self.ingredients = ingredients
+        if ingredients is None:
+            self.ingredients = []
+        else:
+            self.ingredients = ingredients
 
     @classmethod
     def copy(cls, ration):

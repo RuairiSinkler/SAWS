@@ -39,3 +39,15 @@ class BadJSONFile(SAWSWarning):
     def __init__(self, json_file):
         self.message = "The json file '{}' cannot be read. If you were expecting to recover from an incomplete ration contact supplier, otherwise ignore this.".format(json_file)
         super().__init__(self.message)
+
+class HouseNameTooLong(SAWSWarning):
+
+    def __init__(self, house, max_length):
+        self.message = "House '{}' has a name that is too long. It will be unavailable for use. Please reduce to fewer than {} characters.".format(house, max_length)
+        super().__init__(self.message)
+
+class RationNameTooLong(SAWSWarning):
+
+    def __init__(self, ration, max_length):
+        self.message = "Ration '{}' has a name that is too long. It will be unavailable for use. Please reduce to fewer than {} characters.".format(ration, max_length)
+        super().__init__(self.message)

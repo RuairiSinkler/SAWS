@@ -23,10 +23,8 @@ class MainMenuPage(tk.Frame):
         self.ration_options.interior.columnconfigure(0, weight=1)
 
         self.update_idletasks()
-        print("---MAINMENU INIT---")
         for db_ration in db_rations:
             ration = Ration.from_db_ration(db_ration)
-            # print(ration.__dict__)
             button_font = tkfont.Font(size=self.controller.main_font['size'])
             button = tk.Button(
                 self.ration_options.interior, text=ration.name, font=button_font,
@@ -37,7 +35,6 @@ class MainMenuPage(tk.Frame):
             button.grid(row=button_row, column=0, padx=10, pady=5, stick="nsew")
             self.ration_options.interior.grid_rowconfigure(button_row, weight=1, uniform="ration_buttons")
             fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
-            self.controller.after(1000, lambda ration=ration: self.temp_loop_print(ration))
 
         button = tk.Button(
             self, text="Quit", font=self.controller.main_font, command=lambda: self.controller.show_frame("SplashPage")
@@ -60,10 +57,6 @@ class MainMenuPage(tk.Frame):
         button.grid_forget()
         self.buttons.remove(button)
         self.reset_buttons()
-
-    def temp_loop_print(self, ration):
-        print(ration.__dict__)
-        self.controller.after(1000, lambda ration=ration: self.temp_loop_print(ration))
 
     def reset_buttons(self):
         for button in self.buttons:

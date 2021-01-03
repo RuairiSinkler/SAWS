@@ -81,3 +81,30 @@
 # recon_ration = Ration.from_json(ration_json)
 
 # print(recon_ration.to_json())
+
+# ration = Ration(1, "hello")
+# ration2 = Ration(2, "hello2")
+
+# ration.add_ingredient(2)
+# ration2.add_ingredient(3)
+
+# print(ration.__dict__)
+# print(ration2.__dict__)
+
+class Stupid:
+
+  def __init__(self, variable=None):
+    if variable is None:
+      self.variable = []
+    else:
+      self.variable = variable
+
+stupid1 = Stupid()
+# stupid2 = Stupid()
+
+stupid1.variable.append(1)
+stupid2 = Stupid()
+# stupid2.variable.append(2)
+
+print(stupid1.variable)
+print(stupid2.variable)

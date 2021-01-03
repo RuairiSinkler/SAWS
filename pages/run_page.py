@@ -148,9 +148,7 @@ class RunPage(tk.Frame):
         self.controller.ration_logs_ex.log_run(self.ration)
         self.controller.ration_logs_ex.save()
 
-        print("{}/{}".format(self.controller.temp_log_location, self.json_log_file))
         if os.path.exists("{}/{}".format(self.controller.temp_log_location, self.json_log_file)):
-            print("Removing {}".format("{}/{}".format(self.controller.temp_log_location, self.json_log_file)))
             os.remove("{}/{}".format(self.controller.temp_log_location, self.json_log_file))
 
         for _, weigher in self.weighers.items():
@@ -161,8 +159,6 @@ class RunPage(tk.Frame):
         num_pad.clear()
 
     def display_page(self, ration):
-        # print("---RUN PAGE DISPLAY---")
-        # print(ration.__dict__)
         self.main.destroy()
         self.footer.destroy()
 

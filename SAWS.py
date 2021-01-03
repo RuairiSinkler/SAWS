@@ -148,6 +148,8 @@ class SAWS(tk.Tk):
         self.ration_db.clear()
         self.ration_db.build()
 
+        name_length_max = 20
+
         weigher_cell = self.ration_ex.find("Weighers")
         if weigher_cell is None:
             raise err.CellError("Weighers")
@@ -202,26 +204,29 @@ class SAWS(tk.Tk):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             if name is None:
                 break
-            self.ration_db.insert_ration([name])
-            for col in itertools.count(column + 1):
-                ration_id = self.ration_db.get_id_by_name("rations", name)
-                ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
-                if ingredient is None:
-                    break
-                ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
-                amount_cell = self.ration_ex.get_cell(col, row)
-                amount = self.ration_ex.read_cell(amount_cell)
-                if ingredient_id is None:
-                    if amount is not None:
-                        self.display_warning(err.MissingIngredientWarning(ingredient, name))
-                else:
-                    if amount is None:
-                        self.display_warning(err.EmptyCellWarning(name))
-                        self.ration_ex.write_cell(0, amount_cell)
-                        self.ration_ex.save()
-                        amount = 0
-                    if amount > 0:
-                        self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+            if len(name) > name_length_max:
+                self.display_warning(err.RationNameTooLong(name, name_length_max))
+            else:
+                self.ration_db.insert_ration([name])
+                for col in itertools.count(column + 1):
+                    ration_id = self.ration_db.get_id_by_name("rations", name)
+                    ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
+                    if ingredient is None:
+                        break
+                    ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
+                    amount_cell = self.ration_ex.get_cell(col, row)
+                    amount = self.ration_ex.read_cell(amount_cell)
+                    if ingredient_id is None:
+                        if amount is not None:
+                            self.display_warning(err.MissingIngredientWarning(ingredient, name))
+                    else:
+                        if amount is None:
+                            self.display_warning(err.EmptyCellWarning(name))
+                            self.ration_ex.write_cell(0, amount_cell)
+                            self.ration_ex.save()
+                            amount = 0
+                        if amount > 0:
+                            self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
                         
                 
 
@@ -234,7 +239,10 @@ class SAWS(tk.Tk):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             if name is None:
                 break
-            self.ration_db.insert_house([name])
+            if len(name) <= name_length_max:
+                self.ration_db.insert_house([name])
+            else:
+                self.display_warning(err.HouseNameTooLong(name, name_length_max))
 
     def display_error(self, error, non_SAWS_error=False):
         traceback.print_exc()
