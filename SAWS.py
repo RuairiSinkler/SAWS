@@ -50,6 +50,8 @@ class SAWS(tk.Tk):
 
         self.create_frame(mpgs.ErrorPage, self.container)
         warning_frame = self.create_frame(mpgs.WarningPage, self.container)
+        self.hide_frame("ErrorPage")
+        self.hide_frame("WarningPage")
         self.warning_frames.append(warning_frame)
         self.report_callback_exception = self.display_callback_error
 
