@@ -31,7 +31,7 @@ class InvalidRation(SAWSWarning):
 class IncompleteLog(SAWSWarning):
 
     def __init__(self, ration, house):
-        self.message = "The most recent '{}' ration run for house '{}' was ended unexpectedly. It will be available to continue at the main menu. It will disappear if a new '{}' for '{}' is run again.".format(ration, house, ration, house)
+        self.message = "The most recent '{}' ration run for house '{}' was ended unexpectedly. It will be available to continue at the main menu. It will disappear (and the data lost!) if a new '{}' for '{}' is run again.".format(ration, house, ration, house)
         super().__init__(self.message)
 
 class BadJSONFile(SAWSWarning):
