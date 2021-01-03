@@ -44,7 +44,7 @@ class RunPage(tk.Frame):
         self.end_text.set("End Run Early")
         self.quit_button = tk.Button(
             self.header, textvariable=self.end_text, font=self.controller.main_font,
-            command=lambda: self.controller.frames["AreYouSurePage"].display_page(self.ration.done)
+            command=lambda: self.controller.frames["AreYouSurePage"].display_page(self.ration.complete)
         )
         self.quit_button.grid(column=1, row=0, sticky="ew")
 
@@ -75,7 +75,7 @@ class RunPage(tk.Frame):
             if next_ingredient is not None:
                 weigher.hopper.draw_hopper()
         
-        self.ration.done = self.check_done()
+        self.ration.complete = self.check_done()
 
     def ingredient_done(self, ingredient):
         if ingredient.current_amount == 0:
@@ -83,7 +83,7 @@ class RunPage(tk.Frame):
         else:
             ingredient.current_amount = 0
         ingredient.label.set("{}\n{}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount)))
-        self.ration.done = self.check_done()
+        self.ration.complete = self.check_done()
 
     def check_done(self):
         done = True
@@ -115,7 +115,7 @@ class RunPage(tk.Frame):
             self.start_pause_text.set("Pause")
             for _, weigher in self.weighers.items():
                 self.increment_weight(weigher, 0)
-            if not self.ration.done:
+            if not self.ration.complete:
                 self.quit_button.grid_remove()
                 self.header.grid_columnconfigure(1, weight=0, uniform="")
 
@@ -148,7 +148,9 @@ class RunPage(tk.Frame):
         self.controller.ration_logs_ex.log_run(self.ration)
         self.controller.ration_logs_ex.save()
 
+        print(self.json_log_file)
         if os.path.exists(self.json_log_file):
+            print("Removing {}".format(self.json_log_file))
             os.remove(self.json_log_file)
 
         for _, weigher in self.weighers.items():
@@ -217,5 +219,5 @@ class RunPage(tk.Frame):
             text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
             fm.resize_font_width(text, unweighed_button_font, button.winfo_width())
 
-        self.ration.done = self.check_done()
+        self.ration.complete = self.check_done()
         self.controller.show_frame("RunPage")
