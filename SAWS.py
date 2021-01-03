@@ -49,9 +49,7 @@ class SAWS(tk.Tk):
         self.warning_frames = []
 
         self.create_frame(mpgs.ErrorPage, self.container)
-        self.hide_frame("ErrorPage")
         warning_frame = self.create_frame(mpgs.WarningPage, self.container)
-        self.hide_frame("WarningPage")
         self.warning_frames.append(warning_frame)
         self.report_callback_exception = self.display_callback_error
 
@@ -93,6 +91,8 @@ class SAWS(tk.Tk):
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             self.create_frame(F, self.container)
             self.hide_frame(F.__name__)
+        self.hide_frame("ErrorPage")
+        self.hide_frame("WarningPage")
 
         incomplete_rations = self.check_incomplete_rations()
         for ration, log_warning in incomplete_rations:
