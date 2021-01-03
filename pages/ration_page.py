@@ -1,5 +1,8 @@
 import tkinter as tk
+import tkinter.font as tkfont
 from tkinter import ttk
+
+import pages.page_tools.font_manager as fm
 from pages.page_tools.vertical_scrolled_frame import VerticalScrolledFrame
 from pages.page_tools.ingredient import Ingredient
 
@@ -61,8 +64,11 @@ class RationPage(tk.Frame):
         ingredients_list = VerticalScrolledFrame(self.main)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in self.ration.ingredients:
+            label_text = "{}, {}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount))
+            label_font = tkfont.Font(size=self.controller.main_font)
+            fm.resize_font_width(label_text, label_font, self.controller.screen_width, padding=50)
             label = tk.Label(
-                ingredients_list.interior, text="{}, {}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount)), font=self.controller.main_font
+                ingredients_list.interior, text=label_text, font=label_font
             )
             label.pack()
 
