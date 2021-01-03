@@ -61,7 +61,7 @@ class RationPage(tk.Frame):
         )
         label.pack()
 
-        ingredients_list = VerticalScrolledFrame(self.main)
+        ingredients_list = VerticalScrolledFrame(self.main, relief=tk.SUNKEN)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in self.ration.ingredients:
             label_text = "{}, {}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount))
