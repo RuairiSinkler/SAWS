@@ -23,8 +23,10 @@ class MainMenuPage(tk.Frame):
         self.ration_options.interior.columnconfigure(0, weight=1)
 
         self.update_idletasks()
+        print("---MAINMENU INIT---")
         for db_ration in db_rations:
             ration = Ration.from_db_ration(db_ration)
+            print(ration.__dict__)
             button_font = tkfont.Font(size=self.controller.main_font['size'])
             button = tk.Button(
                 self.ration_options.interior, text=ration.name, font=button_font,

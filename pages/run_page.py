@@ -161,6 +161,7 @@ class RunPage(tk.Frame):
         num_pad.clear()
 
     def display_page(self, ration):
+        print("---RUN PAGE DISPLAY---")
         print(ration.__dict__)
         self.main.destroy()
         self.footer.destroy()

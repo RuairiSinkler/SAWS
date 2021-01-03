@@ -47,7 +47,7 @@ class RationPage(tk.Frame):
 
         self.ration = ration
         self.button_to_remove = button_to_remove
-
+        print("---RATIONPAGE DISPLAY---")
         print(self.ration.ingredients)
         if not self.ration.ingredients:
             db_ingredients = self.controller.ration_db.get_ration_ingredients(self.ration.id)
