@@ -119,6 +119,13 @@ class RunPage(tk.Frame):
                 self.quit_button.grid_remove()
                 self.header.grid_columnconfigure(1, weight=0, uniform="")
 
+    def emergency_stop(self):
+        for _, weigher in self.weighers.items():
+            for ingredient in weigher.ingredients:
+                ingredient.augar.turn_off()
+        if self.ration is not None and os.path.exists("{}/{}".format(self.controller.temp_log_location, self.json_log_file)):
+            self.update_log()
+
     def create_log(self):
         self.ration.start_time = time.strftime("%T %d/%m/%y")
         if not os.path.exists(self.controller.temp_log_location):

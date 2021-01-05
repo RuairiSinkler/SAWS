@@ -41,3 +41,9 @@ class IngredientWeigherError(SAWSError):
     def __init__(self, ingredient_name, weigher_id):
         self.message = "Error reading ingredient '{}'. It refers to a weigher with id '{}', but this is not present in the Weighers table, please resolve this in rations.xlsx.".format(ingredient_name, weigher_id)
         super().__init__(self.message)
+
+class NoPowerError(SAWSError):
+
+    def __init__(self):
+        self.message = "Mains power to the system has been lost, tidying up and shutting down.".format()
+        super().__init__(self.message)

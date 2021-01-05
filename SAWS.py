@@ -2,6 +2,7 @@
 
 from json.decoder import JSONDecodeError
 import os
+import sys
 import time
 import glob
 import json
@@ -21,6 +22,12 @@ import pages as pgs
 import pages.message_pages as mpgs
 
 from pages.page_tools.ration import Ration
+
+try:
+    from pijuice import PiJuice
+except ImportError as e:
+    print("PIJUICE UNSUCCESSFULLY IMPORTED")
+    traceback.print_exc()
 
 
 class SAWS(tk.Tk):
@@ -45,6 +52,8 @@ class SAWS(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_columnconfigure(2, weight=1)
 
+        self.pijuice = None
+
         self.frames = {}
         self.warning_frames = []
 
@@ -54,6 +63,20 @@ class SAWS(tk.Tk):
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
+        pijuice_active = True
+        if 'pijuice' in sys.modules:
+            try:
+                self.pijuice = PiJuice()
+            except FileNotFoundError as e:
+                print("PIJUICE UNSUCCESSFULLY INITIALISED")
+                pijuice_active = False
+                traceback.print_exc()
+        else:
+            pijuice_active = False
+
+        if pijuice_active:
+            self.check_pijuice()
+        
         self.config = configparser.ConfigParser()
         self.config.read("./data/config.ini")
 
@@ -248,6 +271,21 @@ class SAWS(tk.Tk):
             else:
                 self.display_warning(err.HouseNameTooLong(name, name_length_max))
 
+    def check_pijuice(self):
+        status = self.pijuice.status.GetStatus()
+        if 'data' in status:
+            power_present = status['data']['powerInput5vIo']
+            if power_present == 'NOT_PRESENT':
+                if 'RunPage' in self.frames:
+                    if self.frames['RunPage'].running:
+                        self.frames['RunPage'].emergency_stop()
+                self.after(5000, self.shutdown)
+                raise err.NoPowerError
+            else:
+                self.after(1000, self.check_pijuice)
+        else:
+            self.after(1000, self.check_pijuice)
+
     def display_error(self, error, non_SAWS_error=False):
         traceback.print_exc()
         if "ErrorPage" not in self.frames:
@@ -310,7 +348,6 @@ def main():
         traceback.print_exc()
     finally:
         GPIO.cleanup()
-
 
 if __name__ == "__main__":
     main()
