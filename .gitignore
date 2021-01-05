@@ -56,3 +56,4 @@ docs/_build/
 # My additions
 .idea
 ration_logs.xlsx
+./temp_logs

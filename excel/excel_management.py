@@ -1,11 +1,7 @@
-import os
 import openpyxl
 import itertools
 import configparser
-import numpy as np
 from pathlib import Path
-
-import exceptions as err
 
 class WorksheetManager:
     def __init__(self, directory, name):
@@ -58,9 +54,11 @@ class WorksheetManager:
         cell.value = value
 
     # Setups sheet i.e. creates layout of file
-    def setup_sheet(self, title, headings):
+    def setup_sheet(self, title):
         self.sheet.title = title
         self.write_cell(title, self.sheet["B2"])
+
+        headings = ["Start Time", "End Time", "Ration", "Complete", "Total", "Batch Number"]
         for i, heading in enumerate(headings):
             self.write_cell(heading, self.get_cell(i+2, 4))
             self.write_cell("-", self.get_cell(i+2, 3))
@@ -74,19 +72,30 @@ class WorksheetManager:
                     return cell
         return None
 
-    def log_run(self, time_run, ration, complete, ingredients, batch_number):
-        top_row = self.find("Date Run").row
+    def log_run(self, ration):
         row = self.sheet.max_row + 1
-        column = self.find("Date Run").column
-        self.write_cell(time_run, self.get_cell(column, row))
-        self.write_cell(ration, self.get_cell(column + 1, row))
-        if complete:
+        start_time_cell = self.find("Start Time")
+        
+        column = start_time_cell.column
+        self.write_cell(ration.start_time, self.get_cell(column, row))
+
+        column = self.find("Ration").column
+        self.write_cell(ration.name, self.get_cell(column, row))
+
+        column = self.find("End Time").column
+        self.write_cell(ration.end_time, self.get_cell(column, row))
+
+        if ration.complete:
             complete = "Yes"
         else:
             complete = "No"
-        self.write_cell(complete, self.get_cell(column + 2, row))
+        column = self.find("Complete").column
+        self.write_cell(complete, self.get_cell(column, row))
+
+        top_row = start_time_cell.row
+
         total = 0
-        for ingredient in ingredients:
+        for ingredient in ration.ingredients:
             try:
                 column = self.find(ingredient.name).column
             except AttributeError:
@@ -96,12 +105,15 @@ class WorksheetManager:
                 self.write_cell(ingredient.name, self.get_cell(column, top_row))
             self.write_cell(ingredient.current_amount, self.get_cell(column, row))
             total += ingredient.current_amount
+
         column = self.find("Total").column
         self.write_cell(total, self.get_cell(column, row))
+
         column = self.find("Batch Number").column
-        self.write_cell(batch_number, self.get_cell(column, row))
+        self.write_cell(ration.batch_number, self.get_cell(column, row))
 
     def update_sheets(self, sheet_type):
+
         for sheet_name in self.get_sheets():
             sheet = self.get_sheet(sheet_name)
             self.change_sheet(sheet)
@@ -190,7 +202,27 @@ class WorksheetManager:
                     
 
             elif sheet_type == "ration_logs":
-                pass
+
+                if sheet_name == "Sheet":
+                    self.workbook.remove_sheet(sheet)
+                    self.save()
+
+                elif sheet_version < 2.0:
+                    date_run_cell = self.find("Date Run")
+                    if date_run_cell is not None:
+                        new_column = date_run_cell.column + 1
+                        self.sheet.insert_cols(new_column)
+                        for row in range(date_run_cell.row, sheet.max_row + 1):
+                            date = self.read_cell(self.get_cell(date_run_cell.column, row))
+                            self.write_cell(date, self.get_cell(date_run_cell.column + 1, row))
+                        self.write_cell("Start Time", date_run_cell)
+                        self.write_cell("End Time", self.get_cell(date_run_cell.column + 1, date_run_cell.row))
+                        self.write_cell("-", self.get_cell(date_run_cell.column + 1, date_run_cell.row - 1))
+
+                    sheet_version = 2.0
+                    self._update_version_cell(sheet_version, version_cell)
+                    self.save()
+
     
     def _create_version_cell(self, version):
         num_rows_to_insert = 0

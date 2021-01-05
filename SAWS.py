@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
+from json.decoder import JSONDecodeError
 import os
 import time
-import re
+import glob
+import json
 import itertools
 import configparser
 import argparse
@@ -17,6 +19,8 @@ import excel.excel_management as ex
 import exceptions as err
 import pages as pgs
 import pages.message_pages as mpgs
+
+from pages.page_tools.ration import Ration
 
 
 class SAWS(tk.Tk):
@@ -35,7 +39,7 @@ class SAWS(tk.Tk):
         self.option_add("*TCombobox*Listbox*Font", self.main_font)
 
         self.container = tk.Frame(self)
-        self.container.pack(side="top", fill=tk.BOTH, expand=True)
+        self.container.pack(side="top", fill=tk.BOTH, expand=tk.TRUE)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_rowconfigure(2, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
@@ -44,9 +48,6 @@ class SAWS(tk.Tk):
         self.frames = {}
         self.warning_frames = []
 
-        self.create_frame(mpgs.ErrorPage, self.container)
-        warning_frame = self.create_frame(mpgs.WarningPage, self.container)
-        self.warning_frames.append(warning_frame)
         self.report_callback_exception = self.display_callback_error
 
 
@@ -62,6 +63,11 @@ class SAWS(tk.Tk):
             raise err.ConfigError(section, option)
         usb_dir = self.config[section].get(option)
 
+        option = "temp_log_location"
+        if not self.config.has_option(section, option):
+            raise err.ConfigError(section, option)
+        self.temp_log_location = self.config[section].get(option)
+
         option = "default_weigher_increment"
         if not self.config.has_option(section, option):
             raise err.ConfigError(section, option)
@@ -76,17 +82,30 @@ class SAWS(tk.Tk):
 
         self.ration_ex.update_sheets("rations")
         self.ration_logs_ex.update_sheets("ration_logs")
+
         self.setup_database()
 
         for F in (pgs.SplashPage, pgs.PinPage, pgs.MainMenuPage, pgs.RationPage, pgs.RunPage, mpgs.AreYouSurePage, pgs.BatchPage):
             self.create_frame(F, self.container)
             self.hide_frame(F.__name__)
+        if "ErrorPage" not in self.frames:
+            self.create_frame(mpgs.ErrorPage, self.container)
+            self.hide_frame("ErrorPage")
+        if "WarningPage" not in self.frames:
+            warning_frame = self.create_frame(mpgs.WarningPage, self.container)
+            self.hide_frame("WarningPage")
+            self.warning_frames.append(warning_frame)
+
+        incomplete_rations = self.check_incomplete_rations()
+        for ration, log_warning in incomplete_rations:
+            self.display_warning(log_warning)
+            self.frames["MainMenuPage"].add_incomplete_ration(ration)
 
         display_below = None
         if self.frames["WarningPage"].active:
             display_below = self.warning_frames[-1]
         
-        self.show_frame("SplashPage", display_below)
+        self.show_frame("SplashPage", belowThis=display_below)
 
     def create_frame(self, F, container, name=None, *args):
         page_name = F.__name__
@@ -115,9 +134,25 @@ class SAWS(tk.Tk):
         frame = self.frames[page_name]
         frame.lower()
 
+    def check_incomplete_rations(self):
+        incomplete_rations = []
+        json_logs = glob.glob("{}/*_temp_log.json".format(self.temp_log_location))
+        for json_log in json_logs:
+            try:
+                with open(json_log, "r") as json_file:
+                    ration_dict = json.load(json_file)
+                    ration = Ration.from_dict(ration_dict)
+                    incomplete_rations.append((ration, err.IncompleteLog(ration.name, ration.house)))
+            except JSONDecodeError as e:
+                self.display_warning(err.BadJSONFile(json_log))
+                os.rename(json_log, "{}.bad.json".format(json_log.split('.')[0]))
+        return incomplete_rations
+
     def setup_database(self):
         self.ration_db.clear()
         self.ration_db.build()
+
+        name_length_max = 20
 
         weigher_cell = self.ration_ex.find("Weighers")
         if weigher_cell is None:
@@ -173,27 +208,30 @@ class SAWS(tk.Tk):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             if name is None:
                 break
-            self.ration_db.insert_ration([name])
-            for col in itertools.count(column + 1):
-                ration_id = self.ration_db.get_id_by_name("rations", name)
-                ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
-                if ingredient is None:
-                    break
-                ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
-                amount_cell = self.ration_ex.get_cell(col, row)
-                amount = self.ration_ex.read_cell(amount_cell)
-                if ingredient_id is None:
-                    if amount is not None:
-                        self.display_warning(err.MissingIngredientWarning(ingredient, name))
-                else:
-                    if amount is None:
-                        self.display_warning(err.EmptyCellWarning(name))
-                        self.ration_ex.write_cell(0, amount_cell)
-                        self.ration_ex.save()
-                        amount = 0
-                        self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+            if len(name) > name_length_max:
+                self.display_warning(err.RationNameTooLong(name, name_length_max))
+            else:
+                self.ration_db.insert_ration([name])
+                for col in itertools.count(column + 1):
+                    ration_id = self.ration_db.get_id_by_name("rations", name)
+                    ingredient = self.ration_ex.read_cell(self.ration_ex.get_cell(col, top_row))
+                    if ingredient is None:
+                        break
+                    ingredient_id = self.ration_db.get_id_by_name("ingredients", ingredient)
+                    amount_cell = self.ration_ex.get_cell(col, row)
+                    amount = self.ration_ex.read_cell(amount_cell)
+                    if ingredient_id is None:
+                        if amount is not None:
+                            self.display_warning(err.MissingIngredientWarning(ingredient, name))
                     else:
-                        self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                        if amount is None:
+                            self.display_warning(err.EmptyCellWarning(name))
+                            self.ration_ex.write_cell(0, amount_cell)
+                            self.ration_ex.save()
+                            amount = 0
+                        if amount > 0:
+                            self.ration_db.insert_ration_ingredients((ration_id, ingredient_id, amount))
+                        
                 
 
         house_cell = self.ration_ex.find("Houses")
@@ -205,18 +243,25 @@ class SAWS(tk.Tk):
             name = self.ration_ex.read_cell(self.ration_ex.get_cell(column, row))
             if name is None:
                 break
-            self.ration_db.insert_house([name])
+            if len(name) <= name_length_max:
+                self.ration_db.insert_house([name])
+            else:
+                self.display_warning(err.HouseNameTooLong(name, name_length_max))
 
     def display_error(self, error, non_SAWS_error=False):
         traceback.print_exc()
+        if "ErrorPage" not in self.frames:
+            self.create_frame(mpgs.ErrorPage, self.container)
         self.frames["ErrorPage"].display_page(error, non_SAWS_error)
 
     def display_callback_error(self, exc, val, tb):
         non_SAWS_error = not isinstance(exc, err.SAWSError)
-        traceback.print_exc()
-        self.frames["ErrorPage"].display_page(exc, non_SAWS_error)
+        self.display_error(exc, non_SAWS_error)
 
     def display_warning(self, warning):
+        if "WarningPage" not in self.frames:
+            warning_frame = self.create_frame(mpgs.WarningPage, self.container)
+            self.warning_frames.append(warning_frame)
         if self.frames["WarningPage"].active:
             timestamp = time.time_ns()
             page_name = "TempWarningPage.{}".format(timestamp)
