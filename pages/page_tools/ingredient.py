@@ -2,7 +2,7 @@ import tkinter as tk
 
 class Ingredient:
 
-    def __init__(self, name, desired_amount, augar_pin, weigher_id, ordering, augar=None, current_amount=0):
+    def __init__(self, name, desired_amount, augar_pin, weigher_id, ordering, augar=None, current_amount=0, label=None):
         self.name = name
         self.desired_amount = desired_amount
         self.augar_pin = augar_pin
@@ -13,6 +13,11 @@ class Ingredient:
 
         self.label = tk.StringVar()
         self.label.set("{}\n{}/{}kg".format(self.name, str(self.current_amount), str(self.desired_amount)))
+
+    @classmethod
+    def copy(cls, ingredient):
+        ingredient_copy = cls(**ingredient.__dict__)
+        return ingredient_copy
 
     @classmethod
     def from_db_ingredient(cls, db_ingredient, augar=None):
