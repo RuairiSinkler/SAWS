@@ -53,7 +53,8 @@ class RationEncoder(JSONEncoder):
         if "ingredients" in ration_dict:
             for ingredient in ration_dict["ingredients"]:
                 ingredient_copy = Ingredient.copy(ingredient)
-                print(ingredient_copy.__dict__)
+                ingredient_copy.augar = None
+                ingredient_copy.label = None
                 ingredients.append(ingredient_copy.__dict__)
         ration_dict["ingredients"] = ingredients
         print(ration_dict)

@@ -16,11 +16,7 @@ class Ingredient:
 
     @classmethod
     def copy(cls, ingredient):
-        ingredient_dict = dict(ingredient.__dict__)
-        
-        ingredient_copy = cls(**ingredient_dict)
-        ingredient_copy.augar = None
-        ingredient_copy.label = None
+        ingredient_copy = cls(**ingredient.__dict__)
         return ingredient_copy
 
     @classmethod
