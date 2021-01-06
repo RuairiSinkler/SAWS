@@ -287,16 +287,14 @@ class SAWS(tk.Tk):
         else:
             self.after(1000, self.check_pijuice)
 
-    def display_error(self, error):
-        saws_error = isinstance(error, err.SAWSError)
-
+    def display_error(self, error, saws_error=True):
         traceback.print_exc()
         if "ErrorPage" not in self.frames:
             self.create_frame(mpgs.ErrorPage, self.container)
         self.frames["ErrorPage"].display_page(error, saws_error)
 
     def display_callback_error(self, exc, val, tb):
-        self.display_error(exc)
+        self.display_error(exc, isinstance(exc, err.SAWSError))
 
     def display_warning(self, warning):
         if "WarningPage" not in self.frames:
@@ -342,7 +340,7 @@ def main():
         except err.SAWSError as e:
             saws.display_error(e)
         except Exception as e:
-            saws.display_error(e, non_SAWS_error=True)
+            saws.display_error(e, saws_error=False)
             raise e
         finally:
             saws.mainloop()
