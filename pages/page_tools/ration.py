@@ -18,7 +18,13 @@ class Ration:
 
     @classmethod
     def copy(cls, ration):
-        return cls(**ration.__dict__)
+        ration_dict = dict(ration.__dict__)
+        ingredients = []
+        for ingredient in ration_dict["ingredients"]:
+            ingredient_copy = Ingredient.copy(ingredient)
+            ingredients.append(ingredient_copy)
+        ration_dict["ingredients"] = ingredients
+        return cls(**ration_dict)
 
     @classmethod
     def from_db_ration(cls, db_ration):
@@ -42,10 +48,8 @@ class RationEncoder(JSONEncoder):
         ration_dict = dict(o.__dict__)
         ingredients = []
         for ingredient in ration_dict["ingredients"]:
-            ingredient_dict = dict(ingredient.__dict__)
-            del ingredient_dict["label"]
-            del ingredient_dict["augar"]
-            ingredients.append(ingredient_dict)
+            ingredient_copy = Ingredient.copy(ingredient)
+            ingredients.append(ingredient_copy.__dict__)
         ration_dict["ingredients"] = ingredients
 
         return ration_dict

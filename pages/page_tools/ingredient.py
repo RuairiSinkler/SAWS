@@ -15,6 +15,13 @@ class Ingredient:
         self.label.set("{}\n{}/{}kg".format(self.name, str(self.current_amount), str(self.desired_amount)))
 
     @classmethod
+    def copy(cls, ingredient):
+        ingredient_dict = dict(ingredient.__dict__)
+        del ingredient_dict["label"]
+        del ingredient_dict["augar"]
+        return cls(**ingredient_dict)
+
+    @classmethod
     def from_db_ingredient(cls, db_ingredient, augar=None):
         return cls(*db_ingredient, augar)
 
