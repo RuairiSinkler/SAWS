@@ -294,6 +294,12 @@ class SAWS(tk.Tk):
         self.frames["ErrorPage"].display_page(error)
 
     def display_callback_error(self, exc, val, tb):
+        print()
+        print("DISPLAY CALLBACK ERROR")
+        print(exc)
+        print(val)
+        print(tb)
+        print()
         self.display_error(exc)
 
     def display_warning(self, warning):
