@@ -19,7 +19,7 @@ class Ingredient:
         ingredient_dict = dict(ingredient.__dict__)
         del ingredient_dict["label"]
         del ingredient_dict["augar"]
-        print(ingredient_dict)
+        # print(ingredient_dict)
         return cls(**ingredient_dict)
 
     @classmethod
