@@ -280,7 +280,7 @@ class SAWS(tk.Tk):
                 if 'RunPage' in self.frames:
                     if self.frames['RunPage'].running:
                         self.frames['RunPage'].emergency_stop()
-                # self.after(10000, self.shutdown)
+                self.after(10000, self.shutdown)
                 raise err.NoPowerError()
             else:
                 self.after(1000, self.check_pijuice)
@@ -338,19 +338,13 @@ def main():
         try:
             saws.setup()
         except err.SAWSError as e:
-            print("SAWS EXCEPTION TIME BABY")
-            print(e)
             saws.display_error(e)
         except Exception as e:
-            print("NON SAWS EXCEPTION TIME BABY")
-            print(e)
             saws.display_error(e, saws_error=False)
             raise e
         finally:
             saws.mainloop()
     except Exception as e:
-        print("OUTSIDE EXCEPTION TIME BABY")
-        print(e)
         traceback.print_exc()
     finally:
         GPIO.cleanup()
