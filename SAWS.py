@@ -280,7 +280,7 @@ class SAWS(tk.Tk):
                 if 'RunPage' in self.frames:
                     if self.frames['RunPage'].running:
                         self.frames['RunPage'].emergency_stop()
-                self.after(5000, self.shutdown)
+                self.after(10000, self.shutdown)
                 raise err.NoPowerError
             else:
                 self.after(1000, self.check_pijuice)
