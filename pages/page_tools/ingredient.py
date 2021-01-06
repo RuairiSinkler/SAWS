@@ -16,11 +16,10 @@ class Ingredient:
 
     @classmethod
     def copy(cls, ingredient):
-        ingredient_dict = dict(ingredient.__dict__)
-        del ingredient_dict["label"]
-        del ingredient_dict["augar"]
-        # print(ingredient_dict)
-        return cls(**ingredient_dict)
+        ingredient_copy = cls(**ingredient.__dict__)
+        ingredient_copy.augar = None
+        ingredient_copy.label = None
+        return ingredient_copy
 
     @classmethod
     def from_db_ingredient(cls, db_ingredient, augar=None):
