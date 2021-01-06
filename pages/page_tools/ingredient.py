@@ -2,7 +2,7 @@ import tkinter as tk
 
 class Ingredient:
 
-    def __init__(self, name, desired_amount, augar_pin, weigher_id, ordering, augar=None, current_amount=0):
+    def __init__(self, name, desired_amount, augar_pin, weigher_id, ordering, augar=None, current_amount=0, label=None):
         self.name = name
         self.desired_amount = desired_amount
         self.augar_pin = augar_pin
@@ -17,7 +17,6 @@ class Ingredient:
     @classmethod
     def copy(cls, ingredient):
         ingredient_dict = dict(ingredient.__dict__)
-        del ingredient_dict["label"]
         
         ingredient_copy = cls(**ingredient_dict)
         ingredient_copy.augar = None
