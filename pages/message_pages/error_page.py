@@ -1,3 +1,4 @@
+from SAWS import SAWS
 from exceptions.errors import SAWSError
 import tkinter as tk
 import sys
@@ -39,6 +40,8 @@ class ErrorPage(tk.Frame):
         self.shutdown_button.grid(row=2, column=1, sticky="ew")
 
     def display_page(self, error):
+        print(type(error))
+        print(isinstance(error, SAWSError))
         if isinstance(error, SAWSError):
             self.title.set("ERROR") 
             self.message.set(str(error))
