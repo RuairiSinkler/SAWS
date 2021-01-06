@@ -168,7 +168,7 @@ class SAWS(tk.Tk):
                     incomplete_rations.append((ration, err.IncompleteLog(ration.name, ration.house)))
             except JSONDecodeError as e:
                 self.display_warning(err.BadJSONFile(json_log))
-                os.rename(json_log, "{}.bad.json".format(json_log.split('.')[1]))
+                os.rename(json_log, "{}.bad.json".format(json_log))
         return incomplete_rations
 
     def setup_database(self):
