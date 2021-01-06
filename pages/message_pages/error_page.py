@@ -39,6 +39,9 @@ class ErrorPage(tk.Frame):
         self.shutdown_button.grid(row=2, column=1, sticky="ew")
 
     def display_page(self, error):
+        print(error)
+        print(error.message)
+        print(isinstance(error, SAWSError))
         if isinstance(error, SAWSError):
             self.title.set("ERROR") 
             self.message.set(str(error))
