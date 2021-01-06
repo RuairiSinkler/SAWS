@@ -48,6 +48,7 @@ class RationEncoder(JSONEncoder):
 
     def default(self, o):
         ration_dict = dict(o.__dict__)
+        print(ration_dict)
         ingredients = []
         if "ingredients" in ration_dict:
             for ingredient in ration_dict["ingredients"]:
