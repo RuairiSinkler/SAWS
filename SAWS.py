@@ -2,6 +2,7 @@
 
 from json.decoder import JSONDecodeError
 import os
+import sys
 import time
 import glob
 import json
@@ -21,6 +22,12 @@ import pages as pgs
 import pages.message_pages as mpgs
 
 from pages.page_tools.ration import Ration
+
+try:
+    from pijuice import PiJuice
+except ImportError as e:
+    print("PIJUICE UNSUCCESSFULLY IMPORTED")
+    traceback.print_exc()
 
 
 class SAWS(tk.Tk):
@@ -45,6 +52,8 @@ class SAWS(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_columnconfigure(2, weight=1)
 
+        self.pijuice = None
+
         self.frames = {}
         self.warning_frames = []
 
@@ -54,6 +63,20 @@ class SAWS(tk.Tk):
     def setup(self):
         GPIO.setmode(GPIO.BCM)
 
+        pijuice_active = True
+        if 'pijuice' in sys.modules:
+            try:
+                self.pijuice = PiJuice()
+            except FileNotFoundError as e:
+                print("PIJUICE UNSUCCESSFULLY INITIALISED")
+                pijuice_active = False
+                traceback.print_exc()
+        else:
+            pijuice_active = False
+
+        if pijuice_active:
+            self.check_pijuice()
+        
         self.config = configparser.ConfigParser()
         self.config.read("./data/config.ini")
 
@@ -74,7 +97,7 @@ class SAWS(tk.Tk):
         self.default_weigher_increment = int(self.config[section].get(option))
 
         if not os.path.ismount(usb_dir):
-            raise err.USBError
+            raise err.USBError()
         
         self.ration_db = db.DatabaseManager("./database", "rations.db")
         self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
@@ -248,15 +271,30 @@ class SAWS(tk.Tk):
             else:
                 self.display_warning(err.HouseNameTooLong(name, name_length_max))
 
-    def display_error(self, error, non_SAWS_error=False):
+    def check_pijuice(self):
+        status = self.pijuice.status.GetStatus()
+        if 'data' in status:
+            direct_power = status['data']['powerInput']
+            rpi_power = status['data']['powerInput5vIo']
+            if direct_power == 'NOT_PRESENT' and rpi_power == 'NOT_PRESENT':
+                if 'RunPage' in self.frames:
+                    if self.frames['RunPage'].running:
+                        self.frames['RunPage'].emergency_stop()
+                self.after(10000, self.shutdown)
+                raise err.NoPowerError()
+            else:
+                self.after(1000, self.check_pijuice)
+        else:
+            self.after(1000, self.check_pijuice)
+
+    def display_error(self, error, saws_error=True):
         traceback.print_exc()
         if "ErrorPage" not in self.frames:
             self.create_frame(mpgs.ErrorPage, self.container)
-        self.frames["ErrorPage"].display_page(error, non_SAWS_error)
+        self.frames["ErrorPage"].display_page(error, saws_error)
 
-    def display_callback_error(self, exc, val, tb):
-        non_SAWS_error = not isinstance(exc, err.SAWSError)
-        self.display_error(exc, non_SAWS_error)
+    def display_callback_error(self, exception_class, error, traceback):
+        self.display_error(error, isinstance(error, err.SAWSError))
 
     def display_warning(self, warning):
         if "WarningPage" not in self.frames:
@@ -302,7 +340,7 @@ def main():
         except err.SAWSError as e:
             saws.display_error(e)
         except Exception as e:
-            saws.display_error(e, non_SAWS_error=True)
+            saws.display_error(e, saws_error=False)
             raise e
         finally:
             saws.mainloop()
@@ -310,7 +348,6 @@ def main():
         traceback.print_exc()
     finally:
         GPIO.cleanup()
-
 
 if __name__ == "__main__":
     main()

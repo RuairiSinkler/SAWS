@@ -1,3 +1,5 @@
+from SAWS import SAWS
+from exceptions.errors import SAWSError
 import tkinter as tk
 import sys
 import traceback
@@ -37,16 +39,16 @@ class ErrorPage(tk.Frame):
         )
         self.shutdown_button.grid(row=2, column=1, sticky="ew")
 
-    def display_page(self, error, non_SAWS_error=False):
-        if non_SAWS_error:
-            self.title.set("UNEXPECTED ERROR")
-            self.message.set(traceback.format_exc())
-            self.message_label.config(wraplength=0)
-        else:
+    def display_page(self, error, saws_error):
+        if saws_error:
             self.title.set("ERROR") 
             self.message.set(str(error))
             self.message_label.config(wraplength=self.controller.screen_width)
-        self.resize(resize_width=non_SAWS_error)
+        else:
+            self.title.set("UNEXPECTED ERROR")
+            self.message.set(traceback.format_exc())
+            self.message_label.config(wraplength=0)
+        self.resize(resize_width=(not saws_error))
         self.controller.show_frame("ErrorPage")
 
     def resize(self, resize_width=False):
