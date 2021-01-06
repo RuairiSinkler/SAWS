@@ -274,8 +274,9 @@ class SAWS(tk.Tk):
     def check_pijuice(self):
         status = self.pijuice.status.GetStatus()
         if 'data' in status:
-            power_present = status['data']['powerInput5vIo']
-            if power_present == 'NOT_PRESENT':
+            direct_power = status['data']['powerInput']
+            rpi_power = status['data']['powerInput5vIo']
+            if direct_power == 'NOT_PRESENT' and rpi_power == 'NOT_PRESENT':
                 if 'RunPage' in self.frames:
                     if self.frames['RunPage'].running:
                         self.frames['RunPage'].emergency_stop()
@@ -286,15 +287,14 @@ class SAWS(tk.Tk):
         else:
             self.after(1000, self.check_pijuice)
 
-    def display_error(self, error, non_SAWS_error=False):
+    def display_error(self, error):
         traceback.print_exc()
         if "ErrorPage" not in self.frames:
             self.create_frame(mpgs.ErrorPage, self.container)
-        self.frames["ErrorPage"].display_page(error, non_SAWS_error)
+        self.frames["ErrorPage"].display_page(error)
 
     def display_callback_error(self, exc, val, tb):
-        non_SAWS_error = not isinstance(exc, err.SAWSError)
-        self.display_error(exc, non_SAWS_error)
+        self.display_error(exc)
 
     def display_warning(self, warning):
         if "WarningPage" not in self.frames:

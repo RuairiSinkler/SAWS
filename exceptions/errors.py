@@ -45,5 +45,5 @@ class IngredientWeigherError(SAWSError):
 class NoPowerError(SAWSError):
 
     def __init__(self):
-        self.message = "Mains power to the system has been lost, tidying up and shutting down.".format()
+        self.message = "Mains power to the system has been lost, tidying up and shutting down."
         super().__init__(self.message)
