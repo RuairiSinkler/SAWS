@@ -288,6 +288,11 @@ class SAWS(tk.Tk):
             self.after(1000, self.check_pijuice)
 
     def display_error(self, error):
+        print()
+        print("DISPLAY ERROR")
+        print(error)
+        print()
+
         traceback.print_exc()
         if "ErrorPage" not in self.frames:
             self.create_frame(mpgs.ErrorPage, self.container)
