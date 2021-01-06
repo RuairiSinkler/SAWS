@@ -39,10 +39,10 @@ class ErrorPage(tk.Frame):
         )
         self.shutdown_button.grid(row=2, column=1, sticky="ew")
 
-    def display_page(self, error_message, saws_error):
+    def display_page(self, error, saws_error):
         if saws_error:
             self.title.set("ERROR") 
-            self.message.set(str(error_message))
+            self.message.set(str(error))
             self.message_label.config(wraplength=self.controller.screen_width)
         else:
             self.title.set("UNEXPECTED ERROR")
