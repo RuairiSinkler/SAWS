@@ -20,9 +20,10 @@ class Ration:
     def copy(cls, ration):
         ration_dict = dict(ration.__dict__)
         ingredients = []
-        for ingredient in ration_dict["ingredients"]:
-            ingredient_copy = Ingredient.copy(ingredient)
-            ingredients.append(ingredient_copy)
+        if "ingredients" in ration_dict:
+            for ingredient in ration_dict["ingredients"]:
+                ingredient_copy = Ingredient.copy(ingredient)
+                ingredients.append(ingredient_copy)
         ration_dict["ingredients"] = ingredients
         return cls(**ration_dict)
 
@@ -33,8 +34,9 @@ class Ration:
     @classmethod
     def from_dict(cls, ration_dict):
         ingredients = []
-        for ingredient_dict in ration_dict["ingredients"]:
-            ingredients.append(Ingredient(**ingredient_dict))
+        if "ingredients" in ration_dict:
+            for ingredient_dict in ration_dict["ingredients"]:
+                ingredients.append(Ingredient(**ingredient_dict))
         ration_dict["ingredients"] = ingredients
         return cls(**ration_dict)
 
