@@ -97,7 +97,7 @@ class SAWS(tk.Tk):
         self.default_weigher_increment = int(self.config[section].get(option))
 
         if not os.path.ismount(usb_dir):
-            raise err.USBError
+            raise err.USBError()
         
         self.ration_db = db.DatabaseManager("./database", "rations.db")
         self.ration_ex = ex.WorksheetManager(usb_dir, "rations")
@@ -281,7 +281,7 @@ class SAWS(tk.Tk):
                     if self.frames['RunPage'].running:
                         self.frames['RunPage'].emergency_stop()
                 # self.after(10000, self.shutdown)
-                raise err.NoPowerError
+                raise err.NoPowerError()
             else:
                 self.after(1000, self.check_pijuice)
         else:
