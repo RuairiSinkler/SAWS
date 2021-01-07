@@ -35,10 +35,10 @@ class RunPage(tk.Frame):
 
         self.start_pause_text = tk.StringVar()
         self.start_pause_text.set("Start")
-        button = tk.Button(
+        self.start_pause_button = tk.Button(
             self.header, textvariable=self.start_pause_text, font=self.controller.main_font, command=self.start_pause
         )
-        button.grid(column=0, row=0, sticky="ew")
+        self.start_pause_button.grid(column=0, row=0, sticky="ew")
 
         self.end_text = tk.StringVar()
         self.end_text.set("End Run Early")
@@ -120,6 +120,12 @@ class RunPage(tk.Frame):
                 self.header.grid_columnconfigure(1, weight=0, uniform="")
 
     def emergency_stop(self):
+        self.start_pause_button.configure(state=tk.DISABLED)
+        self.quit_button.configure(state=tk.DISABLED)
+        if self.unweighed_ingredients is not None:
+            for _, button in self.unweighed_ingredients:
+                button.configure(state=tk.DISABLED)
+
         for _, weigher in self.weighers.items():
             for ingredient in weigher.ingredients:
                 ingredient.augar.turn_off()
@@ -185,12 +191,12 @@ class RunPage(tk.Frame):
 
         self.weighers = {}
 
-        unweighed_ingredients = []
+        self.unweighed_ingredients = []
         unweighed_button_font = tkfont.Font(size=self.controller.text_font['size'])
 
         for ingredient in self.ration.ingredients:
             if ingredient.weigher_id is None:
-                button_column = len(unweighed_ingredients)
+                button_column = len(self.unweighed_ingredients)
                 button = tk.Button(
                     self.footer, textvariable=ingredient.label, font=unweighed_button_font,
                     command=lambda ingredient=ingredient: self.ingredient_done(ingredient)
@@ -199,7 +205,7 @@ class RunPage(tk.Frame):
                     button.configure(state=tk.DISABLED)
                 button.grid(row=0, column=button_column, sticky="ew")
                 self.footer.grid_columnconfigure(button_column, weight=1, uniform="unweighed_ingredients_buttons")
-                unweighed_ingredients.append((ingredient, button))
+                self.unweighed_ingredients.append((ingredient, button))
             else:
                 if ingredient.weigher_id not in self.weighers:
                     db_weigher = self.controller.ration_db.get_weigher(ingredient.weigher_id)
@@ -218,7 +224,7 @@ class RunPage(tk.Frame):
                 ingredient.current_amount = 0
                 self.increment_weight(weigher, increment)
 
-        for ingredient, button in unweighed_ingredients:
+        for ingredient, button in self.unweighed_ingredients:
             button.update_idletasks()
             text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
             fm.resize_font_width(text, unweighed_button_font, button.winfo_width())

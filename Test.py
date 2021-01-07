@@ -36,17 +36,17 @@
 # class ClassA:
 
 #   def __init__(self):
-#     self.test = 0
+#     test = 0
 
 # class ClassB:
 
 #   def __init__(self, a):
-#     self.a = a
+#     a = a
 
 # class ClassC:
 
 #   def __init__(self, a):
-#     self.a = a
+#     a = a
 
 # a0 = ClassA()
 # a1 = ClassA()
@@ -91,20 +91,40 @@
 # print(ration.__dict__)
 # print(ration2.__dict__)
 
-class Stupid:
+# class Stupid:
 
-  def __init__(self, variable=None):
-    if variable is None:
-      self.variable = []
-    else:
-      self.variable = variable
+#   def __init__(self, variable=None):
+#     if variable is None:
+#       variable = []
+#     else:
+#       variable = variable
 
-stupid1 = Stupid()
+# stupid1 = Stupid()
+# # stupid2 = Stupid()
+
+# stupid1.variable.append(1)
 # stupid2 = Stupid()
+# # stupid2.variable.append(2)
 
-stupid1.variable.append(1)
-stupid2 = Stupid()
-# stupid2.variable.append(2)
+# print(stupid1.variable)
+# print(stupid2.variable)
 
-print(stupid1.variable)
-print(stupid2.variable)
+import tkinter as tk
+from tkinter import ttk
+
+test = tk.Tk()
+screen_width = test.winfo_screenwidth()
+screen_height = test.winfo_screenheight()
+test.geometry("{0}x{1}+0+0".format(int(screen_width * 0.9), int(screen_height * 0.9)))
+
+style = ttk.Style(test)
+style.theme_use('classic')
+style.configure( 'TCombobox', arrowsize=screen_width / 20  )
+style.configure( 'Vertical.TScrollbar', width=screen_width / 20 )
+style.configure( 'Vertical.TScrollbar', arrowsize=screen_width / 20 )
+
+house_dropdown = ttk.Combobox(test, values=["Some", "Stuff", "Wow", "Some", "Stuff", "Wow", "Some", "Stuff", "Wow", "Some", "Stuff", "Wow"], state="readonly", height=6, width=int(screen_width * 0.8))
+house_dropdown.current(0)
+house_dropdown.pack()
+
+test.mainloop()

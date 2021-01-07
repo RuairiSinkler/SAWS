@@ -17,6 +17,6 @@ def resize_font_width(text, font, frame_width, padding=0):
     font_width = 0
     for string in text.splitlines():
         font_width = max(font_width, font.measure(string))
-    if font['size'] > 1 and font_width > frame_width - padding:
+    if font['size'] > 1 and font_width > frame_width - 2 * padding:
         font['size'] -= 1
         resize_font_width(text, font, frame_width, padding)
