@@ -19,4 +19,4 @@ class SplashPage(tk.Frame):
         button = tk.Button(
             self, text="Shutdown", font=controller.main_font, command=self.controller.shutdown
         )
-        button.pack(row=2, column=0, sticky="sw")
+        button.grid(row=2, column=0, sticky="sw")
