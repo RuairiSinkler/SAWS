@@ -34,7 +34,7 @@ class MainMenuPage(tk.Frame):
             button_row = len(self.buttons)
             button.grid(row=button_row, column=0, padx=10, pady=5, stick="nsew")
             self.ration_options.interior.grid_rowconfigure(button_row, weight=1, uniform="ration_buttons")
-            fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
+            fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=self.controller.screen_width / 10)
 
         button = tk.Button(
             self, text="Quit", font=self.controller.main_font, command=lambda: self.controller.show_frame("SplashPage")
@@ -51,7 +51,7 @@ class MainMenuPage(tk.Frame):
         button.configure(command=lambda ration=ration, button=button: self.controller.frames["RationPage"].display_page(Ration.copy(ration), button))
         self.buttons.insert(0, button)
         self.reset_buttons()
-        fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=50)
+        fm.resize_font_width(button["text"], button_font, self.controller.screen_width, padding=self.controller.screen_width / 10)
 
     def remove_button(self, button):
         button.grid_forget()

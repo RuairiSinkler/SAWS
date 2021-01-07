@@ -66,7 +66,7 @@ class RationPage(tk.Frame):
         for ingredient in self.ration.ingredients:
             label_text = "{}, {}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount))
             label_font = tkfont.Font(size=self.controller.main_font['size'])
-            fm.resize_font_width(label_text, label_font, self.controller.screen_width, padding=50)
+            fm.resize_font_width(label_text, label_font, self.controller.screen_width, padding=self.controller.screen_width / 10)
             label = tk.Label(
                 ingredients_list.interior, text=label_text, font=label_font
             )
@@ -78,6 +78,8 @@ class RationPage(tk.Frame):
             self.house_dropdown = ttk.Combobox(self.main, values=house_names, state="readonly", font=self.controller.main_font, height=6)
             self.house_dropdown.current(0)
             self.house_dropdown.pack()
+            print(self.house_dropdown)
+            print(self.house_dropdown.winfo_children())
         else:
             label = tk.Label(
                 self.main, text="House: {}".format(self.ration.house), font=self.controller.main_font,
