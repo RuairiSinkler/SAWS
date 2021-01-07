@@ -5,11 +5,18 @@ class SplashPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         button = tk.Button(
             self, text="Start", font=controller.main_font, command=lambda: self.controller.show_frame("PinPage")
         )
-        button.pack(fill=tk.NONE, expand=tk.TRUE)
+        button.grid(row=2, column=2, sticky="nsew")
         button = tk.Button(
             self, text="Shutdown", font=controller.main_font, command=self.controller.shutdown
         )
-        button.pack(fill=tk.NONE, expand=tk.TRUE)
+        button.pack(row=2, column=0, sticky="sw")
