@@ -78,8 +78,6 @@ class RationPage(tk.Frame):
             self.house_dropdown = ttk.Combobox(self.main, values=house_names, state="readonly", font=self.controller.main_font, height=6)
             self.house_dropdown.current(0)
             self.house_dropdown.pack()
-            print(self.house_dropdown)
-            print(self.house_dropdown.winfo_children())
         else:
             label = tk.Label(
                 self.main, text="House: {}".format(self.ration.house), font=self.controller.main_font,

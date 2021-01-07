@@ -47,7 +47,11 @@ class SAWS(tk.Tk):
         self.option_add('*Dialog.msg.font', self.main_font)
         self.option_add("*TCombobox*Listbox*Font", self.main_font)
 
-        ttk.Style().configure( 'Vertical.TScrollbar', width=self.winfo_screenwidth() / 10 )
+        style = ttk.Style(self)
+        style.theme_use('classic')
+        style.configure( 'TCombobox', arrowsize=self.screen_width / 20  )
+        style.configure( 'Vertical.TScrollbar', width=self.screen_width / 20 )
+        style.configure( 'Vertical.TScrollbar', arrowsize=self.screen_width / 20 )
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill=tk.BOTH, expand=tk.TRUE)
