@@ -14,6 +14,8 @@ import RPi.GPIO as GPIO
 import traceback
 import tkinter.font as tkfont
 
+from tkinter import ttk
+
 import data.settings as settings
 import database.database_management as db
 import excel.excel_management as ex
@@ -44,6 +46,8 @@ class SAWS(tk.Tk):
         self.text_font = tkfont.Font(size=15)
         self.option_add('*Dialog.msg.font', self.main_font)
         self.option_add("*TCombobox*Listbox*Font", self.main_font)
+
+        ttk.Style().configure( 'Vertical.TScrollbar', width=self.winfo_screenwidth() / 10 )
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill=tk.BOTH, expand=tk.TRUE)
