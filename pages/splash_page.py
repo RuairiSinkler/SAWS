@@ -15,7 +15,7 @@ class SplashPage(tk.Frame):
         button = tk.Button(
             self, text="Start", font=controller.main_font, command=lambda: self.controller.show_frame("PinPage")
         )
-        button.grid(row=2, column=2, sticky="nsew")
+        button.grid(row=1, column=1, sticky="nsew")
         button = tk.Button(
             self, text="Shutdown", font=controller.main_font, command=self.controller.shutdown
         )
