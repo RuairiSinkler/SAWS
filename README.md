@@ -7,6 +7,7 @@ Python program to automatically control a hopper/augar system for mixing ingrede
 * Install latest version of Raspberry Pi OS onto Raspberry Pi (tested with Buster)
 * Ensure you have Python 3.7 or later installed
 * Install the openpyxl module with `sudo pip3 install openpyxl`
+* Install PiJuice base with `sudo apt install pijuice-base`
 * Clone this Github repository
 * Run `sudo python3 SAWS/SAWS.py`
 
