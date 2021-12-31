@@ -10,6 +10,7 @@ class Ingredient:
         self.ordering = ordering
         self.augar = augar
         self.current_amount = current_amount
+        self.increment = 0
 
         self.label = tk.StringVar()
         self.update_label()
@@ -33,6 +34,7 @@ class Ingredient:
         return f"{self.name}\n{self.desired_amount:.2f}/{self.desired_amount:.2f}kg"
 
     def increment_amount(self, increment):
+        self.increment = increment
         self.current_amount += increment
         self.update_label()
 
@@ -43,4 +45,4 @@ class Ingredient:
             return (self.current_amount / self.desired_amount) * 100
 
     def done(self):
-        return self.current_amount >= self.desired_amount
+        return self.current_amount + (self.increment / 2) >= self.desired_amount
