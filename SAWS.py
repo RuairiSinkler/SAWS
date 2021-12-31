@@ -39,7 +39,7 @@ class SAWS(tk.Tk):
 
         self.screen_width = self.winfo_screenwidth()
         self.screen_height = self.winfo_screenheight()
-        self.geometry("{0}x{1}+0+0".format(self.screen_width, self.screen_height))
+        self.geometry(f"{self.screen_width}x{self.screen_height}+0+0")
         self.resizable(False, False)
         self.overrideredirect(True)
         self.main_font = tkfont.Font(size=25)
@@ -166,7 +166,7 @@ class SAWS(tk.Tk):
 
     def check_incomplete_rations(self):
         incomplete_rations = []
-        json_logs = glob.glob("{}/*_temp_log.json".format(self.temp_log_location))
+        json_logs = glob.glob(f"{self.temp_log_location}/*_temp_log.json")
         for json_log in json_logs:
             try:
                 with open(json_log, "r") as json_file:
@@ -175,7 +175,7 @@ class SAWS(tk.Tk):
                     incomplete_rations.append((ration, err.IncompleteLog(ration.name, ration.house)))
             except JSONDecodeError as e:
                 self.display_warning(err.BadJSONFile(json_log))
-                os.rename(json_log, "{}.bad.json".format(json_log))
+                os.rename(json_log, f"{json_log}.bad.json")
         return incomplete_rations
 
     def setup_database(self):
@@ -309,7 +309,7 @@ class SAWS(tk.Tk):
             self.warning_frames.append(warning_frame)
         if self.frames["WarningPage"].active:
             timestamp = time.time_ns()
-            page_name = "TempWarningPage.{}".format(timestamp)
+            page_name = f"TempWarningPage.{timestamp}"
 
             frame = mpgs.WarningPage(parent=self.container, controller=self, name=page_name, temp=True)
             self.frames[page_name] = frame

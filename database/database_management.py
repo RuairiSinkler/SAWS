@@ -5,12 +5,12 @@ from pathlib import Path
 class DatabaseManager:
     def __init__(self, directory, database_name):
         self.directory = directory
-        self.database_name = "{}/{}".format(directory, database_name)
+        self.database_name = f"{directory}/{database_name}"
 
     def run_sql_file(self, file_path):
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
-        with open("{}/{}".format(self.directory, file_path)) as f:
+        with open(f"{self.directory}/{file_path}") as f:
             cursor.executescript(f.read())
         connect.commit()
         connect.close()
@@ -89,7 +89,7 @@ class DatabaseManager:
         connect = sqlite3.connect(self.database_name)
         cursor = connect.cursor()
 
-        execution = "SELECT id FROM {} WHERE name = ?".format(table)
+        execution = f"SELECT id FROM {table} WHERE name = ?"
         cursor.execute(execution, (name, ))
 
         result = cursor.fetchone()

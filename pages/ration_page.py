@@ -64,7 +64,7 @@ class RationPage(tk.Frame):
         ingredients_list = VerticalScrolledFrame(self.main, relief=tk.SUNKEN)
         ingredients_list.pack(fill=tk.BOTH, expand=tk.TRUE)
         for ingredient in self.ration.ingredients:
-            label_text = "{}, {}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount))
+            label_text = ingredient.get_label_text()
             label_font = tkfont.Font(size=self.controller.main_font['size'])
             fm.resize_font_width(label_text, label_font, self.controller.screen_width, padding=self.controller.screen_width / 10)
             label = tk.Label(
@@ -80,7 +80,7 @@ class RationPage(tk.Frame):
             self.house_dropdown.pack()
         else:
             label = tk.Label(
-                self.main, text="House: {}".format(self.ration.house), font=self.controller.main_font,
+                self.main, text=f"House: {self.ration.house}", font=self.controller.main_font,
                 relief=tk.RAISED, borderwidth=1
             )
             label.pack(fill=tk.BOTH, expand=tk.TRUE)

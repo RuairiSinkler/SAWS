@@ -11,7 +11,7 @@ class SAWSError(Exception):
 class ConfigError(SAWSError):
 
     def __init__(self, section, option):
-        self.message = "There is something wrong with the config.ini file. Expected option '{}' under the '{}' section.".format(option, section)
+        self.message = f"There is something wrong with the config.ini file. Expected option '{option}' under the '{section}' section."
         super().__init__(self.message)
 
 
@@ -25,21 +25,21 @@ class USBError(SAWSError):
 class CellError(SAWSError):
 
     def __init__(self, cell_value):
-        self.message = "Couldn't find the '{}' cell when reading rations.xlsx.".format(cell_value)
+        self.message = f"Couldn't find the '{cell_value}' cell when reading rations.xlsx."
         super().__init__(self.message)
 
 
 class IngredientError(SAWSError):
 
     def __init__(self, ingredient_name):
-        self.message = "Error reading ingredient '{}'. It is missing a value for one of it's fields, please resolve this in rations.xlsx.".format(ingredient_name)
+        self.message = f"Error reading ingredient '{ingredient_name}'. It is missing a value for one of it's fields, please resolve this in rations.xlsx."
         super().__init__(self.message)
 
 
 class IngredientWeigherError(SAWSError):
 
     def __init__(self, ingredient_name, weigher_id):
-        self.message = "Error reading ingredient '{}'. It refers to a weigher with id '{}', but this is not present in the Weighers table, please resolve this in rations.xlsx.".format(ingredient_name, weigher_id)
+        self.message = f"Error reading ingredient '{ingredient_name}'. It refers to a weigher with id '{weigher_id}', but this is not present in the Weighers table, please resolve this in rations.xlsx."
         super().__init__(self.message)
 
 class NoPowerError(SAWSError):

@@ -82,7 +82,7 @@ class RunPage(tk.Frame):
             ingredient.current_amount = ingredient.desired_amount
         else:
             ingredient.current_amount = 0
-        ingredient.label.set("{}\n{}/{}kg".format(ingredient.name, str(ingredient.current_amount), str(ingredient.desired_amount)))
+        ingredient.update_label()
         self.ration.complete = self.check_done()
 
     def check_done(self):
@@ -129,7 +129,7 @@ class RunPage(tk.Frame):
         for _, weigher in self.weighers.items():
             for ingredient in weigher.ingredients:
                 ingredient.augar.turn_off()
-        if self.ration is not None and os.path.exists("{}/{}".format(self.controller.temp_log_location, self.json_log_file)):
+        if self.ration is not None and os.path.exists(f"{self.controller.temp_log_location}/{self.json_log_file}"):
             self.update_log()
 
     def create_log(self):
@@ -139,7 +139,7 @@ class RunPage(tk.Frame):
         self.update_log()
 
     def update_log(self):
-        with open("{}/{}".format(self.controller.temp_log_location, self.json_log_file), "w") as json_file:
+        with open(f"{self.controller.temp_log_location}/{self.json_log_file}", "w") as json_file:
             json.dump(self.ration, json_file, cls=RationEncoder)
 
     def log_run(self, num_pad):
@@ -161,8 +161,8 @@ class RunPage(tk.Frame):
         self.controller.ration_logs_ex.log_run(self.ration)
         self.controller.ration_logs_ex.save()
 
-        if os.path.exists("{}/{}".format(self.controller.temp_log_location, self.json_log_file)):
-            os.remove("{}/{}".format(self.controller.temp_log_location, self.json_log_file))
+        if os.path.exists(f"{self.controller.temp_log_location}/{self.json_log_file}"):
+            os.remove(f"{self.controller.temp_log_location}/{self.json_log_file}")
 
         for _, weigher in self.weighers.items():
             weigher.active = False
@@ -185,7 +185,7 @@ class RunPage(tk.Frame):
         self.running = False
         self.start_pause_text.set("Start")
         self.ration = ration
-        self.json_log_file = "{}_{}_temp_log.json".format(self.ration.name, self.ration.house).replace(" ", "_")
+        self.json_log_file = f"{self.ration.name}_{self.ration.house}_temp_log.json".replace(" ", "_")
 
         self.create_log()
 
@@ -226,7 +226,7 @@ class RunPage(tk.Frame):
 
         for ingredient, button in self.unweighed_ingredients:
             button.update_idletasks()
-            text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
+            text = ingredient.get_full_label_text()
             fm.resize_font_width(text, unweighed_button_font, button.winfo_width())
 
         self.ration.complete = self.check_done()

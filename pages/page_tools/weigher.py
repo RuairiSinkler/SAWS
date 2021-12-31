@@ -44,7 +44,7 @@ class Weigher:
         self.parent.update_idletasks()
         for ingredient in self.ingredients:
             label = self.labels[ingredient.name]
-            text = "{}\n{}/{}kg".format(ingredient.name, ingredient.desired_amount, ingredient.desired_amount)
+            text = ingredient.get_full_label_text()
             fm.resize_font_width(text, self.label_font, label.winfo_width())
 
     def add_hopper(self):
@@ -67,7 +67,7 @@ class Weigher:
 
         self.labels[ingredient.name] = label
 
-        self.ingredients_frame.grid_columnconfigure(label_column, weight=1, uniform="weigher_{}_ingredient_labels".format(self.weigher_id))
+        self.ingredients_frame.grid_columnconfigure(label_column, weight=1, uniform=f"weigher_{self.weigher_id}_ingredient_labels")
 
         augar_square_size = self.controller.text_font.metrics('linespace')
 

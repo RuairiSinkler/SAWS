@@ -42,7 +42,7 @@ class MainMenuPage(tk.Frame):
         button.pack(side=tk.BOTTOM, fill=tk.X)
 
     def add_incomplete_ration(self, ration):
-        button_text = "Incomplete {} for {}".format(ration.name, ration.house)
+        button_text = f"Incomplete {ration.name} for {ration.house}"
         button_font = tkfont.Font(size=self.controller.main_font['size'])
         button = tk.Button(
             self.ration_options.interior, text=button_text, font=button_font,

@@ -12,7 +12,7 @@ class Ingredient:
         self.current_amount = current_amount
 
         self.label = tk.StringVar()
-        self.label.set("{}\n{}/{}kg".format(self.name, str(self.current_amount), str(self.desired_amount)))
+        self.update_label()
 
     @classmethod
     def copy(cls, ingredient):
@@ -23,9 +23,18 @@ class Ingredient:
     def from_db_ingredient(cls, db_ingredient, augar=None):
         return cls(*db_ingredient, augar)
 
+    def update_label(self):
+        self.label.set(self.get_label_text())
+
+    def get_label_text(self):
+        return f"{self.name}\n{self.current_amount:.2f}/{self.desired_amount:.2f}kg"
+
+    def get_full_label_text(self):
+        return f"{self.name}\n{self.desired_amount:.2f}/{self.desired_amount:.2f}kg"
+
     def increment_amount(self, increment):
         self.current_amount += increment
-        self.label.set("{}\n{}/{}kg".format(self.name, str(self.current_amount), str(self.desired_amount)))
+        self.update_label()
 
     def percentage(self):
         if self.desired_amount == 0:

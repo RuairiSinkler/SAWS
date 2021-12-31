@@ -6,7 +6,7 @@ from pathlib import Path
 class WorksheetManager:
     def __init__(self, directory, name):
         dir = directory
-        self.path = "{}/{}.xlsx".format(dir, name)
+        self.path = f"{dir}/{name}.xlsx"
         workbook = Path(self.path)
         if workbook.is_file():
             self.workbook = openpyxl.load_workbook(self.path)
@@ -42,7 +42,7 @@ class WorksheetManager:
 
     # Returns a cell variable given its column and row as numbers
     def get_cell(self, column, row):
-        cell_name = "{}{}".format(openpyxl.utils.get_column_letter(column), str(row))
+        cell_name = f"{openpyxl.utils.get_column_letter(column)}{str(row)}"
         return self.sheet[cell_name]
 
     # Returns the value in a given cell object
@@ -155,7 +155,7 @@ class WorksheetManager:
                             name = self.read_cell(self.get_cell(column, row))
                             if name is None:
                                 break
-                            augar_pin = config["AUGAR_PINS"].get("{}_pin".format(name.lower().replace(" ", "_")))
+                            augar_pin = config["AUGAR_PINS"].get(f"{name.lower().replace(' ', '_')}_pin")
                             if augar_pin is not None:
                                 self.write_cell(augar_pin, self.get_cell(new_column, row))
                         self.save()
@@ -258,7 +258,7 @@ class WorksheetManager:
             if not self._cell_is_empty(cell):
                 self._move_table(cell, furthest_column + 1 - cell.column)
 
-        self.sheet.move_range("{}:{}".format(table_bounds[0].coordinate, table_bounds[1].coordinate), rows=row_shift, cols=column_shift)
+        self.sheet.move_range(f"{table_bounds[0].coordinate}:{table_bounds[1].coordinate}", rows=row_shift, cols=column_shift)
 
         self.save()
 
